@@ -105,35 +105,76 @@ function ProductPage() {
 
       <div className="mx-auto max-w-3xl">
         {/* Galeria — swipe horizontal */}
-        <div className="relative aspect-square overflow-hidden bg-background">
+        <div className="relative aspect-square select-none overflow-hidden bg-background">
           <div
-            className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
-            onScroll={(e) => {
-              const el = e.currentTarget;
-              setImgIdx(Math.round(el.scrollLeft / el.clientWidth));
-            }}
+            className="flex h-full transition-transform duration-300 ease-out"
+            style={{ transform: `translateX(-${imgIdx * 100}%)` }}
           >
             {images.map((src, i) => (
-              <div key={i} className="relative h-full w-full shrink-0 snap-center">
+              <div key={i} className="relative h-full w-full shrink-0">
                 <img
                   src={src}
                   alt={`${product.name} ${i + 1}`}
-                  className="h-full w-full object-contain"
+                  className="pointer-events-none h-full w-full object-contain"
+                  draggable={false}
+                  loading={i === 0 ? "eager" : "lazy"}
                   onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.2"; }}
                 />
               </div>
             ))}
           </div>
-          <span className="absolute bottom-3 right-3 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background">
+
+          {/* Áreas invisíveis para swipe por toque/drag */}
+          <div
+            className="absolute inset-0"
+            onTouchStart={(e) => {
+              const x = e.touches[0].clientX;
+              (e.currentTarget as HTMLElement).dataset.startX = String(x);
+            }}
+            onTouchEnd={(e) => {
+              const startX = Number((e.currentTarget as HTMLElement).dataset.startX || 0);
+              const endX = e.changedTouches[0].clientX;
+              const diff = startX - endX;
+              if (Math.abs(diff) > 40) {
+                if (diff > 0) setImgIdx((i) => Math.min(images.length - 1, i + 1));
+                else setImgIdx((i) => Math.max(0, i - 1));
+              }
+            }}
+          />
+
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={() => setImgIdx((i) => Math.max(0, i - 1))}
+                disabled={imgIdx === 0}
+                className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow disabled:opacity-30"
+                aria-label="Anterior"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => setImgIdx((i) => Math.min(images.length - 1, i + 1))}
+                disabled={imgIdx === images.length - 1}
+                className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow disabled:opacity-30"
+                aria-label="Próxima"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </>
+          )}
+
+          <span className="absolute bottom-3 right-3 z-10 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background">
             {imgIdx + 1}/{images.length}
           </span>
-          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+          <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
             {images.map((_, i) => (
-              <span
+              <button
                 key={i}
+                onClick={() => setImgIdx(i)}
                 className={`h-1.5 rounded-full transition-all ${
                   i === imgIdx ? "w-4 bg-primary" : "w-1.5 bg-foreground/30"
                 }`}
+                aria-label={`Foto ${i + 1}`}
               />
             ))}
           </div>
