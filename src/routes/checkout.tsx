@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, CheckCircle2, CreditCard, MapPin, QrCode } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, MapPin, QrCode } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/data/products";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -12,35 +14,59 @@ export const Route = createFileRoute("/checkout")({
 function CheckoutPage() {
   const { items, total, clear } = useCart();
   const navigate = useNavigate();
-  const [step, setStep] = useState<"form" | "done">("form");
   const [payment, setPayment] = useState<"pix" | "card">("pix");
+  const [loading, setLoading] = useState(false);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [doc, setDoc] = useState("");
+  const [phone, setPhone] = useState("");
 
   const shipping = total >= 120 ? 0 : 19.9;
   const grandTotal = total + shipping;
+  const amountCents = Math.round(grandTotal * 100);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStep("done");
-    setTimeout(() => clear(), 100);
-  };
+    if (loading) return;
 
-  if (step === "done") {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4 text-center">
-        <CheckCircle2 className="h-16 w-16 text-shipping-fg" />
-        <h1 className="mt-4 text-2xl font-bold">Pedido confirmado!</h1>
-        <p className="mt-2 text-muted-foreground">
-          Você receberá um e-mail com os detalhes do pagamento.
-        </p>
-        <button
-          onClick={() => navigate({ to: "/" })}
-          className="mt-6 rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground"
-        >
-          Voltar à loja
-        </button>
-      </div>
-    );
-  }
+    if (payment !== "pix") {
+      toast.info("Por enquanto só estamos aceitando Pix.");
+      return;
+    }
+
+    if (amountCents < 600) {
+      toast.error("Valor mínimo do pedido é R$ 6,00.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-pix", {
+        body: {
+          amount: amountCents,
+          buyer: { name, email, document: doc, phone },
+          items: items.map((i) => ({
+            id: i.id,
+            name: i.name,
+            price: i.price,
+            quantity: i.quantity,
+          })),
+        },
+      });
+
+      if (error) throw error;
+      if (!data?.external_id) throw new Error("Pedido não retornou external_id");
+
+      clear();
+      navigate({ to: "/pix/$externalId", params: { externalId: data.external_id } });
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message ?? "Não foi possível gerar o Pix. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -66,17 +92,12 @@ function CheckoutPage() {
 
       <form onSubmit={submit} className="mx-auto max-w-3xl space-y-3 p-3">
         <section className="rounded-xl bg-background p-4">
-          <h2 className="mb-3 flex items-center gap-2 font-semibold"><MapPin className="h-4 w-4" /> Entrega</h2>
+          <h2 className="mb-3 flex items-center gap-2 font-semibold"><MapPin className="h-4 w-4" /> Seus dados</h2>
           <div className="space-y-2">
-            <input required placeholder="Nome completo" className="w-full rounded-lg border px-3 py-2 text-sm" />
-            <input required type="email" placeholder="E-mail" className="w-full rounded-lg border px-3 py-2 text-sm" />
-            <input required placeholder="CPF" className="w-full rounded-lg border px-3 py-2 text-sm" />
-            <input required placeholder="Telefone" className="w-full rounded-lg border px-3 py-2 text-sm" />
-            <div className="grid grid-cols-3 gap-2">
-              <input required placeholder="CEP" className="rounded-lg border px-3 py-2 text-sm" />
-              <input required placeholder="Cidade" className="col-span-2 rounded-lg border px-3 py-2 text-sm" />
-            </div>
-            <input required placeholder="Endereço, número e complemento" className="w-full rounded-lg border px-3 py-2 text-sm" />
+            <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Nome completo" className="w-full rounded-lg border px-3 py-2 text-sm" />
+            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail" className="w-full rounded-lg border px-3 py-2 text-sm" />
+            <input required value={doc} onChange={(e) => setDoc(e.target.value)} placeholder="CPF" className="w-full rounded-lg border px-3 py-2 text-sm" />
+            <input required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Telefone com DDD" className="w-full rounded-lg border px-3 py-2 text-sm" />
           </div>
         </section>
 
@@ -86,23 +107,13 @@ function CheckoutPage() {
             <button type="button" onClick={() => setPayment("pix")} className={`flex items-center justify-center gap-2 rounded-lg border-2 py-3 text-sm font-semibold ${payment === "pix" ? "border-primary bg-primary/10" : ""}`}>
               <QrCode className="h-4 w-4" /> Pix
             </button>
-            <button type="button" onClick={() => setPayment("card")} className={`flex items-center justify-center gap-2 rounded-lg border-2 py-3 text-sm font-semibold ${payment === "card" ? "border-primary bg-primary/10" : ""}`}>
-              <CreditCard className="h-4 w-4" /> Cartão
+            <button type="button" onClick={() => setPayment("card")} disabled className={`flex items-center justify-center gap-2 rounded-lg border-2 py-3 text-sm font-semibold opacity-50`}>
+              <CreditCard className="h-4 w-4" /> Cartão (em breve)
             </button>
           </div>
-          {payment === "card" && (
-            <div className="mt-3 space-y-2">
-              <input required placeholder="Número do cartão" className="w-full rounded-lg border px-3 py-2 text-sm" />
-              <input required placeholder="Nome impresso" className="w-full rounded-lg border px-3 py-2 text-sm" />
-              <div className="grid grid-cols-2 gap-2">
-                <input required placeholder="MM/AA" className="rounded-lg border px-3 py-2 text-sm" />
-                <input required placeholder="CVV" className="rounded-lg border px-3 py-2 text-sm" />
-              </div>
-            </div>
-          )}
           {payment === "pix" && (
             <p className="mt-3 rounded-lg bg-muted p-3 text-xs text-muted-foreground">
-              Após confirmar, você receberá o QR Code para pagamento via Pix.
+              Após confirmar, você verá o QR Code e o código copia-e-cola para pagar via Pix. A confirmação é automática.
             </p>
           )}
         </section>
@@ -126,8 +137,8 @@ function CheckoutPage() {
           </div>
         </section>
 
-        <button type="submit" className="w-full rounded-full bg-primary py-3 font-bold text-primary-foreground">
-          Pagar {formatBRL(grandTotal)}
+        <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 font-bold text-primary-foreground disabled:opacity-60">
+          {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Gerando Pix...</> : <>Pagar {formatBRL(grandTotal)} com Pix</>}
         </button>
       </form>
     </div>

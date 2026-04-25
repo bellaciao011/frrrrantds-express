@@ -1,1 +1,10 @@
 project_id = "xcofbaxshihrwlsduwpn"
+
+[functions.create-pix]
+verify_jwt = false
+
+[functions.check-order]
+verify_jwt = false
+
+[functions.buckpay-webhook]
+verify_jwt = false
