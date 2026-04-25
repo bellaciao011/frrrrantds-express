@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { LayoutGrid, List as ListIcon } from "lucide-react";
 import { Header } from "@/components/store/Header";
 import { StoreInfo } from "@/components/store/StoreInfo";
@@ -8,22 +9,12 @@ import { ProductCard } from "@/components/store/ProductCard";
 import { PromoPopup } from "@/components/store/PromoPopup";
 import { products } from "@/data/products";
 
-interface SearchParams {
-  q?: string;
-}
-
-export const Route = createFileRoute("/")({
-  component: Index,
-  validateSearch: (s: Record<string, unknown>): SearchParams => ({
-    q: typeof s.q === "string" ? s.q : undefined,
-  }),
-});
-
 type Tab = "inicio" | "produtos" | "categorias";
 type Sort = "recomendado" | "vendidos" | "lancamentos" | "preco-asc" | "preco-desc";
 
-function Index() {
-  const { q } = Route.useSearch();
+export default function IndexPage() {
+  const [params] = useSearchParams();
+  const q = params.get("q") ?? undefined;
   const [tab, setTab] = useState<Tab>("produtos");
   const [sort, setSort] = useState<Sort>("preco-asc");
   const [layout, setLayout] = useState<"list" | "grid">("list");
@@ -45,12 +36,15 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Melissa — Promoções</title>
+        <meta name="description" content="Loja online com até 90% OFF e frete grátis." />
+      </Helmet>
       <PromoPopup />
       <Header />
       <StoreInfo />
       <FreeShippingBar />
 
-      {/* Tabs */}
       <nav className="sticky top-14 z-30 mx-auto mt-4 max-w-5xl border-b bg-background">
         <div className="grid grid-cols-3">
           {[
@@ -78,7 +72,9 @@ function Index() {
         <div className="mx-auto max-w-5xl px-3 py-4">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-base font-bold">Principais produtos</h2>
-            <button onClick={() => setTab("produtos")} className="text-sm text-primary">Ver mais</button>
+            <button onClick={() => setTab("produtos")} className="text-sm text-primary">
+              Ver mais
+            </button>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {top.map((p) => (
@@ -88,7 +84,9 @@ function Index() {
 
           <div className="mb-3 mt-6 flex items-center justify-between">
             <h2 className="text-base font-bold">Recomendado para você</h2>
-            <button onClick={() => setTab("produtos")} className="text-sm text-primary">Mais</button>
+            <button onClick={() => setTab("produtos")} className="text-sm text-primary">
+              Mais
+            </button>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {recommended.map((p) => (
@@ -125,7 +123,11 @@ function Index() {
               className="shrink-0 rounded-full p-2 hover:bg-muted"
               aria-label="Alternar layout"
             >
-              {layout === "list" ? <LayoutGrid className="h-5 w-5" /> : <ListIcon className="h-5 w-5" />}
+              {layout === "list" ? (
+                <LayoutGrid className="h-5 w-5" />
+              ) : (
+                <ListIcon className="h-5 w-5" />
+              )}
             </button>
           </div>
 
@@ -155,7 +157,14 @@ function Index() {
       {tab === "categorias" && (
         <div className="mx-auto max-w-5xl px-3 py-4">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {["Sandálias", "Rasteiras", "Bolsas", "Botas", "Mini Melissa", "Coleção Hello Kitty"].map((cat) => (
+            {[
+              "Sandálias",
+              "Rasteiras",
+              "Bolsas",
+              "Botas",
+              "Mini Melissa",
+              "Coleção Hello Kitty",
+            ].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setTab("produtos")}

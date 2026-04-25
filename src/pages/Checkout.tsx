@@ -1,4 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import {
   ChevronLeft,
   Loader2,
@@ -16,11 +17,6 @@ import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/data/products";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-export const Route = createFileRoute("/checkout")({
-  component: CheckoutPage,
-  head: () => ({ meta: [{ title: "Resumo do Pedido — Melissa" }] }),
-});
 
 type Step = 1 | 2 | 3;
 type Shipping = { id: string; name: string; price: number; eta: string };
@@ -64,7 +60,7 @@ function useCountdown(seconds: number) {
   return `${mm}:${min}:${ss}`;
 }
 
-function CheckoutPage() {
+export default function CheckoutPage() {
   const { items, total: subtotal, setQty, remove } = useCart();
   const navigate = useNavigate();
   const countdown = useCountdown(5 * 3600);
@@ -153,7 +149,7 @@ function CheckoutPage() {
       });
       if (error) throw error;
       if (!data?.external_id) throw new Error("Falha ao gerar Pix.");
-      navigate({ to: "/pix/$externalId", params: { externalId: data.external_id } });
+      navigate(`/pix/${data.external_id }`);
     } catch (e: any) {
       console.error(e);
       toast.error(e?.message ?? "Não foi possível gerar o Pix.");
@@ -170,7 +166,7 @@ function CheckoutPage() {
           <ShoppingBag className="mx-auto h-12 w-12 text-muted-foreground" />
           <p className="mt-3 text-muted-foreground">Seu carrinho está vazio.</p>
           <button
-            onClick={() => navigate({ to: "/" })}
+            onClick={() => navigate("/")}
             className="mt-4 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground"
           >
             Ver produtos
@@ -182,6 +178,7 @@ function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-white pb-36">
+      <Helmet><title>Resumo do Pedido — Melissa</title></Helmet>
       {/* HEADER */}
       <header className="sticky top-0 z-40 border-b bg-white">
         <div className="relative mx-auto flex h-14 max-w-md items-center justify-center px-3">

@@ -1,4 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import {
   ArrowLeft, Bookmark, ChevronLeft, ChevronRight, Home, MessageCircle, MoreHorizontal,
   Play, Share2, ShieldCheck, ShoppingCart, Star, Ticket, Video, Zap,
@@ -8,19 +9,6 @@ import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
 
-export const Route = createFileRoute("/produto/$id")({
-  component: ProductPage,
-  head: ({ params }) => {
-    const p = products.find((x) => x.id === params.id);
-    return {
-      meta: [
-        { title: p ? `${p.name} — Melissa` : "Produto" },
-        { name: "description", content: p ? `${p.name} por ${formatBRL(p.price)}` : "Produto" },
-        ...(p ? [{ property: "og:image", content: p.image }] : []),
-      ],
-    };
-  },
-});
 
 const REVIEWS_TOTAL = 207;
 const REVIEWS_5 = 12300;
@@ -46,8 +34,8 @@ function useCountdown(seconds: number) {
   return `${mm}:${ss}`;
 }
 
-function ProductPage() {
-  const { id } = Route.useParams();
+export default function ProductPage() {
+  const { id = "" } = useParams<{ id: string }>();
   const product = products.find((p) => p.id === id);
   const { add } = useCart();
   const navigate = useNavigate();
@@ -81,6 +69,7 @@ function ProductPage() {
 
   return (
     <div className="min-h-screen bg-muted/30 pb-24">
+      <Helmet><title>{product.name} — Melissa</title><meta name="description" content={`${product.name} por ${formatBRL(product.price)}`} /></Helmet>
       {/* Header */}
       <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b bg-background px-3">
         <button onClick={() => window.history.back()} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
@@ -414,8 +403,7 @@ function ProductPage() {
             {moreFromStore.map((p) => (
               <Link
                 key={p.id}
-                to="/produto/$id"
-                params={{ id: p.id }}
+                to={`/produto/${p.id }`}
                 className="block w-36 shrink-0"
               >
                 <div className="aspect-square overflow-hidden rounded-lg bg-muted">
@@ -438,7 +426,7 @@ function ProductPage() {
               const pct = Math.round(100 - (p.price / p.originalPrice) * 100);
               return (
                 <div key={p.id} className="rounded-2xl border bg-background p-2 shadow-sm">
-                  <Link to="/produto/$id" params={{ id: p.id }}>
+                  <Link to={`/produto/${p.id }`}>
                     <div className="aspect-square overflow-hidden rounded-lg bg-muted">
                       <img src={p.image} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
                     </div>
@@ -469,7 +457,7 @@ function ProductPage() {
                       <ShoppingCart className="h-4 w-4" />
                     </button>
                     <button
-                      onClick={() => navigate({ to: "/produto/$id", params: { id: p.id } })}
+                      onClick={() => navigate(`/produto/${p.id }`)}
                       className="flex-1 rounded-full bg-primary py-2 text-xs font-bold text-primary-foreground"
                     >
                       Comprar
@@ -526,7 +514,7 @@ function ProductPage() {
         open={drawer !== null}
         mode={drawer ?? "cart"}
         onClose={() => setDrawer(null)}
-        onConfirm={drawer === "buy" ? () => navigate({ to: "/checkout" }) : undefined}
+        onConfirm={drawer === "buy" ? () => navigate("/checkout") : undefined}
       />
     </div>
   );

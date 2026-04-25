@@ -1,15 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { ArrowLeft, CheckCircle2, Copy, Loader2, QrCode } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatBRL } from "@/data/products";
-
-export const Route = createFileRoute("/pix/$externalId")({
-  component: PixPage,
-  head: () => ({ meta: [{ title: "Pagamento Pix" }] }),
-});
 
 interface OrderRow {
   external_id: string;
@@ -20,15 +16,14 @@ interface OrderRow {
   buyer_name: string;
 }
 
-function PixPage() {
-  const { externalId } = Route.useParams();
+export default function PixPage() {
+  const { externalId = "" } = useParams<{ externalId: string }>();
   const navigate = useNavigate();
   const [order, setOrder] = useState<OrderRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [qrFromCode, setQrFromCode] = useState<string | null>(null);
   const [secondsLeft, setSecondsLeft] = useState(15 * 60);
 
-  // Carrega o pedido
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -42,27 +37,33 @@ function PixPage() {
       setOrder(data ?? null);
       setLoading(false);
     })();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, [externalId]);
 
-  // Realtime: escuta mudanças no pedido
   useEffect(() => {
     const channel = supabase
       .channel(`order-${externalId}`)
-      .on("postgres_changes", {
-        event: "UPDATE",
-        schema: "public",
-        table: "orders",
-        filter: `external_id=eq.${externalId}`,
-      }, (payload) => {
-        const row = payload.new as OrderRow;
-        setOrder((prev) => ({ ...(prev ?? row), ...row }));
-      })
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "orders",
+          filter: `external_id=eq.${externalId}`,
+        },
+        (payload) => {
+          const row = payload.new as OrderRow;
+          setOrder((prev) => ({ ...(prev ?? row), ...row }));
+        },
+      )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [externalId]);
 
-  // Polling de fallback: consulta a API a cada 6s enquanto pendente
   useEffect(() => {
     if (!order || order.status === "paid") return;
     const id = setInterval(async () => {
@@ -77,7 +78,6 @@ function PixPage() {
     return () => clearInterval(id);
   }, [order, externalId]);
 
-  // Gera QR a partir do código se a base64 não vier
   useEffect(() => {
     if (!order?.pix_code || order.pix_qrcode) return;
     QRCode.toDataURL(order.pix_code, { width: 320, margin: 1 })
@@ -85,7 +85,6 @@ function PixPage() {
       .catch(console.error);
   }, [order?.pix_code, order?.pix_qrcode]);
 
-  // Contagem regressiva
   useEffect(() => {
     if (!order || order.status === "paid") return;
     const id = setInterval(() => setSecondsLeft((s) => Math.max(0, s - 1)), 1000);
@@ -123,7 +122,10 @@ function PixPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <p className="text-muted-foreground">Pedido não encontrado.</p>
-        <button onClick={() => navigate({ to: "/" })} className="mt-4 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground">
+        <button
+          onClick={() => navigate("/")}
+          className="mt-4 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground"
+        >
           Voltar à loja
         </button>
       </div>
@@ -135,9 +137,15 @@ function PixPage() {
       <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4 text-center">
         <CheckCircle2 className="h-20 w-20 text-shipping-fg" />
         <h1 className="mt-4 text-2xl font-bold">Pagamento confirmado!</h1>
-        <p className="mt-2 text-muted-foreground">Obrigado, {order.buyer_name.split(" ")[0]}. Em instantes você receberá o e-mail com os detalhes do pedido.</p>
+        <p className="mt-2 text-muted-foreground">
+          Obrigado, {order.buyer_name.split(" ")[0]}. Em instantes você receberá o e-mail com os
+          detalhes do pedido.
+        </p>
         <p className="mt-2 text-sm text-muted-foreground">Pedido #{order.external_id}</p>
-        <button onClick={() => navigate({ to: "/" })} className="mt-6 rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">
+        <button
+          onClick={() => navigate("/")}
+          className="mt-6 rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground"
+        >
           Voltar à loja
         </button>
       </div>
@@ -149,8 +157,14 @@ function PixPage() {
 
   return (
     <div className="min-h-screen bg-muted/30 pb-12">
+      <Helmet>
+        <title>Pagamento Pix</title>
+      </Helmet>
       <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b bg-background px-3">
-        <button onClick={() => navigate({ to: "/" })} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
+        <button
+          onClick={() => navigate("/")}
+          className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"
+        >
           <ArrowLeft className="h-5 w-5" />
         </button>
         <h1 className="font-semibold">Pagamento via Pix</h1>
@@ -160,7 +174,9 @@ function PixPage() {
         <div className="rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 p-4 text-center text-white">
           <p className="text-xs opacity-90">Aguardando pagamento</p>
           <p className="mt-1 text-3xl font-extrabold">{formatBRL(order.amount / 100)}</p>
-          <p className="mt-1 text-xs opacity-90">Expira em {mm}:{ss}</p>
+          <p className="mt-1 text-xs opacity-90">
+            Expira em {mm}:{ss}
+          </p>
         </div>
 
         <div className="rounded-xl bg-background p-4 text-center">
@@ -201,9 +217,7 @@ function PixPage() {
           </ol>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Pedido #{order.external_id}
-        </p>
+        <p className="text-center text-xs text-muted-foreground">Pedido #{order.external_id}</p>
       </div>
     </div>
   );

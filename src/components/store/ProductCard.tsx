@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { ShoppingCart, Star } from "lucide-react";
 import { type Product, formatBRL } from "@/data/products";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
 
-export function ProductCard({ product, layout = "list" }: { product: Product; layout?: "list" | "grid" }) {
+export function ProductCard({
+  product,
+  layout = "list",
+}: {
+  product: Product;
+  layout?: "list" | "grid";
+}) {
   const off = Math.round(100 - (product.price / product.originalPrice) * 100);
   const [drawer, setDrawer] = useState(false);
 
@@ -12,9 +18,18 @@ export function ProductCard({ product, layout = "list" }: { product: Product; la
     return (
       <>
         <div className="relative overflow-hidden rounded-xl border bg-card">
-          <Link to="/produto/$id" params={{ id: product.id }} className="absolute inset-0 z-0" aria-label={product.name} />
+          <Link
+            to={`/produto/${product.id}`}
+            className="absolute inset-0 z-0"
+            aria-label={product.name}
+          />
           <div className="aspect-square overflow-hidden bg-muted">
-            <img src={product.image} alt={product.name} className="h-full w-full object-cover" loading="lazy" />
+            <img
+              src={product.image}
+              alt={product.name}
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
           </div>
           <div className="p-2">
             <h3 className="line-clamp-2 min-h-[2.5rem] text-xs font-semibold">{product.name}</h3>
@@ -32,7 +47,9 @@ export function ProductCard({ product, layout = "list" }: { product: Product; la
             </div>
             <div className="mt-1">
               <p className="text-base font-bold text-price">{formatBRL(product.price)}</p>
-              <p className="text-xs text-muted-foreground line-through">{formatBRL(product.originalPrice)}</p>
+              <p className="text-xs text-muted-foreground line-through">
+                {formatBRL(product.originalPrice)}
+              </p>
             </div>
             <button
               onClick={() => setDrawer(true)}
@@ -43,12 +60,7 @@ export function ProductCard({ product, layout = "list" }: { product: Product; la
           </div>
         </div>
 
-        <BuyDrawer
-          product={product}
-          open={drawer}
-          mode="cart"
-          onClose={() => setDrawer(false)}
-        />
+        <BuyDrawer product={product} open={drawer} mode="cart" onClose={() => setDrawer(false)} />
       </>
     );
   }
@@ -56,10 +68,19 @@ export function ProductCard({ product, layout = "list" }: { product: Product; la
   return (
     <>
       <div className="relative flex gap-3 border-b bg-card p-3">
-        <Link to="/produto/$id" params={{ id: product.id }} className="absolute inset-0 z-0" aria-label={product.name} />
+        <Link
+          to={`/produto/${product.id}`}
+          className="absolute inset-0 z-0"
+          aria-label={product.name}
+        />
         <div className="shrink-0">
           <div className="h-28 w-28 overflow-hidden rounded-lg bg-muted">
-            <img src={product.image} alt={product.name} className="h-full w-full object-cover" loading="lazy" />
+            <img
+              src={product.image}
+              alt={product.name}
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
           </div>
         </div>
         <div className="flex flex-1 flex-col">
@@ -79,7 +100,9 @@ export function ProductCard({ product, layout = "list" }: { product: Product; la
           <div className="mt-auto flex items-end justify-between">
             <div>
               <p className="text-lg font-bold text-price">{formatBRL(product.price)}</p>
-              <p className="text-xs text-muted-foreground line-through">{formatBRL(product.originalPrice)}</p>
+              <p className="text-xs text-muted-foreground line-through">
+                {formatBRL(product.originalPrice)}
+              </p>
             </div>
             <button
               onClick={() => setDrawer(true)}
@@ -91,12 +114,7 @@ export function ProductCard({ product, layout = "list" }: { product: Product; la
         </div>
       </div>
 
-      <BuyDrawer
-        product={product}
-        open={drawer}
-        mode="cart"
-        onClose={() => setDrawer(false)}
-      />
+      <BuyDrawer product={product} open={drawer} mode="cart" onClose={() => setDrawer(false)} />
     </>
   );
 }

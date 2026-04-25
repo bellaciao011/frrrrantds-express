@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, ShoppingCart, Share2 } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/lib/cart";
@@ -11,7 +11,7 @@ export function Header() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = q.trim();
-    if (trimmed) navigate({ to: "/", search: { q: trimmed } as never });
+    if (trimmed) navigate(`/?q=${encodeURIComponent(trimmed)}`);
   };
 
   return (
