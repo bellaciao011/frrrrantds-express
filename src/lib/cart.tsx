@@ -19,23 +19,27 @@ interface CartCtx {
 const Ctx = createContext<CartCtx | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const raw = localStorage.getItem("cart");
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    try {
+      const raw = localStorage.getItem("cart");
+      if (raw) setItems(JSON.parse(raw));
+    } catch {
+      // ignore parse errors
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem("cart", JSON.stringify(items));
     } catch {
       // ignore quota errors
     }
-  }, [items]);
+  }, [items, hydrated]);
 
   const add = (p: Product, size?: string) => {
     setItems((prev) => {
