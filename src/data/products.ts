@@ -174,3 +174,15 @@ export const products: Product[] = [
 ];
 
 export const formatBRL = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+// Gera variações da imagem principal (10_o, 11_o, 12_o, 13_o) — padrão do CDN Melissa
+export function getProductImages(image: string): string[] {
+  const variants = new Set<string>();
+  variants.add(image);
+  // Substitui o sufixo "10_o" / "11_o" / "12_o" / "13_o" antes de .jpg
+  for (const suffix of ["10_o", "11_o", "12_o", "13_o"]) {
+    const replaced = image.replace(/(\d{2})_o\.jpg/i, `${suffix}.jpg`);
+    if (replaced !== image || suffix === "10_o") variants.add(replaced);
+  }
+  return Array.from(variants);
+}
