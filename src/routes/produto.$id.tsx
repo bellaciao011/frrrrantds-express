@@ -6,6 +6,7 @@ import {
 import { useEffect, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
+import { BuyDrawer } from "@/components/store/BuyDrawer";
 
 export const Route = createFileRoute("/produto/$id")({
   component: ProductPage,
