@@ -19,33 +19,33 @@ export function FreeShippingBar() {
   const pct = Math.min(100, (total / TARGET) * 100);
 
   return (
-    <section className="mx-auto mt-4 max-w-5xl px-3">
-      <div className="rounded-2xl bg-accent/40 p-4">
-        <div className="mb-3 flex items-center justify-center gap-2 text-sm font-medium">
+    <section className="mx-auto mt-3 max-w-5xl px-3">
+      <div className="border-b border-t bg-background px-1 py-4">
+        <div className="mb-3 flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-wide">
           <span className="text-foreground/70">Oferta termina em</span>
-          <span className="rounded-full bg-foreground px-2 py-0.5 font-mono text-xs text-background">
+          <span className="rounded-full bg-foreground px-2.5 py-0.5 font-mono text-xs font-bold text-background">
             {mm}:{ss}
           </span>
         </div>
-        <p className="text-sm font-semibold">
+        <p className="text-sm font-bold">
           {remaining > 0
-            ? `Faltam ${formatBRL(remaining)} para liberar o frete grátis.`
+            ? `Faltam ${formatBRL(remaining)} para liberar o frete gratis.`
             : "Frete grátis liberado! 🎉"}
         </p>
-        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-background">
-          <div
-            className="h-full rounded-full bg-primary transition-all"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
         <p className="mt-1 text-xs text-muted-foreground">
           {formatBRL(total)} / {formatBRL(TARGET)}
         </p>
+        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+          <div
+            className="h-full rounded-full bg-primary transition-all duration-500"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
         <button
           disabled={remaining > 0}
-          className="mt-3 w-full rounded-full bg-muted py-2 text-sm font-semibold text-muted-foreground disabled:opacity-60"
+          className="mt-3 w-full rounded-sm bg-muted py-2.5 text-sm font-semibold text-foreground/60 disabled:opacity-60"
         >
-          Resgatar frete grátis
+          Resgatar frete gratis
         </button>
       </div>
 

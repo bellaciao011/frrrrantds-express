@@ -44,7 +44,7 @@ function Index() {
   const recommended = cheapest.slice(0, 8);
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-background">
       <PromoPopup />
       <Header />
       <StoreInfo />
