@@ -6,6 +6,7 @@ import {
 import { useEffect, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
+import { BuyDrawer } from "@/components/store/BuyDrawer";
 
 export const Route = createFileRoute("/produto/$id")({
   component: ProductPage,
@@ -55,6 +56,7 @@ function ProductPage() {
   const [imgIdx, setImgIdx] = useState(0);
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const [selectedVar, setSelectedVar] = useState(0);
+  const [drawer, setDrawer] = useState<"cart" | "buy" | null>(null);
   const baseImages = product?.images?.length ? product.images : (product ? [product.image] : []);
   const variantImages = (product?.variacoes ?? []).map((v) => v.imagem).filter(Boolean);
   const images: string[] = Array.from(new Set([...baseImages, ...variantImages]));
@@ -74,11 +76,8 @@ function ProductPage() {
   const related = products.filter((p) => p.id !== product.id).slice(0, 6);
   const moreFromStore = products.filter((p) => p.id !== product.id).slice(6, 12);
 
-  const handleAdd = () => add(product);
-  const handleBuy = () => {
-    add(product);
-    navigate({ to: "/checkout" });
-  };
+  const handleAdd = () => setDrawer("cart");
+  const handleBuy = () => setDrawer("buy");
 
   return (
     <div className="min-h-screen bg-muted/30 pb-24">
@@ -497,29 +496,39 @@ function ProductPage() {
 
       {/* Footer fixo de ação */}
       <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
-        <div className="mx-auto flex max-w-3xl items-center gap-2 px-2 py-2">
+        <div className="mx-auto flex max-w-3xl items-center gap-3 px-3 py-2">
           <Link to="/" className="flex w-12 flex-col items-center gap-0.5 py-1 text-foreground">
-            <Home className="h-5 w-5" />
-            <span className="text-[10px] font-medium">Loja</span>
+            <Home className="h-6 w-6" strokeWidth={1.75} />
+            <span className="text-[11px] font-medium">Loja</span>
           </Link>
           <button className="flex w-12 flex-col items-center gap-0.5 py-1 text-foreground">
-            <MessageCircle className="h-5 w-5" />
-            <span className="text-[10px] font-medium">Chat</span>
+            <MessageCircle className="h-6 w-6" strokeWidth={1.75} />
+            <span className="text-[11px] font-medium">Chat</span>
           </button>
           <button
             onClick={handleAdd}
-            className="flex-1 rounded-full bg-muted py-3 text-sm font-bold text-foreground"
+            className="flex-1 rounded-full bg-muted px-3 py-3 text-center text-sm font-bold leading-tight text-foreground"
           >
-            Adicionar ao Carrinho
+            Adicionar ao<br />Carrinho
           </button>
           <button
             onClick={handleBuy}
-            className="flex-1 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground"
+            className="flex-1 rounded-full bg-primary px-3 py-3 text-sm font-bold text-primary-foreground"
           >
             Comprar Agora
           </button>
         </div>
       </div>
+
+      {/* Drawer de variações */}
+      <BuyDrawer
+        product={product}
+        open={drawer !== null}
+        mode={drawer ?? "cart"}
+        onClose={() => setDrawer(null)}
+        onConfirm={drawer === "buy" ? () => navigate({ to: "/checkout" }) : undefined}
+      />
     </div>
   );
 }
+
