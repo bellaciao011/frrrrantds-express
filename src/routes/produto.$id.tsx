@@ -4,7 +4,7 @@ import {
   Play, Share2, ShieldCheck, ShoppingCart, Star, Ticket, Video, Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { products, formatBRL, getProductImages } from "@/data/products";
+import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 
 export const Route = createFileRoute("/produto/$id")({
