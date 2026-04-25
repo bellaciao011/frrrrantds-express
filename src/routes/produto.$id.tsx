@@ -101,12 +101,39 @@ function ProductPage() {
       </header>
 
       <div className="mx-auto max-w-3xl">
-        {/* Galeria */}
-        <div className="relative aspect-square bg-background">
-          <img src={product.image} alt={product.name} className="h-full w-full object-contain" />
+        {/* Galeria — swipe horizontal */}
+        <div className="relative aspect-square overflow-hidden bg-background">
+          <div
+            className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              setImgIdx(Math.round(el.scrollLeft / el.clientWidth));
+            }}
+          >
+            {images.map((src, i) => (
+              <div key={i} className="relative h-full w-full shrink-0 snap-center">
+                <img
+                  src={src}
+                  alt={`${product.name} ${i + 1}`}
+                  className="h-full w-full object-contain"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.2"; }}
+                />
+              </div>
+            ))}
+          </div>
           <span className="absolute bottom-3 right-3 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background">
-            1/12
+            {imgIdx + 1}/{images.length}
           </span>
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+            {images.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === imgIdx ? "w-4 bg-primary" : "w-1.5 bg-foreground/30"
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Barra de gradiente promocional */}
