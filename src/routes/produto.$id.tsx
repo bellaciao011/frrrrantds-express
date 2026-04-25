@@ -1,6 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, ChevronRight, Heart, Play, Share2, ShoppingCart, Star, Truck, ShieldCheck, Package } from "lucide-react";
-import { useState } from "react";
+import {
+  ArrowLeft, Bookmark, ChevronRight, Home, MessageCircle, MoreHorizontal,
+  Play, Share2, ShieldCheck, ShoppingCart, Star, Ticket, Video, Zap,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 
@@ -18,22 +21,36 @@ export const Route = createFileRoute("/produto/$id")({
   },
 });
 
-const SIZES = ["33", "34", "35", "36", "37", "38", "39", "40"];
+const REVIEWS_TOTAL = 207;
+const REVIEWS_5 = 12300;
+const REVIEWS_4 = 857;
+const REVIEWS_WITH_MEDIA = 2500;
 
-const REVIEWS = [
-  { name: "Ana C.", rating: 5, date: "12/03/2026", text: "Chegou super rápido e o produto é exatamente como nas fotos. Adorei!", size: "36" },
-  { name: "Juliana M.", rating: 5, date: "08/03/2026", text: "Confortável e lindo. Já é o segundo que compro aqui.", size: "37" },
-  { name: "Bia S.", rating: 4, date: "02/03/2026", text: "Ótimo custo-benefício, recomendo demais.", size: "35" },
-  { name: "Carla R.", rating: 5, date: "28/02/2026", text: "Atendimento perfeito e entrega no prazo.", size: "38" },
+const CREATORS = [
+  { name: "Lucas Rangel", caption: "JÁ MANDA PRA" },
+  { name: "Nandy Zorzan", caption: "FRETE GRÁTIS" },
+  { name: "Califórnia", caption: "Aproveita ✨" },
+  { name: "Bia Reis", caption: "OBSESSED" },
 ];
+
+function useCountdown(seconds: number) {
+  const [t, setT] = useState(seconds);
+  useEffect(() => {
+    const id = setInterval(() => setT((x) => (x > 0 ? x - 1 : 0)), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const mm = String(Math.floor(t / 60)).padStart(2, "0");
+  const ss = String(t % 60).padStart(2, "0");
+  return `${mm}:${ss}`;
+}
 
 function ProductPage() {
   const { id } = Route.useParams();
   const product = products.find((p) => p.id === id);
   const { add } = useCart();
   const navigate = useNavigate();
-  const [size, setSize] = useState<string | null>(null);
-  const [showVideo, setShowVideo] = useState(false);
+  const countdown = useCountdown(5 * 60 + 43);
+  const [bookmarked, setBookmarked] = useState(false);
 
   if (!product) {
     return (
@@ -44,243 +61,334 @@ function ProductPage() {
   }
 
   const off = Math.round(100 - (product.price / product.originalPrice) * 100);
-  const related = products.filter((p) => p.id !== product.id).slice(0, 8);
+  const related = products.filter((p) => p.id !== product.id).slice(0, 6);
+  const moreFromStore = products.filter((p) => p.id !== product.id).slice(6, 12);
 
-  const handleAdd = () => add(product, size ?? undefined);
+  const handleAdd = () => add(product);
   const handleBuy = () => {
-    add(product, size ?? undefined);
+    add(product);
     navigate({ to: "/checkout" });
   };
 
   return (
-    <div className="min-h-screen bg-muted/30 pb-32">
+    <div className="min-h-screen bg-muted/30 pb-24">
+      {/* Header */}
       <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b bg-background px-3">
         <button onClick={() => window.history.back()} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
         </button>
-        <div className="flex gap-1">
-          <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"><Share2 className="h-5 w-5" /></button>
-          <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"><Heart className="h-5 w-5" /></button>
-          <Link to="/carrinho" className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"><ShoppingCart className="h-5 w-5" /></Link>
+        <div className="flex items-center gap-1">
+          <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
+            <Share2 className="h-5 w-5" strokeWidth={2.5} />
+          </button>
+          <Link to="/carrinho" className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
+            <ShoppingCart className="h-5 w-5" strokeWidth={2.5} />
+            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+              0
+            </span>
+          </Link>
+          <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
+            <MoreHorizontal className="h-5 w-5" strokeWidth={2.5} />
+          </button>
         </div>
       </header>
 
       <div className="mx-auto max-w-3xl">
-        <div className="aspect-square bg-background">
+        {/* Galeria */}
+        <div className="relative aspect-square bg-background">
           <img src={product.image} alt={product.name} className="h-full w-full object-contain" />
+          <span className="absolute bottom-3 right-3 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background">
+            1/12
+          </span>
         </div>
 
-        {/* Barra de gradiente com desconto */}
-        <div className="bg-gradient-to-r from-pink-500 via-primary to-rose-600 px-4 py-3 text-white shadow-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-2xl font-extrabold leading-none">{off}% OFF</p>
-              <p className="mt-1 text-xs opacity-90">Oferta por tempo limitado</p>
+        {/* Barra de gradiente promocional */}
+        <div className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-400 px-4 py-3 text-white">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span className="rounded-md bg-white px-2 py-1 text-xs font-extrabold text-rose-600">
+                -{off}.00%
+              </span>
+              <span className="text-2xl font-extrabold leading-none">{formatBRL(product.price)}</span>
+              <Ticket className="h-5 w-5 opacity-90" />
             </div>
             <div className="text-right">
-              <p className="text-xs line-through opacity-80">{formatBRL(product.originalPrice)}</p>
-              <p className="text-2xl font-extrabold leading-none">{formatBRL(product.price)}</p>
+              <p className="flex items-center justify-end gap-1 text-sm font-bold">
+                <Zap className="h-4 w-4 fill-white" /> Oferta Relâmpago
+              </p>
+              <p className="text-xs opacity-95">Termina em {countdown}</p>
             </div>
+          </div>
+          <p className="mt-1 text-xs text-white/80 line-through">{formatBRL(product.originalPrice)}</p>
+        </div>
+
+        {/* Cupons horizontal */}
+        <div className="flex gap-2 overflow-x-auto bg-background px-3 py-3">
+          <Ticket className="h-4 w-4 shrink-0 text-primary" />
+          <button className="shrink-0 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
+            Desconto de 15%, máximo de R$35
+          </button>
+          <button className="shrink-0 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
+            Cupom válido hoje
+          </button>
+          <button className="shrink-0 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
+            Frete grátis
+          </button>
+        </div>
+
+        {/* Nome do produto */}
+        <div className="flex items-start justify-between gap-3 bg-background px-4 pb-4">
+          <h1 className="text-xl font-bold leading-snug">{product.name}</h1>
+          <button
+            onClick={() => setBookmarked((b) => !b)}
+            className="shrink-0 p-1"
+            aria-label="Salvar"
+          >
+            <Bookmark
+              className={`h-6 w-6 ${bookmarked ? "fill-primary text-primary" : "text-foreground"}`}
+              strokeWidth={2}
+            />
+          </button>
+        </div>
+
+        {/* Devoluções */}
+        <div className="mt-2 flex items-center gap-3 bg-background px-4 py-3 text-sm">
+          <ShieldCheck className="h-5 w-5 text-foreground" />
+          <p className="font-medium">Devoluções gratuitas em 30 dias · Cancelamento fácil</p>
+        </div>
+
+        {/* Categorias mini */}
+        <button className="flex w-full items-center justify-between border-t bg-background px-4 py-3">
+          <div className="grid grid-cols-2 gap-0.5">
+            {[1, 2, 3, 4].map((n) => (
+              <span key={n} className="h-2 w-2 bg-foreground/70" />
+            ))}
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </button>
+
+        {/* Proteção do cliente */}
+        <div className="mt-2 bg-amber-50 px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-amber-700" />
+              <p className="font-bold text-amber-800">Proteção do cliente</p>
+            </div>
+            <ChevronRight className="h-5 w-5 text-amber-700" />
+          </div>
+          <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-amber-900">
+            <li>✓ Devolução gratuita</li>
+            <li>✓ Cupom por atraso na coleta</li>
+            <li>✓ Reembolso automático por danos</li>
+            <li>✓ Pagamento seguro</li>
+          </ul>
+        </div>
+
+        {/* Vídeos dos criadores */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <div className="mb-3 flex items-baseline justify-between">
+            <div className="flex items-center gap-2">
+              <Video className="h-5 w-5" />
+              <h2 className="text-lg font-bold">Vídeos dos criadores</h2>
+            </div>
+            <p className="text-sm text-muted-foreground">Conteúdo enviado por quem testou</p>
+          </div>
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
+            {CREATORS.map((c, n) => (
+              <button key={n} className="relative h-64 w-44 shrink-0 overflow-hidden rounded-2xl bg-muted">
+                <img src={product.image} alt={c.name} className="h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <div className="absolute left-2 right-2 top-2">
+                  <span className="rounded-md bg-yellow-300 px-2 py-0.5 text-[10px] font-extrabold text-foreground">
+                    {c.caption}
+                  </span>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                    <Play className="ml-0.5 h-5 w-5 fill-foreground text-foreground" />
+                  </div>
+                </div>
+                <div className="absolute bottom-2 left-2 right-2 flex items-center gap-2 text-white">
+                  <div className="h-7 w-7 shrink-0 rounded-full bg-muted-foreground/40 ring-2 ring-white" />
+                  <p className="truncate text-sm font-semibold drop-shadow">{c.name}</p>
+                </div>
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="space-y-3 bg-background p-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded bg-shipping-bg px-2 py-0.5 text-xs font-bold text-shipping-fg">Frete grátis</span>
-            <span className="rounded bg-discount-bg px-2 py-0.5 text-xs font-bold text-discount-fg">Pague em até 10x</span>
-          </div>
-          <h1 className="text-lg font-semibold leading-snug">{product.name}</h1>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        {/* Descrição */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <h2 className="mb-3 text-lg font-bold">Descrição</h2>
+          <p className="text-sm leading-relaxed text-foreground/80">
+            O <strong>{product.name}</strong> é um produto da campanha promocional, que une
+            estilo e qualidade. Ideal para o seu dia a dia, com acabamento cuidadoso e
+            material durável. Aproveite o preço especial enquanto durar a oferta — frete
+            grátis para todo o Brasil em pedidos selecionados.
+          </p>
+        </div>
+
+        {/* Avaliações dos clientes */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <h2 className="text-lg font-bold">Avaliações dos clientes ({REVIEWS_TOTAL})</h2>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="text-2xl font-bold">4.7</span>
+            <span className="text-sm text-muted-foreground">/5</span>
             <div className="flex">
               {[1, 2, 3, 4, 5].map((i) => (
                 <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
-            <span className="font-semibold text-foreground">5.0</span>
-            <span>(100 avaliações)</span>
-            <span>•</span>
-            <span>100 vendido(s)</span>
           </div>
-        </div>
+          <p className="mt-3 text-sm text-muted-foreground">Nenhuma avaliação ainda.</p>
 
-        {/* Tamanhos */}
-        <div className="mt-2 bg-background p-4">
-          <p className="mb-2 text-sm font-semibold">
-            Tamanho: {size && <span className="font-normal text-muted-foreground">{size}</span>}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {SIZES.map((s) => (
-              <button
-                key={s}
-                onClick={() => setSize(s)}
-                className={`min-w-[3rem] rounded-md border px-3 py-2 text-sm font-medium ${
-                  size === s ? "border-primary bg-primary/10 text-primary" : "hover:border-primary/50"
-                }`}
-              >
-                {s}
+          <div className="mt-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-base font-bold">Avaliações da loja (13,9 mil)</h3>
+                <p className="text-xs text-muted-foreground">Resumo e classificação dos clientes</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <div className="mt-3 flex gap-2 overflow-x-auto">
+              <button className="shrink-0 rounded-full border bg-muted/40 px-3 py-1.5 text-xs">
+                Inclui imagens ou vídeos <span className="text-muted-foreground">({(REVIEWS_WITH_MEDIA / 1000).toLocaleString("pt-BR")} mil)</span>
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Vantagens */}
-        <div className="mt-2 grid grid-cols-3 gap-1 bg-background p-4">
-          <div className="flex flex-col items-center gap-1 text-center">
-            <Truck className="h-5 w-5 text-primary" />
-            <p className="text-[11px] font-medium leading-tight">Frete grátis Brasil</p>
-          </div>
-          <div className="flex flex-col items-center gap-1 text-center">
-            <ShieldCheck className="h-5 w-5 text-primary" />
-            <p className="text-[11px] font-medium leading-tight">Compra 100% segura</p>
-          </div>
-          <div className="flex flex-col items-center gap-1 text-center">
-            <Package className="h-5 w-5 text-primary" />
-            <p className="text-[11px] font-medium leading-tight">Troca grátis em 30 dias</p>
-          </div>
-        </div>
-
-        {/* Vídeo dos criadores */}
-        <div className="mt-2 bg-background p-4">
-          <h2 className="mb-3 text-base font-semibold">Veja nos criadores</h2>
-          <div className="flex gap-3 overflow-x-auto pb-2">
-            {[1, 2, 3].map((n) => (
-              <button
-                key={n}
-                onClick={() => setShowVideo(true)}
-                className="relative h-56 w-32 shrink-0 overflow-hidden rounded-xl bg-muted"
-              >
-                <img
-                  src={product.image}
-                  alt={`Vídeo ${n}`}
-                  className="h-full w-full object-cover opacity-90"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/60 via-transparent to-transparent">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95">
-                    <Play className="h-4 w-4 fill-foreground text-foreground" />
-                  </div>
-                </div>
-                <div className="absolute bottom-2 left-2 right-2 text-left text-white">
-                  <p className="text-xs font-semibold">@criadora_{n}</p>
-                  <p className="text-[10px] opacity-80">{(n * 12).toLocaleString("pt-BR")}k views</p>
-                </div>
+              <button className="flex shrink-0 items-center gap-1 rounded-full border bg-muted/40 px-3 py-1.5 text-xs">
+                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" /> 5
+                <span className="text-muted-foreground">({(REVIEWS_5 / 1000).toLocaleString("pt-BR")} mil)</span>
               </button>
-            ))}
-          </div>
-          {showVideo && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={() => setShowVideo(false)}>
-              <div className="aspect-[9/16] w-full max-w-sm rounded-2xl bg-muted-foreground/30 p-4 text-center text-white">
-                <p className="mt-20 text-sm opacity-80">[ Espaço para vídeo do criador ]</p>
-                <p className="mt-2 text-xs opacity-60">Cole aqui um embed do Reels / TikTok / YouTube Shorts</p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Entrega */}
-        <div className="mt-2 flex items-center justify-between bg-background p-4">
-          <div>
-            <p className="text-sm font-semibold">Entrega</p>
-            <p className="text-xs text-muted-foreground">Frete grátis em até 7 dias úteis</p>
-          </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground" />
-        </div>
-
-        {/* Descrição */}
-        <div className="mt-2 bg-background p-4">
-          <h2 className="mb-3 text-base font-semibold">Descrição do produto</h2>
-          <div className="space-y-2 text-sm leading-relaxed text-foreground/80">
-            <p>
-              <strong>{product.name}</strong> chega para te acompanhar em todas as ocasiões com
-              muito conforto, estilo e durabilidade.
-            </p>
-            <p>
-              Produto da campanha promocional com até <strong>{off}% de desconto</strong>. Frete
-              grátis para todo o Brasil em pedidos selecionados.
-            </p>
-            <ul className="ml-4 list-disc space-y-1">
-              <li>Material de alta qualidade</li>
-              <li>Solado antiderrapante</li>
-              <li>Numeração brasileira (33–40)</li>
-              <li>Garantia de 90 dias</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Avaliações */}
-        <div className="mt-2 bg-background p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold">Avaliações (100)</h2>
-            <button className="text-sm text-primary">Ver todas</button>
-          </div>
-          <div className="mb-4 flex items-center gap-3 rounded-xl bg-muted/50 p-3">
-            <div className="text-center">
-              <p className="text-3xl font-bold">5.0</p>
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-            </div>
-            <div className="flex-1 space-y-1">
-              {[5, 4, 3, 2, 1].map((star) => (
-                <div key={star} className="flex items-center gap-2 text-xs">
-                  <span className="w-3">{star}</span>
-                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full bg-yellow-400"
-                      style={{ width: star === 5 ? "92%" : star === 4 ? "6%" : "1%" }}
-                    />
-                  </div>
-                </div>
-              ))}
+              <button className="flex shrink-0 items-center gap-1 rounded-full border bg-muted/40 px-3 py-1.5 text-xs">
+                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" /> 4
+                <span className="text-muted-foreground">({REVIEWS_4})</span>
+              </button>
             </div>
           </div>
-          <div className="space-y-3">
-            {REVIEWS.map((r, i) => (
-              <div key={i} className="border-b pb-3 last:border-0">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold">{r.name}</p>
-                  <p className="text-xs text-muted-foreground">{r.date}</p>
-                </div>
-                <div className="mt-1 flex items-center gap-2">
-                  <div className="flex">
-                    {Array.from({ length: r.rating }).map((_, k) => (
-                      <Star key={k} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <span className="text-xs text-muted-foreground">Tamanho: {r.size}</span>
-                </div>
-                <p className="mt-2 text-sm text-foreground/80">{r.text}</p>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* Relacionados */}
-        <div className="mt-2 bg-background p-4">
-          <h2 className="mb-3 text-base font-semibold">Você também pode gostar</h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {related.map((p) => (
-              <Link key={p.id} to="/produto/$id" params={{ id: p.id }} className="block">
+        {/* Loja */}
+        <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-muted text-[10px] font-bold tracking-tight">
+              LOJA
+            </div>
+            <div>
+              <p className="font-bold">Outlet Oficial</p>
+              <p className="text-sm text-muted-foreground">16300 vendido(s)</p>
+            </div>
+          </div>
+          <button className="rounded-full bg-muted px-5 py-2 text-sm font-semibold">Seguir</button>
+        </div>
+
+        {/* Mais desta loja */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <h2 className="mb-3 text-lg font-bold">Mais desta loja</h2>
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
+            {moreFromStore.map((p) => (
+              <Link
+                key={p.id}
+                to="/produto/$id"
+                params={{ id: p.id }}
+                className="block w-36 shrink-0"
+              >
                 <div className="aspect-square overflow-hidden rounded-lg bg-muted">
                   <img src={p.image} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
                 </div>
-                <p className="mt-1 line-clamp-1 text-xs">{p.name}</p>
-                <p className="text-sm font-bold text-price">{formatBRL(p.price)}</p>
+                <p className="mt-1 text-sm font-bold text-foreground">{formatBRL(p.price)}</p>
+                <span className="mt-0.5 inline-block rounded bg-discount-bg px-1.5 py-0.5 text-[10px] font-bold text-discount-fg">
+                  -{Math.round(100 - (p.price / p.originalPrice) * 100)}%
+                </span>
               </Link>
             ))}
           </div>
         </div>
+
+        {/* Você também pode gostar */}
+        <div className="mt-2 bg-muted/30 px-3 py-4">
+          <h2 className="mb-3 px-1 text-lg font-bold">Você também pode gostar</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {related.map((p) => {
+              const pct = Math.round(100 - (p.price / p.originalPrice) * 100);
+              return (
+                <div key={p.id} className="rounded-2xl border bg-background p-2 shadow-sm">
+                  <Link to="/produto/$id" params={{ id: p.id }}>
+                    <div className="aspect-square overflow-hidden rounded-lg bg-muted">
+                      <img src={p.image} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
+                    </div>
+                    <p className="mt-2 line-clamp-1 px-1 text-sm font-bold">{p.name}</p>
+                  </Link>
+                  <div className="mt-1 space-y-1 px-1">
+                    <span className="inline-flex items-center gap-1 rounded bg-discount-bg px-2 py-0.5 text-[11px] font-bold text-discount-fg">
+                      <Ticket className="h-3 w-3" /> {pct}% OFF
+                    </span>
+                    <div>
+                      <span className="inline-block rounded bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
+                        Frete grátis
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <span>5.0 | 100 vendido(s)</span>
+                    </div>
+                    <p className="text-base font-bold text-price">{formatBRL(p.price)}</p>
+                    <p className="text-xs text-muted-foreground line-through">{formatBRL(p.originalPrice)}</p>
+                  </div>
+                  <div className="mt-2 flex items-center gap-1 px-1 pb-1">
+                    <button
+                      onClick={() => add(p)}
+                      className="flex h-9 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
+                      aria-label="Adicionar"
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => navigate({ to: "/produto/$id", params: { id: p.id } })}
+                      className="flex-1 rounded-full bg-primary py-2 text-xs font-bold text-primary-foreground"
+                    >
+                      Comprar
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Política de privacidade */}
+        <div className="mt-2 bg-background px-4 py-6 text-center">
+          <h3 className="font-bold">Políticas e Privacidade</h3>
+          <a href="#" className="mt-1 block text-sm font-semibold text-blue-600 underline">
+            Política de Privacidade
+          </a>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            Seus dados são tratados conforme a legislação vigente e usados apenas para
+            processar pedidos e atendimento.
+          </p>
+        </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background p-3 shadow-lg">
-        <div className="mx-auto flex max-w-3xl gap-2">
-          <button onClick={handleAdd} className="flex-1 rounded-full border-2 border-primary py-3 text-sm font-bold text-primary">
-            Adicionar ao carrinho
+      {/* Footer fixo de ação */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
+        <div className="mx-auto flex max-w-3xl items-center gap-2 px-2 py-2">
+          <Link to="/" className="flex w-12 flex-col items-center gap-0.5 py-1 text-foreground">
+            <Home className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Loja</span>
+          </Link>
+          <button className="flex w-12 flex-col items-center gap-0.5 py-1 text-foreground">
+            <MessageCircle className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Chat</span>
           </button>
-          <button onClick={handleBuy} className="flex-1 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground">
-            Comprar agora
+          <button
+            onClick={handleAdd}
+            className="flex-1 rounded-full bg-muted py-3 text-sm font-bold text-foreground"
+          >
+            Adicionar ao Carrinho
+          </button>
+          <button
+            onClick={handleBuy}
+            className="flex-1 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground"
+          >
+            Comprar Agora
           </button>
         </div>
       </div>
