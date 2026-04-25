@@ -52,6 +52,12 @@ function ProductPage() {
   const navigate = useNavigate();
   const countdown = useCountdown(5 * 60 + 43);
   const [bookmarked, setBookmarked] = useState(false);
+  const [imgIdx, setImgIdx] = useState(0);
+  const [activeVideo, setActiveVideo] = useState<number | null>(null);
+  const images = product ? getProductImages(product.image) : [];
+
+  // reset ao trocar de produto
+  useEffect(() => { setImgIdx(0); }, [id]);
 
   if (!product) {
     return (
