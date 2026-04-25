@@ -39,6 +39,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head suppressHydrationWarning>
+        {/* Remove scripts injected by the Replit proxy before React hydrates,
+            so the DOM matches the server-rendered HTML and avoids hydration crashes. */}
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{[].slice.call(document.querySelectorAll('head > script[src*="__replco"]')).forEach(function(s){s.parentNode.removeChild(s)})}catch(e){}})()`,
+          }}
+        />
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
