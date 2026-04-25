@@ -54,10 +54,13 @@ function ProductPage() {
   const [bookmarked, setBookmarked] = useState(false);
   const [imgIdx, setImgIdx] = useState(0);
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
-  const images = product ? getProductImages(product.image) : [];
+  const [selectedVar, setSelectedVar] = useState(0);
+  const baseImages = product?.images?.length ? product.images : (product ? [product.image] : []);
+  const variantImages = (product?.variacoes ?? []).map((v) => v.imagem).filter(Boolean);
+  const images: string[] = Array.from(new Set([...baseImages, ...variantImages]));
 
   // reset ao trocar de produto
-  useEffect(() => { setImgIdx(0); }, [id]);
+  useEffect(() => { setImgIdx(0); setSelectedVar(0); }, [id]);
 
   if (!product) {
     return (
