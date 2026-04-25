@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
-  ArrowLeft, Bookmark, ChevronRight, Home, MessageCircle, MoreHorizontal,
+  ArrowLeft, Bookmark, ChevronLeft, ChevronRight, Home, MessageCircle, MoreHorizontal,
   Play, Share2, ShieldCheck, ShoppingCart, Star, Ticket, Video, Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
