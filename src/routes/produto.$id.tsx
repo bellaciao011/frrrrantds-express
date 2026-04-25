@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
-  ArrowLeft, Bookmark, ChevronRight, Home, MessageCircle, MoreHorizontal,
+  ArrowLeft, Bookmark, ChevronLeft, ChevronRight, Home, MessageCircle, MoreHorizontal,
   Play, Share2, ShieldCheck, ShoppingCart, Star, Ticket, Video, Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { products, formatBRL, getProductImages } from "@/data/products";
+import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 
 export const Route = createFileRoute("/produto/$id")({
@@ -54,10 +54,13 @@ function ProductPage() {
   const [bookmarked, setBookmarked] = useState(false);
   const [imgIdx, setImgIdx] = useState(0);
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
-  const images = product ? getProductImages(product.image) : [];
+  const [selectedVar, setSelectedVar] = useState(0);
+  const baseImages = product?.images?.length ? product.images : (product ? [product.image] : []);
+  const variantImages = (product?.variacoes ?? []).map((v) => v.imagem).filter(Boolean);
+  const images: string[] = Array.from(new Set([...baseImages, ...variantImages]));
 
   // reset ao trocar de produto
-  useEffect(() => { setImgIdx(0); }, [id]);
+  useEffect(() => { setImgIdx(0); setSelectedVar(0); }, [id]);
 
   if (!product) {
     return (
@@ -102,35 +105,76 @@ function ProductPage() {
 
       <div className="mx-auto max-w-3xl">
         {/* Galeria — swipe horizontal */}
-        <div className="relative aspect-square overflow-hidden bg-background">
+        <div className="relative aspect-square select-none overflow-hidden bg-background">
           <div
-            className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
-            onScroll={(e) => {
-              const el = e.currentTarget;
-              setImgIdx(Math.round(el.scrollLeft / el.clientWidth));
-            }}
+            className="flex h-full transition-transform duration-300 ease-out"
+            style={{ transform: `translateX(-${imgIdx * 100}%)` }}
           >
             {images.map((src, i) => (
-              <div key={i} className="relative h-full w-full shrink-0 snap-center">
+              <div key={i} className="relative h-full w-full shrink-0">
                 <img
                   src={src}
                   alt={`${product.name} ${i + 1}`}
-                  className="h-full w-full object-contain"
+                  className="pointer-events-none h-full w-full object-contain"
+                  draggable={false}
+                  loading={i === 0 ? "eager" : "lazy"}
                   onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.2"; }}
                 />
               </div>
             ))}
           </div>
-          <span className="absolute bottom-3 right-3 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background">
+
+          {/* Áreas invisíveis para swipe por toque/drag */}
+          <div
+            className="absolute inset-0"
+            onTouchStart={(e) => {
+              const x = e.touches[0].clientX;
+              (e.currentTarget as HTMLElement).dataset.startX = String(x);
+            }}
+            onTouchEnd={(e) => {
+              const startX = Number((e.currentTarget as HTMLElement).dataset.startX || 0);
+              const endX = e.changedTouches[0].clientX;
+              const diff = startX - endX;
+              if (Math.abs(diff) > 40) {
+                if (diff > 0) setImgIdx((i) => Math.min(images.length - 1, i + 1));
+                else setImgIdx((i) => Math.max(0, i - 1));
+              }
+            }}
+          />
+
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={() => setImgIdx((i) => Math.max(0, i - 1))}
+                disabled={imgIdx === 0}
+                className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow disabled:opacity-30"
+                aria-label="Anterior"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => setImgIdx((i) => Math.min(images.length - 1, i + 1))}
+                disabled={imgIdx === images.length - 1}
+                className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 shadow disabled:opacity-30"
+                aria-label="Próxima"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </>
+          )}
+
+          <span className="absolute bottom-3 right-3 z-10 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background">
             {imgIdx + 1}/{images.length}
           </span>
-          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+          <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
             {images.map((_, i) => (
-              <span
+              <button
                 key={i}
+                onClick={() => setImgIdx(i)}
                 className={`h-1.5 rounded-full transition-all ${
                   i === imgIdx ? "w-4 bg-primary" : "w-1.5 bg-foreground/30"
                 }`}
+                aria-label={`Foto ${i + 1}`}
               />
             ))}
           </div>
@@ -191,15 +235,38 @@ function ProductPage() {
           <p className="font-medium">Devoluções gratuitas em 30 dias · Cancelamento fácil</p>
         </div>
 
-        {/* Categorias mini */}
-        <button className="flex w-full items-center justify-between border-t bg-background px-4 py-3">
-          <div className="grid grid-cols-2 gap-0.5">
-            {[1, 2, 3, 4].map((n) => (
-              <span key={n} className="h-2 w-2 bg-foreground/70" />
-            ))}
+        {/* Variações (cores) */}
+        {product.variacoes && product.variacoes.length > 0 && (
+          <div className="border-t bg-background px-4 py-3">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-sm">
+                <span className="text-muted-foreground">Cor: </span>
+                <span className="font-semibold">{product.variacoes[selectedVar]?.titulo}</span>
+              </p>
+              <span className="text-xs text-muted-foreground">
+                {product.variacoes.length} opções
+              </span>
+            </div>
+            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+              {product.variacoes.map((v, n) => (
+                <button
+                  key={n}
+                  onClick={() => {
+                    setSelectedVar(n);
+                    const idx = images.findIndex((x) => x === v.imagem);
+                    if (idx >= 0) setImgIdx(idx);
+                  }}
+                  className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 ${
+                    selectedVar === n ? "border-primary" : "border-transparent"
+                  }`}
+                  title={v.titulo}
+                >
+                  <img src={v.imagem} alt={v.titulo} className="h-full w-full object-cover" loading="lazy" />
+                </button>
+              ))}
+            </div>
           </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground" />
-        </button>
+        )}
 
         {/* Proteção do cliente */}
         <div className="mt-2 bg-amber-50 px-4 py-4">
@@ -284,11 +351,8 @@ function ProductPage() {
         {/* Descrição */}
         <div className="mt-2 bg-background px-4 py-4">
           <h2 className="mb-3 text-lg font-bold">Descrição</h2>
-          <p className="text-sm leading-relaxed text-foreground/80">
-            O <strong>{product.name}</strong> é um produto da campanha promocional, que une
-            estilo e qualidade. Ideal para o seu dia a dia, com acabamento cuidadoso e
-            material durável. Aproveite o preço especial enquanto durar a oferta — frete
-            grátis para todo o Brasil em pedidos selecionados.
+          <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/80">
+            {product.description || `${product.name} — produto em promoção. Aproveite o preço especial enquanto durar a oferta.`}
           </p>
         </div>
 
