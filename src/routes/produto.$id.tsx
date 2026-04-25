@@ -76,11 +76,8 @@ function ProductPage() {
   const related = products.filter((p) => p.id !== product.id).slice(0, 6);
   const moreFromStore = products.filter((p) => p.id !== product.id).slice(6, 12);
 
-  const handleAdd = () => add(product);
-  const handleBuy = () => {
-    add(product);
-    navigate({ to: "/checkout" });
-  };
+  const handleAdd = () => setDrawer("cart");
+  const handleBuy = () => setDrawer("buy");
 
   return (
     <div className="min-h-screen bg-muted/30 pb-24">
