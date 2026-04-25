@@ -27,10 +27,11 @@ const REVIEWS_4 = 857;
 const REVIEWS_WITH_MEDIA = 2500;
 
 const CREATORS = [
-  { name: "Lucas Rangel", caption: "JÁ MANDA PRA" },
-  { name: "Nandy Zorzan", caption: "FRETE GRÁTIS" },
-  { name: "Califórnia", caption: "Aproveita ✨" },
-  { name: "Bia Reis", caption: "OBSESSED" },
+  { name: "Lucas Rangel", video: "https://appv1.rabbtifyecom.pro/uploads/video1.mp4", avatar: "https://loja.frrrrantds.shop/uploads/LucasRangel.jpg" },
+  { name: "Nandy Zorzan", video: "https://appv1.rabbtifyecom.pro/uploads/video2.mp4", avatar: "https://loja.frrrrantds.shop/uploads/Nandy%20zorzan.jpg" },
+  { name: "Califórnices", video: "https://appv1.rabbtifyecom.pro/uploads/video3.mp4", avatar: "https://loja.frrrrantds.shop/uploads/Calif%C3%B3rnices.jpg" },
+  { name: "Ana Cecília", video: "https://appv1.rabbtifyecom.pro/uploads/video4.mp4", avatar: "https://loja.frrrrantds.shop/uploads/anacecilia.jpg" },
+  { name: "Lucas Rangel", video: "https://appv1.rabbtifyecom.pro/uploads/video5.mp4", avatar: "https://loja.frrrrantds.shop/uploads/LucasRangel.jpg" },
 ];
 
 function useCountdown(seconds: number) {
