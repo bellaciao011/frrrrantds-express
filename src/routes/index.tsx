@@ -5,6 +5,7 @@ import { Header } from "@/components/store/Header";
 import { StoreInfo } from "@/components/store/StoreInfo";
 import { FreeShippingBar } from "@/components/store/FreeShippingBar";
 import { ProductCard } from "@/components/store/ProductCard";
+import { PromoPopup } from "@/components/store/PromoPopup";
 import { products } from "@/data/products";
 
 interface SearchParams {
@@ -42,6 +43,7 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-muted/30">
+      <PromoPopup />
       <Header />
       <StoreInfo />
       <FreeShippingBar />
