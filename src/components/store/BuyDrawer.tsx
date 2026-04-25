@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Maximize2, Minus, Plus, X } from "lucide-react";
 import { type Product, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
+import { useCartFly } from "@/lib/cart-fly";
 
 interface Props {
   product: Product;
@@ -13,6 +14,7 @@ interface Props {
 
 export function BuyDrawer({ product, open, mode, onClose, onConfirm }: Props) {
   const { add } = useCart();
+  const fly = useCartFly();
   const cores = useMemo(
     () => (product.variacoes ?? []).filter((v) => v.tipo === "cor"),
     [product],
@@ -46,7 +48,11 @@ export function BuyDrawer({ product, open, mode, onClose, onConfirm }: Props) {
     const size = tamanhos[tamIdx]?.titulo;
     for (let i = 0; i < qty; i++) add(product, size);
     onClose();
-    onConfirm?.();
+    if (mode === "buy") {
+      fly.trigger();
+    } else {
+      onConfirm?.();
+    }
   };
 
   return (
