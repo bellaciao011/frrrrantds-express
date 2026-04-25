@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
-  ArrowLeft,
   ChevronLeft,
   Loader2,
   Lock,
@@ -701,5 +700,3 @@ function PixIcon() {
   );
 }
 
-// Re-export for unused import warning
-export { ArrowLeft };
