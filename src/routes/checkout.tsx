@@ -93,6 +93,13 @@ function CheckoutPage() {
     [shippingId],
   );
 
+  // se frete grátis selecionado mas carrinho abaixo de R$120, volta para jadlog
+  useEffect(() => {
+    if (shippingId === "correio" && subtotal < 120) {
+      setShippingId("jadlog");
+    }
+  }, [subtotal, shippingId]);
+
   // Desconto: diferença entre preço "de" (originalPrice) e preço "por"
   const discountTotal = useMemo(
     () =>
@@ -363,6 +370,7 @@ function CheckoutPage() {
               setComplement={setComplement}
               shippingId={shippingId}
               setShippingId={setShippingId}
+              subtotal={subtotal}
               onNext={() => goNext(3)}
             />
           )}
@@ -517,8 +525,10 @@ function Step2(p: {
   state: string; setState: (v: string) => void;
   complement: string; setComplement: (v: string) => void;
   shippingId: string; setShippingId: (v: string) => void;
+  subtotal: number;
   onNext: () => void;
 }) {
+  const freeShippingUnlocked = p.subtotal >= 120;
   // ViaCEP autopreencher
   useEffect(() => {
     const raw = p.cep.replace(/\D/g, "");
@@ -594,30 +604,51 @@ function Step2(p: {
         />
       </Field>
 
+      {!freeShippingUnlocked && (
+        <div className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+          <Truck className="h-4 w-4 shrink-0" />
+          Frete grátis disponível em compras acima de R$ 120,00. Faltam{" "}
+          <strong>{formatBRL(120 - p.subtotal)}</strong>.
+        </div>
+      )}
+
       <div className="space-y-2 pt-1">
         {SHIPPINGS.map((s) => {
-          const sel = p.shippingId === s.id;
+          const isFree = s.id === "correio";
+          const locked = isFree && !freeShippingUnlocked;
+          const sel = p.shippingId === s.id && !locked;
           return (
             <button
               type="button"
               key={s.id}
-              onClick={() => p.setShippingId(s.id)}
-              className={`flex w-full items-center gap-3 rounded-md border px-3 py-3 text-left ${
-                sel ? "border-sky-500 ring-2 ring-sky-100" : "border-border"
+              disabled={locked}
+              onClick={() => !locked && p.setShippingId(s.id)}
+              className={`flex w-full items-center gap-3 rounded-md border px-3 py-3 text-left transition-colors ${
+                locked
+                  ? "cursor-not-allowed border-border bg-muted/40 opacity-60"
+                  : sel
+                    ? "border-sky-500 ring-2 ring-sky-100"
+                    : "border-border hover:bg-muted/20"
               }`}
             >
               <span
-                className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-                  sel ? "border-sky-500" : "border-muted-foreground/40"
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                  locked
+                    ? "border-muted-foreground/30"
+                    : sel
+                      ? "border-sky-500"
+                      : "border-muted-foreground/40"
                 }`}
               >
-                {sel && <span className="h-2.5 w-2.5 rounded-full bg-sky-500" />}
+                {sel && !locked && <span className="h-2.5 w-2.5 rounded-full bg-sky-500" />}
               </span>
               <div className="flex-1">
                 <p className="text-sm font-semibold">{s.name}</p>
-                <p className="text-xs text-muted-foreground">{s.eta}</p>
+                <p className="text-xs text-muted-foreground">
+                  {locked ? "Disponível em compras acima de R$ 120,00" : s.eta}
+                </p>
               </div>
-              <span className="text-sm font-semibold">
+              <span className={`text-sm font-semibold ${isFree && !locked ? "text-emerald-600" : ""}`}>
                 {s.price === 0 ? "R$ 0,00" : formatBRL(s.price)}
               </span>
             </button>
