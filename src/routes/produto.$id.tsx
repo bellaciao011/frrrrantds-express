@@ -351,11 +351,8 @@ function ProductPage() {
         {/* Descrição */}
         <div className="mt-2 bg-background px-4 py-4">
           <h2 className="mb-3 text-lg font-bold">Descrição</h2>
-          <p className="text-sm leading-relaxed text-foreground/80">
-            O <strong>{product.name}</strong> é um produto da campanha promocional, que une
-            estilo e qualidade. Ideal para o seu dia a dia, com acabamento cuidadoso e
-            material durável. Aproveite o preço especial enquanto durar a oferta — frete
-            grátis para todo o Brasil em pedidos selecionados.
+          <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/80">
+            {product.description || `${product.name} — produto em promoção. Aproveite o preço especial enquanto durar a oferta.`}
           </p>
         </div>
 
