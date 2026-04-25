@@ -4,7 +4,7 @@ import {
   Play, Share2, ShieldCheck, ShoppingCart, Star, Ticket, Video, Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { products, formatBRL } from "@/data/products";
+import { products, formatBRL, getProductImages } from "@/data/products";
 import { useCart } from "@/lib/cart";
 
 export const Route = createFileRoute("/produto/$id")({
@@ -27,10 +27,11 @@ const REVIEWS_4 = 857;
 const REVIEWS_WITH_MEDIA = 2500;
 
 const CREATORS = [
-  { name: "Lucas Rangel", caption: "JÁ MANDA PRA" },
-  { name: "Nandy Zorzan", caption: "FRETE GRÁTIS" },
-  { name: "Califórnia", caption: "Aproveita ✨" },
-  { name: "Bia Reis", caption: "OBSESSED" },
+  { name: "Lucas Rangel", video: "https://appv1.rabbtifyecom.pro/uploads/video1.mp4", avatar: "https://loja.frrrrantds.shop/uploads/LucasRangel.jpg" },
+  { name: "Nandy Zorzan", video: "https://appv1.rabbtifyecom.pro/uploads/video2.mp4", avatar: "https://loja.frrrrantds.shop/uploads/Nandy%20zorzan.jpg" },
+  { name: "Califórnices", video: "https://appv1.rabbtifyecom.pro/uploads/video3.mp4", avatar: "https://loja.frrrrantds.shop/uploads/Calif%C3%B3rnices.jpg" },
+  { name: "Ana Cecília", video: "https://appv1.rabbtifyecom.pro/uploads/video4.mp4", avatar: "https://loja.frrrrantds.shop/uploads/anacecilia.jpg" },
+  { name: "Lucas Rangel", video: "https://appv1.rabbtifyecom.pro/uploads/video5.mp4", avatar: "https://loja.frrrrantds.shop/uploads/LucasRangel.jpg" },
 ];
 
 function useCountdown(seconds: number) {
@@ -51,6 +52,12 @@ function ProductPage() {
   const navigate = useNavigate();
   const countdown = useCountdown(5 * 60 + 43);
   const [bookmarked, setBookmarked] = useState(false);
+  const [imgIdx, setImgIdx] = useState(0);
+  const [activeVideo, setActiveVideo] = useState<number | null>(null);
+  const images = product ? getProductImages(product.image) : [];
+
+  // reset ao trocar de produto
+  useEffect(() => { setImgIdx(0); }, [id]);
 
   if (!product) {
     return (
@@ -94,12 +101,39 @@ function ProductPage() {
       </header>
 
       <div className="mx-auto max-w-3xl">
-        {/* Galeria */}
-        <div className="relative aspect-square bg-background">
-          <img src={product.image} alt={product.name} className="h-full w-full object-contain" />
+        {/* Galeria — swipe horizontal */}
+        <div className="relative aspect-square overflow-hidden bg-background">
+          <div
+            className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              setImgIdx(Math.round(el.scrollLeft / el.clientWidth));
+            }}
+          >
+            {images.map((src, i) => (
+              <div key={i} className="relative h-full w-full shrink-0 snap-center">
+                <img
+                  src={src}
+                  alt={`${product.name} ${i + 1}`}
+                  className="h-full w-full object-contain"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.2"; }}
+                />
+              </div>
+            ))}
+          </div>
           <span className="absolute bottom-3 right-3 rounded-full bg-foreground/70 px-3 py-1 text-xs font-medium text-background">
-            1/12
+            {imgIdx + 1}/{images.length}
           </span>
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+            {images.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === imgIdx ? "w-4 bg-primary" : "w-1.5 bg-foreground/30"
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Barra de gradiente promocional */}
@@ -195,27 +229,57 @@ function ProductPage() {
           </div>
           <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
             {CREATORS.map((c, n) => (
-              <button key={n} className="relative h-64 w-44 shrink-0 overflow-hidden rounded-2xl bg-muted">
-                <img src={product.image} alt={c.name} className="h-full w-full object-cover" />
+              <button
+                key={n}
+                onClick={() => setActiveVideo(n)}
+                className="relative h-64 w-44 shrink-0 overflow-hidden rounded-2xl bg-muted"
+              >
+                <video
+                  src={c.video}
+                  className="h-full w-full object-cover"
+                  muted
+                  loop
+                  playsInline
+                  autoPlay
+                  preload="metadata"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <div className="absolute left-2 right-2 top-2">
-                  <span className="rounded-md bg-yellow-300 px-2 py-0.5 text-[10px] font-extrabold text-foreground">
-                    {c.caption}
-                  </span>
-                </div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-lg">
                     <Play className="ml-0.5 h-5 w-5 fill-foreground text-foreground" />
                   </div>
                 </div>
                 <div className="absolute bottom-2 left-2 right-2 flex items-center gap-2 text-white">
-                  <div className="h-7 w-7 shrink-0 rounded-full bg-muted-foreground/40 ring-2 ring-white" />
+                  <img src={c.avatar} alt={c.name} className="h-7 w-7 shrink-0 rounded-full object-cover ring-2 ring-white" />
                   <p className="truncate text-sm font-semibold drop-shadow">{c.name}</p>
                 </div>
               </button>
             ))}
           </div>
         </div>
+
+        {/* Modal de vídeo */}
+        {activeVideo !== null && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+            onClick={() => setActiveVideo(null)}
+          >
+            <button
+              onClick={() => setActiveVideo(null)}
+              className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white text-2xl"
+            >
+              ×
+            </button>
+            <video
+              src={CREATORS[activeVideo].video}
+              className="max-h-full max-w-full rounded-lg"
+              controls
+              autoPlay
+              playsInline
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
 
         {/* Descrição */}
         <div className="mt-2 bg-background px-4 py-4">
