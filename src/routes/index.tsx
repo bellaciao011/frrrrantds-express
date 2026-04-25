@@ -25,7 +25,7 @@ type Sort = "recomendado" | "vendidos" | "lancamentos" | "preco-asc" | "preco-de
 function Index() {
   const { q } = Route.useSearch();
   const [tab, setTab] = useState<Tab>("produtos");
-  const [sort, setSort] = useState<Sort>("recomendado");
+  const [sort, setSort] = useState<Sort>("preco-asc");
   const [layout, setLayout] = useState<"list" | "grid">("list");
 
   const filtered = useMemo(() => {
@@ -35,6 +35,7 @@ function Index() {
     if (sort === "preco-asc") sorted.sort((a, b) => a.price - b.price);
     else if (sort === "preco-desc") sorted.sort((a, b) => b.price - a.price);
     else if (sort === "lancamentos") sorted.reverse();
+    else if (sort === "recomendado") sorted.sort((a, b) => a.price - b.price);
     return sorted;
   }, [q, sort]);
 
