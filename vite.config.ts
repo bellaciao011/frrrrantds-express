@@ -1,12 +1,24 @@
-import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+import path from "path";
 
 export default defineConfig({
-  vite: {
-    server: {
-      host: "0.0.0.0",
-      port: 5000,
-      strictPort: true,
-      allowedHosts: true,
+  plugins: [react(), tailwindcss(), tsconfigPaths()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
+  },
+  server: {
+    host: "0.0.0.0",
+    port: 5000,
+    strictPort: true,
+    allowedHosts: true,
+  },
+  preview: {
+    host: "0.0.0.0",
+    port: 5000,
   },
 });
