@@ -39,8 +39,9 @@ function Index() {
     return sorted;
   }, [q, sort]);
 
-  const top = products.slice(0, 3);
-  const recommended = products.slice(0, 8);
+  const cheapest = useMemo(() => [...products].sort((a, b) => a.price - b.price), []);
+  const top = cheapest.slice(0, 3);
+  const recommended = cheapest.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-muted/30">
