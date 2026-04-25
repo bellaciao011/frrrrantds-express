@@ -235,15 +235,38 @@ function ProductPage() {
           <p className="font-medium">Devoluções gratuitas em 30 dias · Cancelamento fácil</p>
         </div>
 
-        {/* Categorias mini */}
-        <button className="flex w-full items-center justify-between border-t bg-background px-4 py-3">
-          <div className="grid grid-cols-2 gap-0.5">
-            {[1, 2, 3, 4].map((n) => (
-              <span key={n} className="h-2 w-2 bg-foreground/70" />
-            ))}
+        {/* Variações (cores) */}
+        {product.variacoes && product.variacoes.length > 0 && (
+          <div className="border-t bg-background px-4 py-3">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-sm">
+                <span className="text-muted-foreground">Cor: </span>
+                <span className="font-semibold">{product.variacoes[selectedVar]?.titulo}</span>
+              </p>
+              <span className="text-xs text-muted-foreground">
+                {product.variacoes.length} opções
+              </span>
+            </div>
+            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+              {product.variacoes.map((v, n) => (
+                <button
+                  key={n}
+                  onClick={() => {
+                    setSelectedVar(n);
+                    const idx = images.findIndex((x) => x === v.imagem);
+                    if (idx >= 0) setImgIdx(idx);
+                  }}
+                  className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 ${
+                    selectedVar === n ? "border-primary" : "border-transparent"
+                  }`}
+                  title={v.titulo}
+                >
+                  <img src={v.imagem} alt={v.titulo} className="h-full w-full object-cover" loading="lazy" />
+                </button>
+              ))}
+            </div>
           </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground" />
-        </button>
+        )}
 
         {/* Proteção do cliente */}
         <div className="mt-2 bg-amber-50 px-4 py-4">
