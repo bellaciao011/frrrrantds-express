@@ -13,6 +13,7 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProdutoIdRouteImport } from './routes/produto.$id'
+import { Route as PixExternalIdRouteImport } from './routes/pix.$externalId'
 
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
@@ -34,17 +35,24 @@ const ProdutoIdRoute = ProdutoIdRouteImport.update({
   path: '/produto/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PixExternalIdRoute = PixExternalIdRouteImport.update({
+  id: '/pix/$externalId',
+  path: '/pix/$externalId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
+  '/pix/$externalId': typeof PixExternalIdRoute
   '/produto/$id': typeof ProdutoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
+  '/pix/$externalId': typeof PixExternalIdRoute
   '/produto/$id': typeof ProdutoIdRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/carrinho': typeof CarrinhoRoute
   '/checkout': typeof CheckoutRoute
+  '/pix/$externalId': typeof PixExternalIdRoute
   '/produto/$id': typeof ProdutoIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/carrinho' | '/checkout' | '/produto/$id'
+  fullPaths:
+    | '/'
+    | '/carrinho'
+    | '/checkout'
+    | '/pix/$externalId'
+    | '/produto/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/carrinho' | '/checkout' | '/produto/$id'
-  id: '__root__' | '/' | '/carrinho' | '/checkout' | '/produto/$id'
+  to: '/' | '/carrinho' | '/checkout' | '/pix/$externalId' | '/produto/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/carrinho'
+    | '/checkout'
+    | '/pix/$externalId'
+    | '/produto/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CarrinhoRoute: typeof CarrinhoRoute
   CheckoutRoute: typeof CheckoutRoute
+  PixExternalIdRoute: typeof PixExternalIdRoute
   ProdutoIdRoute: typeof ProdutoIdRoute
 }
 
@@ -99,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProdutoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pix/$externalId': {
+      id: '/pix/$externalId'
+      path: '/pix/$externalId'
+      fullPath: '/pix/$externalId'
+      preLoaderRoute: typeof PixExternalIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -106,8 +134,18 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CarrinhoRoute: CarrinhoRoute,
   CheckoutRoute: CheckoutRoute,
+  PixExternalIdRoute: PixExternalIdRoute,
   ProdutoIdRoute: ProdutoIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
