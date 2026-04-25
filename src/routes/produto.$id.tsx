@@ -56,6 +56,7 @@ function ProductPage() {
   const [imgIdx, setImgIdx] = useState(0);
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const [selectedVar, setSelectedVar] = useState(0);
+  const [drawer, setDrawer] = useState<"cart" | "buy" | null>(null);
   const baseImages = product?.images?.length ? product.images : (product ? [product.image] : []);
   const variantImages = (product?.variacoes ?? []).map((v) => v.imagem).filter(Boolean);
   const images: string[] = Array.from(new Set([...baseImages, ...variantImages]));
