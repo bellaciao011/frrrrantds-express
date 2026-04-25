@@ -24,7 +24,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1" },
-      { title: "Outlet Oficial — Promoções" },
+      { title: "Melissa — Promoções" },
       { name: "description", content: "Loja online com até 90% OFF e frete grátis." },
     ],
     links: [{ rel: "stylesheet", href: appCss }],

@@ -14,7 +14,7 @@ export const Route = createFileRoute("/produto/$id")({
     const p = products.find((x) => x.id === params.id);
     return {
       meta: [
-        { title: p ? `${p.name} — Outlet Oficial` : "Produto" },
+        { title: p ? `${p.name} — Melissa` : "Produto" },
         { name: "description", content: p ? `${p.name} por ${formatBRL(p.price)}` : "Produto" },
         ...(p ? [{ property: "og:image", content: p.image }] : []),
       ],
@@ -396,11 +396,11 @@ function ProductPage() {
         {/* Loja */}
         <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-muted text-[10px] font-bold tracking-tight">
-              LOJA
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-white overflow-hidden">
+              <img src="/melissa-logo.png" alt="Melissa" className="h-12 w-12 object-contain" />
             </div>
             <div>
-              <p className="font-bold">Outlet Oficial</p>
+              <p className="font-bold">Melissa</p>
               <p className="text-sm text-muted-foreground">16300 vendido(s)</p>
             </div>
           </div>

@@ -19,7 +19,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
-  head: () => ({ meta: [{ title: "Resumo do Pedido — Outlet Oficial" }] }),
+  head: () => ({ meta: [{ title: "Resumo do Pedido — Melissa" }] }),
 });
 
 type Step = 1 | 2 | 3;

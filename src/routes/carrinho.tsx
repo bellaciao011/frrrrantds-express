@@ -5,7 +5,7 @@ import { formatBRL } from "@/data/products";
 
 export const Route = createFileRoute("/carrinho")({
   component: CartPage,
-  head: () => ({ meta: [{ title: "Carrinho — Outlet Oficial" }] }),
+  head: () => ({ meta: [{ title: "Carrinho — Melissa" }] }),
 });
 
 function CartPage() {
