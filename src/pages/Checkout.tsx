@@ -18,11 +18,6 @@ import { formatBRL } from "@/data/products";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/checkout")({
-  component: CheckoutPage,
-  head: () => ({ meta: [{ title: "Resumo do Pedido — Melissa" }] }),
-});
-
 type Step = 1 | 2 | 3;
 type Shipping = { id: string; name: string; price: number; eta: string };
 
