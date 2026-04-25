@@ -39,41 +39,36 @@ export function PromoPopup() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-sm">
-        <div className="mb-3 flex items-center justify-between px-2">
-          <h2 className="text-xl font-extrabold tracking-wide text-yellow-300 drop-shadow">
-            COMECE 2026 EM MOVIMENTO
-          </h2>
-          <button
-            onClick={close}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-primary"
-            aria-label="Fechar"
-          >
-            <X className="h-7 w-7" strokeWidth={3} />
-          </button>
-        </div>
+      <div className="relative w-full max-w-[280px]">
+        <button
+          onClick={close}
+          className="absolute -top-10 right-0 flex h-8 w-8 items-center justify-center rounded-full text-primary"
+          aria-label="Fechar"
+        >
+          <X className="h-6 w-6" strokeWidth={3} />
+        </button>
 
-        <div className="overflow-hidden rounded-3xl bg-primary p-2 shadow-2xl">
-          <div className="rounded-2xl bg-background px-6 pb-8 pt-6 text-center">
-            <p className="text-4xl font-extrabold text-foreground">90% OFF</p>
-            <p className="mt-3 text-lg font-bold text-primary">no seu pedido!</p>
-            <p className="mt-4 text-sm leading-relaxed text-foreground/80">
+        <div className="overflow-hidden rounded-2xl bg-primary p-1.5 shadow-2xl">
+          <div className="rounded-xl bg-background px-4 pb-5 pt-4 text-center">
+            <p className="text-2xl font-extrabold text-foreground">90% OFF</p>
+            <p className="mt-1.5 text-sm font-bold text-primary">no seu pedido!</p>
+            <p className="mt-3 text-xs leading-relaxed text-foreground/80">
               Você pode começar o ano com um novo hobby.
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/80">
+            <p className="mt-1.5 text-xs leading-relaxed text-foreground/80">
               Aproveita: produtos selecionados estão com até 90% OFF.
             </p>
           </div>
 
-          <div className="px-3 pb-3 pt-4 text-center">
-            <p className="rounded-full bg-primary/80 py-2.5 text-sm font-bold text-primary-foreground">
+          <div className="px-2 pb-2 pt-3 text-center">
+            <p className="rounded-full bg-primary/80 py-1.5 text-xs font-bold text-primary-foreground">
               Termina em {hh}:{mm}:{ss}
             </p>
           </div>
 
           <button
             onClick={close}
-            className="mx-3 mb-3 block w-[calc(100%-1.5rem)] rounded-full bg-background py-3 text-base font-extrabold text-primary shadow-lg"
+            className="mx-2 mb-2 block w-[calc(100%-1rem)] rounded-full bg-background py-2.5 text-sm font-extrabold text-primary shadow-lg"
           >
             Resgatar agora
           </button>
@@ -82,3 +77,4 @@ export function PromoPopup() {
     </div>
   );
 }
+
