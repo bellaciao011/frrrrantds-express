@@ -36,6 +36,14 @@ function onlyDigits(s: string | undefined): string | undefined {
   return d.length ? d : undefined;
 }
 
+function normalizeBrazilianPhone(s: string | undefined): string | undefined {
+  const d = onlyDigits(s);
+  if (!d) return undefined;
+  if (d.length === 10 || d.length === 11) return `55${d}`;
+  if (d.length >= 12) return d;
+  return undefined;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") {
@@ -66,6 +74,7 @@ Deno.serve(async (req) => {
       });
     }
 
+    const buyerPhone = normalizeBrazilianPhone(body.buyer.phone);
     const external_id = `pedido-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
     // Monta payload para BuckPay
@@ -78,7 +87,7 @@ Deno.serve(async (req) => {
         name: body.buyer.name.trim().slice(0, 100),
         email: body.buyer.email.trim().slice(0, 100),
         ...(onlyDigits(body.buyer.document) ? { document: onlyDigits(body.buyer.document) } : {}),
-        ...(onlyDigits(body.buyer.phone) ? { phone: onlyDigits(body.buyer.phone) } : {}),
+        ...(buyerPhone ? { phone: buyerPhone } : {}),
       },
     };
 
@@ -139,7 +148,7 @@ Deno.serve(async (req) => {
       buyer_name: body.buyer.name,
       buyer_email: body.buyer.email,
       buyer_document: onlyDigits(body.buyer.document) ?? null,
-      buyer_phone: onlyDigits(body.buyer.phone) ?? null,
+      buyer_phone: buyerPhone ?? null,
       items: body.items ?? [],
     });
 
