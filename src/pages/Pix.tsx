@@ -18,6 +18,7 @@ interface OrderRow {
   buyer_email?: string | null;
   buyer_phone?: string | null;
   ttclid?: string | null;
+  store_slug?: string | null;
 }
 
 export default function PixPage() {
@@ -33,7 +34,7 @@ export default function PixPage() {
     (async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid")
+        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid,store_slug")
         .eq("external_id", externalId)
         .maybeSingle();
       if (!alive) return;
@@ -107,6 +108,16 @@ export default function PixPage() {
       ttclid: order.ttclid,
     });
   }, [order?.status, order?.external_id]);
+
+  // Redireciona para UP1 quando pedido da loja principal for pago
+  useEffect(() => {
+    if (!order || order.status !== "paid") return;
+    const slug = (order.store_slug ?? "melissa").toLowerCase();
+    if (slug === "melissa") {
+      const t = setTimeout(() => navigate(`/up1/${order.external_id}`), 1800);
+      return () => clearTimeout(t);
+    }
+  }, [order?.status, order?.external_id, order?.store_slug, navigate]);
 
   const qrSrc = useMemo(() => {
     if (order?.pix_qrcode) {
