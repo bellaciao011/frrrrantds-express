@@ -109,6 +109,16 @@ export default function PixPage() {
     });
   }, [order?.status, order?.external_id]);
 
+  // Redireciona para UP1 quando pedido da loja principal for pago
+  useEffect(() => {
+    if (!order || order.status !== "paid") return;
+    const slug = (order.store_slug ?? "melissa").toLowerCase();
+    if (slug === "melissa") {
+      const t = setTimeout(() => navigate(`/up1/${order.external_id}`), 1800);
+      return () => clearTimeout(t);
+    }
+  }, [order?.status, order?.external_id, order?.store_slug, navigate]);
+
   const qrSrc = useMemo(() => {
     if (order?.pix_qrcode) {
       return order.pix_qrcode.startsWith("data:")
