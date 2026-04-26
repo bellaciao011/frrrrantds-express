@@ -46,6 +46,13 @@ function maskCep(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 8);
   return d.replace(/(\d{5})(\d)/, "$1-$2");
 }
+function onlyDigits(v: string) {
+  return v.replace(/\D/g, "");
+}
+function hasValidBrazilianPhone(v: string) {
+  const d = onlyDigits(v);
+  return d.length === 10 || d.length === 11;
+}
 
 // ========== contagem regressiva do cupom ==========
 function useCountdown(seconds: number) {
@@ -115,6 +122,10 @@ export default function CheckoutPage() {
         toast.error("Preencha todos os campos.");
         return;
       }
+      if (!hasValidBrazilianPhone(phone)) {
+        toast.error("Informe um telefone válido com DDD.");
+        return;
+      }
     }
     if (target === 3) {
       if (!cep || !address || !number || !district || !city || !state) {
@@ -131,6 +142,10 @@ export default function CheckoutPage() {
     const amountCents = Math.round(grandTotal * 100);
     if (amountCents < 600) {
       toast.error("Valor mínimo R$ 6,00.");
+      return;
+    }
+    if (!hasValidBrazilianPhone(phone)) {
+      toast.error("Informe um telefone válido com DDD.");
       return;
     }
     setLoading(true);
