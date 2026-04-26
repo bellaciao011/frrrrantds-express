@@ -58,6 +58,15 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
+    // Carrega pedido atual para evitar notificar duas vezes
+    const { data: existingOrder } = await supa
+      .from("orders")
+      .select("status, amount, store_slug, buyer_name, paid_at")
+      .eq("external_id", externalId)
+      .maybeSingle();
+
+    const wasAlreadyPaid = existingOrder?.status === "paid" || !!existingOrder?.paid_at;
+
     const update: Record<string, unknown> = { status };
     if (status === "paid") update.paid_at = new Date().toISOString();
 
@@ -65,6 +74,20 @@ Deno.serve(async (req) => {
 
     if (status === "paid") {
       await trackPurchaseServerSide({ supa, externalId });
+
+      if (!wasAlreadyPaid && existingOrder) {
+        try {
+          await sendPushcutOrderNotification({
+            stage: "paid",
+            amount: existingOrder.amount ?? 0,
+            storeSlug: existingOrder.store_slug ?? "melissa",
+            buyerName: existingOrder.buyer_name,
+            externalId,
+          });
+        } catch (e) {
+          console.error("[check-order] pushcut error", e);
+        }
+      }
     }
 
     return new Response(JSON.stringify({ external_id: externalId, status, transaction: t }), {
