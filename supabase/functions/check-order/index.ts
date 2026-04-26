@@ -1,5 +1,7 @@
-// Consulta o status de um pedido na BuckPay e atualiza o banco se mudou
+// Consulta o status de um pedido na BuckPay e atualiza o banco se mudou.
+// Se detectar pagamento, dispara também o Purchase no TikTok (server-side).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -59,6 +61,10 @@ Deno.serve(async (req) => {
     if (status === "paid") update.paid_at = new Date().toISOString();
 
     await supa.from("orders").update(update).eq("external_id", externalId);
+
+    if (status === "paid") {
+      await trackPurchaseServerSide({ supa, externalId });
+    }
 
     return new Response(JSON.stringify({ external_id: externalId, status, transaction: t }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
