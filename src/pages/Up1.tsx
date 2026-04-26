@@ -46,13 +46,8 @@ function genNfeNumber(externalId: string): string {
   return String(hash).padStart(9, "0").slice(0, 9);
 }
 
-interface NotaContentProps {
-  externalId: string;
-  embedded?: boolean; // quando true: sem min-h-screen e sem Helmet (pra usar dentro de drawer)
-  onClose?: () => void;
-}
-
-export function NotaContent({ externalId, embedded = false, onClose }: NotaContentProps) {
+export default function Up1Page() {
+  const { externalId = "" } = useParams<{ externalId: string }>();
   const navigate = useNavigate();
   const [order, setOrder] = useState<OrderRow | null>(null);
   const [loading, setLoading] = useState(true);
@@ -134,7 +129,7 @@ export function NotaContent({ externalId, embedded = false, onClose }: NotaConte
 
   if (loading) {
     return (
-      <div className={`flex ${embedded ? "min-h-[60vh]" : "min-h-screen"} items-center justify-center bg-muted/30`}>
+      <div className="flex min-h-screen items-center justify-center bg-muted/30">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
@@ -142,13 +137,13 @@ export function NotaContent({ externalId, embedded = false, onClose }: NotaConte
 
   if (!order) {
     return (
-      <div className={`flex ${embedded ? "min-h-[40vh]" : "min-h-screen"} flex-col items-center justify-center px-4 text-center`}>
+      <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <p className="text-muted-foreground">Pedido não encontrado.</p>
         <button
-          onClick={() => (onClose ? onClose() : navigate("/"))}
+          onClick={() => navigate("/")}
           className="mt-4 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground"
         >
-          {onClose ? "Fechar" : "Voltar à loja"}
+          Voltar à loja
         </button>
       </div>
     );
@@ -157,12 +152,10 @@ export function NotaContent({ externalId, embedded = false, onClose }: NotaConte
   const firstName = order.buyer_name.split(" ")[0];
 
   return (
-    <div className={embedded ? "py-2" : "min-h-screen bg-muted/30 py-6"}>
-      {!embedded && (
-        <Helmet>
-          <title>Emissão de Nota Fiscal — NF-e</title>
-        </Helmet>
-      )}
+    <div className="min-h-screen bg-muted/30 py-6">
+      <Helmet>
+        <title>Emissão de Nota Fiscal — NF-e</title>
+      </Helmet>
 
       <div className="mx-auto max-w-md space-y-4 px-3">
         {/* Aviso de obrigatoriedade */}
@@ -344,9 +337,4 @@ export function NotaContent({ externalId, embedded = false, onClose }: NotaConte
       </div>
     </div>
   );
-}
-
-export default function NotaPage() {
-  const { externalId = "" } = useParams<{ externalId: string }>();
-  return <NotaContent externalId={externalId} />;
 }
