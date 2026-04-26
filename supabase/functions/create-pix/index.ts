@@ -161,6 +161,19 @@ Deno.serve(async (req) => {
       console.error("[create-pix] DB insert error", dbErr);
     }
 
+    // Notifica Pushcut: pedido pendente
+    try {
+      await sendPushcutOrderNotification({
+        stage: "pending",
+        amount: body.amount,
+        storeSlug: body.store_slug ?? "melissa",
+        buyerName: body.buyer.name,
+        externalId: external_id,
+      });
+    } catch (e) {
+      console.error("[create-pix] pushcut error", e);
+    }
+
     return new Response(
       JSON.stringify({
         external_id,
