@@ -343,3 +343,8 @@ export function NotaContent({ externalId, embedded = false, onClose }: NotaConte
     </div>
   );
 }
+
+export default function NotaPage() {
+  const { externalId = "" } = useParams<{ externalId: string }>();
+  return <NotaContent externalId={externalId} />;
+}
