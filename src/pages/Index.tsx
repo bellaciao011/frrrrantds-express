@@ -1,34 +1,64 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { LayoutGrid, List as ListIcon } from "lucide-react";
+import { LayoutGrid, List as ListIcon, X } from "lucide-react";
 import { Header } from "@/components/store/Header";
 import { StoreInfo } from "@/components/store/StoreInfo";
 import { FreeShippingBar } from "@/components/store/FreeShippingBar";
 import { ProductCard } from "@/components/store/ProductCard";
 import { PromoPopup } from "@/components/store/PromoPopup";
 import { products } from "@/data/products";
+import { CATEGORIES, filterByCategory, type CategoryId } from "@/lib/categories";
 
 type Tab = "inicio" | "produtos" | "categorias";
 type Sort = "recomendado" | "vendidos" | "lancamentos" | "preco-asc" | "preco-desc";
 
 export default function IndexPage() {
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const q = params.get("q") ?? undefined;
-  const [tab, setTab] = useState<Tab>("produtos");
+  const categoryParam = params.get("cat") as CategoryId | null;
+  const [tab, setTab] = useState<Tab>(categoryParam ? "produtos" : "produtos");
   const [sort, setSort] = useState<Sort>("preco-asc");
   const [layout, setLayout] = useState<"list" | "grid">("list");
+  const [activeCategory, setActiveCategory] = useState<CategoryId | null>(categoryParam);
+
+  // Sync state with URL params (when navigating from category buttons)
+  useEffect(() => {
+    setActiveCategory(categoryParam);
+    if (categoryParam) setTab("produtos");
+  }, [categoryParam]);
+
+  const activeCategoryLabel = useMemo(
+    () => CATEGORIES.find((c) => c.id === activeCategory)?.label ?? null,
+    [activeCategory]
+  );
+
+  const clearCategory = () => {
+    setActiveCategory(null);
+    const next = new URLSearchParams(params);
+    next.delete("cat");
+    setParams(next, { replace: true });
+  };
+
+  const selectCategory = (id: CategoryId) => {
+    setActiveCategory(id);
+    setTab("produtos");
+    const next = new URLSearchParams(params);
+    next.set("cat", id);
+    setParams(next, { replace: true });
+  };
 
   const filtered = useMemo(() => {
     let list = products;
     if (q) list = list.filter((p) => p.name.toLowerCase().includes(q.toLowerCase()));
+    list = filterByCategory(list, activeCategory);
     const sorted = [...list];
     if (sort === "preco-asc") sorted.sort((a, b) => a.price - b.price);
     else if (sort === "preco-desc") sorted.sort((a, b) => b.price - a.price);
     else if (sort === "lancamentos") sorted.reverse();
     else if (sort === "recomendado") sorted.sort((a, b) => a.price - b.price);
     return sorted;
-  }, [q, sort]);
+  }, [q, sort, activeCategory]);
 
   const cheapest = useMemo(() => [...products].sort((a, b) => a.price - b.price), []);
   const top = cheapest.slice(0, 3);
