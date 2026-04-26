@@ -46,8 +46,13 @@ function genNfeNumber(externalId: string): string {
   return String(hash).padStart(9, "0").slice(0, 9);
 }
 
-export default function Up1Page() {
-  const { externalId = "" } = useParams<{ externalId: string }>();
+interface NotaContentProps {
+  externalId: string;
+  embedded?: boolean; // quando true: sem min-h-screen e sem Helmet (pra usar dentro de drawer)
+  onClose?: () => void;
+}
+
+export function NotaContent({ externalId, embedded = false, onClose }: NotaContentProps) {
   const navigate = useNavigate();
   const [order, setOrder] = useState<OrderRow | null>(null);
   const [loading, setLoading] = useState(true);
