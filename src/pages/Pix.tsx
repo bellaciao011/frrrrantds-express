@@ -34,7 +34,7 @@ export default function PixPage() {
     (async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid")
+        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid,store_slug")
         .eq("external_id", externalId)
         .maybeSingle();
       if (!alive) return;
