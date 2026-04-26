@@ -1,34 +1,64 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { LayoutGrid, List as ListIcon } from "lucide-react";
+import { LayoutGrid, List as ListIcon, X } from "lucide-react";
 import { Header } from "@/components/store/Header";
 import { StoreInfo } from "@/components/store/StoreInfo";
 import { FreeShippingBar } from "@/components/store/FreeShippingBar";
 import { ProductCard } from "@/components/store/ProductCard";
 import { PromoPopup } from "@/components/store/PromoPopup";
 import { products } from "@/data/products";
+import { CATEGORIES, filterByCategory, type CategoryId } from "@/lib/categories";
 
 type Tab = "inicio" | "produtos" | "categorias";
 type Sort = "recomendado" | "vendidos" | "lancamentos" | "preco-asc" | "preco-desc";
 
 export default function IndexPage() {
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const q = params.get("q") ?? undefined;
-  const [tab, setTab] = useState<Tab>("produtos");
+  const categoryParam = params.get("cat") as CategoryId | null;
+  const [tab, setTab] = useState<Tab>(categoryParam ? "produtos" : "produtos");
   const [sort, setSort] = useState<Sort>("preco-asc");
   const [layout, setLayout] = useState<"list" | "grid">("list");
+  const [activeCategory, setActiveCategory] = useState<CategoryId | null>(categoryParam);
+
+  // Sync state with URL params (when navigating from category buttons)
+  useEffect(() => {
+    setActiveCategory(categoryParam);
+    if (categoryParam) setTab("produtos");
+  }, [categoryParam]);
+
+  const activeCategoryLabel = useMemo(
+    () => CATEGORIES.find((c) => c.id === activeCategory)?.label ?? null,
+    [activeCategory]
+  );
+
+  const clearCategory = () => {
+    setActiveCategory(null);
+    const next = new URLSearchParams(params);
+    next.delete("cat");
+    setParams(next, { replace: true });
+  };
+
+  const selectCategory = (id: CategoryId) => {
+    setActiveCategory(id);
+    setTab("produtos");
+    const next = new URLSearchParams(params);
+    next.set("cat", id);
+    setParams(next, { replace: true });
+  };
 
   const filtered = useMemo(() => {
     let list = products;
     if (q) list = list.filter((p) => p.name.toLowerCase().includes(q.toLowerCase()));
+    list = filterByCategory(list, activeCategory);
     const sorted = [...list];
     if (sort === "preco-asc") sorted.sort((a, b) => a.price - b.price);
     else if (sort === "preco-desc") sorted.sort((a, b) => b.price - a.price);
     else if (sort === "lancamentos") sorted.reverse();
     else if (sort === "recomendado") sorted.sort((a, b) => a.price - b.price);
     return sorted;
-  }, [q, sort]);
+  }, [q, sort, activeCategory]);
 
   const cheapest = useMemo(() => [...products].sort((a, b) => a.price - b.price), []);
   const top = cheapest.slice(0, 3);
@@ -132,12 +162,36 @@ export default function IndexPage() {
           </div>
 
           <div className="mx-auto max-w-5xl px-3 py-3">
-            {q && (
-              <p className="mb-3 text-sm text-muted-foreground">
-                Resultados para "<strong>{q}</strong>" — {filtered.length} produto(s)
-              </p>
+            {(q || activeCategoryLabel) && (
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                {activeCategoryLabel && (
+                  <button
+                    onClick={clearCategory}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary hover:bg-primary/20"
+                  >
+                    {activeCategoryLabel}
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                <p className="text-sm text-muted-foreground">
+                  {q && <>Resultados para "<strong>{q}</strong>" — </>}
+                  {filtered.length} produto(s)
+                </p>
+              </div>
             )}
-            {layout === "grid" ? (
+            {filtered.length === 0 ? (
+              <div className="py-16 text-center">
+                <p className="text-muted-foreground">Nenhum produto encontrado nesta categoria.</p>
+                {activeCategory && (
+                  <button
+                    onClick={clearCategory}
+                    className="mt-3 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
+                  >
+                    Ver todos os produtos
+                  </button>
+                )}
+              </div>
+            ) : layout === "grid" ? (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
                 {filtered.map((p) => (
                   <ProductCard key={p.id} product={p} layout="grid" />
@@ -156,21 +210,16 @@ export default function IndexPage() {
 
       {tab === "categorias" && (
         <div className="mx-auto max-w-5xl px-3 py-4">
+          <h2 className="mb-3 text-base font-bold">Escolha uma categoria</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {[
-              "Sandálias",
-              "Rasteiras",
-              "Bolsas",
-              "Botas",
-              "Mini Melissa",
-              "Coleção Hello Kitty",
-            ].map((cat) => (
+            {CATEGORIES.map((cat) => (
               <button
-                key={cat}
-                onClick={() => setTab("produtos")}
-                className="flex h-24 items-center justify-center rounded-xl bg-background font-semibold hover:bg-accent"
+                key={cat.id}
+                onClick={() => selectCategory(cat.id)}
+                className="flex h-28 flex-col items-center justify-center gap-2 rounded-xl border bg-background font-semibold transition-colors hover:bg-accent"
               >
-                {cat}
+                <span className="text-3xl">{cat.emoji}</span>
+                <span className="text-sm">{cat.label}</span>
               </button>
             ))}
           </div>
