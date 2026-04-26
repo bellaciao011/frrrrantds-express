@@ -5,6 +5,7 @@ import CheckoutPage from "@/pages/Checkout";
 import ProdutoPage from "@/pages/Produto";
 import PixPage from "@/pages/Pix";
 import Up1Page from "@/pages/Up1";
+import Up2Page from "@/pages/Up2";
 import AdminPixelsPage from "@/pages/AdminPixels";
 import TikTokPixelLoader from "@/components/TikTokPixelLoader";
 
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="/produto/:id" element={<ProdutoPage />} />
         <Route path="/pix/:externalId" element={<PixPage />} />
         <Route path="/up1/:externalId" element={<Up1Page />} />
+        <Route path="/up2/:externalId" element={<Up2Page />} />
         <Route path="/admin/pixels" element={<AdminPixelsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

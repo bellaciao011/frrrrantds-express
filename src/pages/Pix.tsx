@@ -19,6 +19,7 @@ interface OrderRow {
   buyer_phone?: string | null;
   ttclid?: string | null;
   store_slug?: string | null;
+  items?: Array<{ name?: string; id?: string; price?: number; quantity?: number }> | null;
 }
 
 export default function PixPage() {
@@ -34,7 +35,7 @@ export default function PixPage() {
     (async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid,store_slug")
+        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid,store_slug,items")
         .eq("external_id", externalId)
         .maybeSingle();
       if (!alive) return;
