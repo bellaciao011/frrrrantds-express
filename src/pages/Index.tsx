@@ -8,7 +8,7 @@ import { FreeShippingBar } from "@/components/store/FreeShippingBar";
 import { ProductCard } from "@/components/store/ProductCard";
 import { PromoPopup } from "@/components/store/PromoPopup";
 import { products } from "@/data/products";
-import { CATEGORIES, filterByCategory, type CategoryId } from "@/lib/categories";
+import { CATEGORIES, filterByCategory, productMatchesCategory, type CategoryId } from "@/lib/categories";
 
 type Tab = "inicio" | "produtos" | "categorias";
 type Sort = "recomendado" | "vendidos" | "lancamentos" | "preco-asc" | "preco-desc";
@@ -61,7 +61,12 @@ export default function IndexPage() {
   }, [q, sort, activeCategory]);
 
   const cheapest = useMemo(() => [...products].sort((a, b) => a.price - b.price), []);
-  const top = cheapest.slice(0, 3);
+  // Principais produtos: priorizar sandálias (mais sandálias na home)
+  const top = useMemo(() => {
+    const sandalias = cheapest.filter((p) => productMatchesCategory(p, "sandalias"));
+    const outros = cheapest.filter((p) => !productMatchesCategory(p, "sandalias"));
+    return [...sandalias.slice(0, 6), ...outros.slice(0, 2)].slice(0, 6);
+  }, [cheapest]);
   const recommended = cheapest.slice(0, 8);
 
   return (

@@ -50,15 +50,23 @@ export function FreeShippingBar() {
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-3">
-        <div className="rounded-xl border border-shipping-fg/20 bg-shipping-bg/40 p-3">
-          <p className="text-sm font-bold text-shipping-fg">Cupom de frete grátis</p>
+        <div className="rounded-xl border border-shipping-fg/20 bg-shipping-bg/40 p-3 opacity-60">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-bold text-shipping-fg">Cupom de frete grátis</p>
+            <span className="rounded-full bg-foreground/10 px-2 py-0.5 text-[10px] font-semibold uppercase text-foreground/60">
+              Indisponível
+            </span>
+          </div>
           <p className="text-xs text-shipping-fg/80">Sem gasto mínimo</p>
-          <button className="mt-2 rounded-full bg-foreground/10 px-4 py-1 text-xs font-semibold">
-            Resgatar
+          <button
+            disabled
+            className="mt-2 cursor-not-allowed rounded-full bg-foreground/10 px-4 py-1 text-xs font-semibold text-foreground/40"
+          >
+            Esgotado
           </button>
         </div>
         <div className="rounded-xl border border-discount-fg/20 bg-discount-bg/40 p-3">
-          <p className="text-sm font-bold text-discount-fg">Até 85% OFF</p>
+          <p className="text-sm font-bold text-discount-fg">Até 90% OFF</p>
           <p className="text-xs text-discount-fg/80">Em produtos selecionados</p>
           <button className="mt-2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground">
             Resgatar

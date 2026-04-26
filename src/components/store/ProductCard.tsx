@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, Star } from "lucide-react";
 import { type Product, formatBRL } from "@/data/products";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
+import { optimizedImg, optimizedSrcSet } from "@/lib/img";
 
 export function ProductCard({
   product,
@@ -25,10 +26,15 @@ export function ProductCard({
           />
           <div className="aspect-square overflow-hidden bg-muted">
             <img
-              src={product.image}
+              src={optimizedImg(product.image, { width: 240, quality: 65 })}
+              srcSet={optimizedSrcSet(product.image, 240, 65)}
+              sizes="(min-width: 640px) 200px, 45vw"
               alt={product.name}
               className="h-full w-full object-cover"
               loading="lazy"
+              decoding="async"
+              width={240}
+              height={240}
             />
           </div>
           <div className="p-2">
@@ -76,10 +82,15 @@ export function ProductCard({
         <div className="shrink-0">
           <div className="h-28 w-28 overflow-hidden rounded-lg bg-muted">
             <img
-              src={product.image}
+              src={optimizedImg(product.image, { width: 224, quality: 65 })}
+              srcSet={optimizedSrcSet(product.image, 224, 65)}
+              sizes="112px"
               alt={product.name}
               className="h-full w-full object-cover"
               loading="lazy"
+              decoding="async"
+              width={224}
+              height={224}
             />
           </div>
         </div>
