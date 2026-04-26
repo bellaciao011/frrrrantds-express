@@ -4,6 +4,7 @@ import CarrinhoPage from "@/pages/Carrinho";
 import CheckoutPage from "@/pages/Checkout";
 import ProdutoPage from "@/pages/Produto";
 import PixPage from "@/pages/Pix";
+import Up1Page from "@/pages/Up1";
 import AdminPixelsPage from "@/pages/AdminPixels";
 import TikTokPixelLoader from "@/components/TikTokPixelLoader";
 
