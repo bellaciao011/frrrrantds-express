@@ -36,7 +36,7 @@ function useCountdown(seconds: number) {
   return { mm, ss };
 }
 
-export default function Up2Page() {
+export default function IcmsPage() {
   const { externalId = "" } = useParams<{ externalId: string }>();
   const navigate = useNavigate();
   const [original, setOriginal] = useState<OrderRow | null>(null);
