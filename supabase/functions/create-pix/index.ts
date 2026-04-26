@@ -1,5 +1,6 @@
 // Cria uma transação PIX na BuckPay e salva o pedido no banco
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
