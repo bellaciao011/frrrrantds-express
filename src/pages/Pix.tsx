@@ -95,6 +95,19 @@ export default function PixPage() {
     return () => clearInterval(id);
   }, [order]);
 
+  // Dispara Purchase no client quando o pedido vira "paid"
+  useEffect(() => {
+    if (!order || order.status !== "paid") return;
+    trackPurchaseClient({
+      value: order.amount / 100,
+      currency: "BRL",
+      email: order.buyer_email ?? undefined,
+      phone: order.buyer_phone ?? undefined,
+      order_id: order.external_id,
+      ttclid: order.ttclid,
+    });
+  }, [order?.status, order?.external_id]);
+
   const qrSrc = useMemo(() => {
     if (order?.pix_qrcode) {
       return order.pix_qrcode.startsWith("data:")
