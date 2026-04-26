@@ -37,6 +37,7 @@ export default function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/produto/:id" element={<ProdutoPage />} />
         <Route path="/pix/:externalId" element={<PixPage />} />
+        <Route path="/up1/:externalId" element={<Up1Page />} />
         <Route path="/admin/pixels" element={<AdminPixelsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
