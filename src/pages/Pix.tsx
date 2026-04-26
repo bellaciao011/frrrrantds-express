@@ -40,7 +40,7 @@ export default function PixPage() {
         .maybeSingle();
       if (!alive) return;
       if (error) console.error(error);
-      setOrder(data ?? null);
+      setOrder((data as unknown as OrderRow) ?? null);
       setLoading(false);
     })();
     return () => {
