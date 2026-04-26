@@ -28,6 +28,8 @@ interface Body {
   buyer: BuyerInput;
   items: ItemInput[];
   tracking?: Record<string, string | null>;
+  ttclid?: string | null;
+  store_slug?: string | null;
 }
 
 function onlyDigits(s: string | undefined): string | undefined {
@@ -150,6 +152,8 @@ Deno.serve(async (req) => {
       buyer_document: onlyDigits(body.buyer.document) ?? null,
       buyer_phone: buyerPhone ?? null,
       items: body.items ?? [],
+      ttclid: body.ttclid ?? null,
+      store_slug: body.store_slug ?? "melissa",
     });
 
     if (dbErr) {
