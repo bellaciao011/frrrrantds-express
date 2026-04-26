@@ -19,6 +19,7 @@ interface OrderRow {
   buyer_phone?: string | null;
   ttclid?: string | null;
   store_slug?: string | null;
+  items?: Array<{ name?: string; id?: string; price?: number; quantity?: number }> | null;
 }
 
 export default function PixPage() {
@@ -34,12 +35,12 @@ export default function PixPage() {
     (async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid,store_slug")
+        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid,store_slug,items")
         .eq("external_id", externalId)
         .maybeSingle();
       if (!alive) return;
       if (error) console.error(error);
-      setOrder(data ?? null);
+      setOrder((data as unknown as OrderRow) ?? null);
       setLoading(false);
     })();
     return () => {
@@ -109,7 +110,7 @@ export default function PixPage() {
     });
   }, [order?.status, order?.external_id]);
 
-  // Redireciona para UP1 quando pedido da loja principal for pago
+  // Redireciona após pagamento conforme o estágio do funil
   useEffect(() => {
     if (!order || order.status !== "paid") return;
     const slug = (order.store_slug ?? "melissa").toLowerCase();
@@ -117,7 +118,18 @@ export default function PixPage() {
       const t = setTimeout(() => navigate(`/up1/${order.external_id}`), 1800);
       return () => clearTimeout(t);
     }
-  }, [order?.status, order?.external_id, order?.store_slug, navigate]);
+    if (slug === "up1") {
+      // Extrai o id do pedido original a partir do nome do item ("... #XYZ")
+      const itemsArr = Array.isArray(order.items) ? (order.items as Array<{ name?: string }>) : [];
+      const refName = itemsArr[0]?.name ?? "";
+      const match = refName.match(/#([A-Za-z0-9_-]+)/);
+      const originalId = match?.[1];
+      if (originalId) {
+        const t = setTimeout(() => navigate(`/up2/${originalId}`), 1800);
+        return () => clearTimeout(t);
+      }
+    }
+  }, [order?.status, order?.external_id, order?.store_slug, order?.items, navigate]);
 
   const qrSrc = useMemo(() => {
     if (order?.pix_qrcode) {
