@@ -18,6 +18,7 @@ interface OrderRow {
   buyer_email?: string | null;
   buyer_phone?: string | null;
   ttclid?: string | null;
+  store_slug?: string | null;
 }
 
 export default function PixPage() {
