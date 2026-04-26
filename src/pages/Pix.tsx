@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatBRL } from "@/data/products";
 import { trackPurchaseClient } from "@/lib/tiktokPixel";
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
+import { NotaContent } from "@/pages/Nota";
 
 interface OrderRow {
   external_id: string;
@@ -110,12 +112,15 @@ export default function PixPage() {
     });
   }, [order?.status, order?.external_id]);
 
-  // Redireciona após pagamento conforme o estágio do funil
+  // Estado do popup da Nota Fiscal (UP1)
+  const [notaOpen, setNotaOpen] = useState(false);
+
+  // Após o pagamento: abre Nota como popup (melissa) ou redireciona para ICMS (após nota paga)
   useEffect(() => {
     if (!order || order.status !== "paid") return;
     const slug = (order.store_slug ?? "melissa").toLowerCase();
     if (slug === "melissa") {
-      const t = setTimeout(() => navigate(`/up1/${order.external_id}`), 1800);
+      const t = setTimeout(() => setNotaOpen(true), 1800);
       return () => clearTimeout(t);
     }
     if (slug === "up1") {
@@ -125,7 +130,7 @@ export default function PixPage() {
       const match = refName.match(/#([A-Za-z0-9_-]+)/);
       const originalId = match?.[1];
       if (originalId) {
-        const t = setTimeout(() => navigate(`/up2/${originalId}`), 1800);
+        const t = setTimeout(() => navigate(`/icms/${originalId}`), 1800);
         return () => clearTimeout(t);
       }
     }
@@ -259,6 +264,20 @@ export default function PixPage() {
 
         <p className="text-center text-xs text-muted-foreground">Pedido #{order.external_id}</p>
       </div>
+
+      {/* Popup Nota Fiscal (UP1) - sobe de baixo após pagamento confirmado */}
+      <Drawer open={notaOpen} onOpenChange={setNotaOpen}>
+        <DrawerContent className="max-h-[92vh]">
+          <DrawerTitle className="sr-only">Emissão de Nota Fiscal</DrawerTitle>
+          <div className="overflow-y-auto pb-6">
+            <NotaContent
+              externalId={order.external_id}
+              embedded
+              onClose={() => setNotaOpen(false)}
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
