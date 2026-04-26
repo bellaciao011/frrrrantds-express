@@ -29,8 +29,11 @@ export type Database = {
           payment_method: string
           pix_code: string | null
           pix_qrcode: string | null
+          purchase_tracked_at: string | null
           status: string
+          store_slug: string
           transaction_id: string | null
+          ttclid: string | null
           updated_at: string
         }
         Insert: {
@@ -47,8 +50,11 @@ export type Database = {
           payment_method: string
           pix_code?: string | null
           pix_qrcode?: string | null
+          purchase_tracked_at?: string | null
           status?: string
+          store_slug?: string
           transaction_id?: string | null
+          ttclid?: string | null
           updated_at?: string
         }
         Update: {
@@ -65,15 +71,74 @@ export type Database = {
           payment_method?: string
           pix_code?: string | null
           pix_qrcode?: string | null
+          purchase_tracked_at?: string | null
           status?: string
+          store_slug?: string
           transaction_id?: string | null
+          ttclid?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tracking_pixels: {
+        Row: {
+          access_token: string
+          created_at: string
+          id: string
+          is_active: boolean
+          label: string | null
+          pixel_id: string
+          store_slug: string
+          updated_at: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          pixel_id: string
+          store_slug?: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          pixel_id?: string
+          store_slug?: string
           updated_at?: string
         }
         Relationships: []
       }
     }
     Views: {
-      [_ in never]: never
+      tracking_pixels_public: {
+        Row: {
+          id: string | null
+          is_active: boolean | null
+          label: string | null
+          pixel_id: string | null
+          store_slug: string | null
+        }
+        Insert: {
+          id?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          pixel_id?: string | null
+          store_slug?: string | null
+        }
+        Update: {
+          id?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          pixel_id?: string | null
+          store_slug?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
