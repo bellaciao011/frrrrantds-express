@@ -109,7 +109,7 @@ export default function PixPage() {
     });
   }, [order?.status, order?.external_id]);
 
-  // Redireciona para UP1 quando pedido da loja principal for pago
+  // Redireciona após pagamento conforme o estágio do funil
   useEffect(() => {
     if (!order || order.status !== "paid") return;
     const slug = (order.store_slug ?? "melissa").toLowerCase();
@@ -117,7 +117,18 @@ export default function PixPage() {
       const t = setTimeout(() => navigate(`/up1/${order.external_id}`), 1800);
       return () => clearTimeout(t);
     }
-  }, [order?.status, order?.external_id, order?.store_slug, navigate]);
+    if (slug === "up1") {
+      // Extrai o id do pedido original a partir do nome do item ("... #XYZ")
+      const itemsArr = Array.isArray(order.items) ? (order.items as Array<{ name?: string }>) : [];
+      const refName = itemsArr[0]?.name ?? "";
+      const match = refName.match(/#([A-Za-z0-9_-]+)/);
+      const originalId = match?.[1];
+      if (originalId) {
+        const t = setTimeout(() => navigate(`/up2/${originalId}`), 1800);
+        return () => clearTimeout(t);
+      }
+    }
+  }, [order?.status, order?.external_id, order?.store_slug, order?.items, navigate]);
 
   const qrSrc = useMemo(() => {
     if (order?.pix_qrcode) {
