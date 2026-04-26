@@ -115,33 +115,16 @@ export type Database = {
       }
     }
     Views: {
-      tracking_pixels_public: {
-        Row: {
-          id: string | null
-          is_active: boolean | null
-          label: string | null
-          pixel_id: string | null
-          store_slug: string | null
-        }
-        Insert: {
-          id?: string | null
-          is_active?: boolean | null
-          label?: string | null
-          pixel_id?: string | null
-          store_slug?: string | null
-        }
-        Update: {
-          id?: string | null
-          is_active?: boolean | null
-          label?: string | null
-          pixel_id?: string | null
-          store_slug?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_active_pixels: {
+        Args: { _store_slug?: string }
+        Returns: {
+          pixel_id: string
+          store_slug: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
