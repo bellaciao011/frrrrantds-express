@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/data/products";
 import { supabase } from "@/integrations/supabase/client";
+import { getStoredTtclid } from "@/lib/tiktokPixel";
 import { toast } from "sonner";
 
 type Step = 1 | 2 | 3;
@@ -150,6 +151,7 @@ export default function CheckoutPage() {
     }
     setLoading(true);
     try {
+      const ttclid = getStoredTtclid();
       const { data, error } = await supabase.functions.invoke("create-pix", {
         body: {
           amount: amountCents,
@@ -160,6 +162,8 @@ export default function CheckoutPage() {
             price: i.price,
             quantity: i.quantity,
           })),
+          ttclid,
+          store_slug: "melissa",
         },
       });
       if (error) throw error;
