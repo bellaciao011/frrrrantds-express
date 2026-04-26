@@ -4,6 +4,8 @@ import CarrinhoPage from "@/pages/Carrinho";
 import CheckoutPage from "@/pages/Checkout";
 import ProdutoPage from "@/pages/Produto";
 import PixPage from "@/pages/Pix";
+import AdminPixelsPage from "@/pages/AdminPixels";
+import TikTokPixelLoader from "@/components/TikTokPixelLoader";
 
 function NotFound() {
   return (
@@ -26,13 +28,17 @@ function NotFound() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<IndexPage />} />
-      <Route path="/carrinho" element={<CarrinhoPage />} />
-      <Route path="/checkout" element={<CheckoutPage />} />
-      <Route path="/produto/:id" element={<ProdutoPage />} />
-      <Route path="/pix/:externalId" element={<PixPage />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <TikTokPixelLoader />
+      <Routes>
+        <Route path="/" element={<IndexPage />} />
+        <Route path="/carrinho" element={<CarrinhoPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/produto/:id" element={<ProdutoPage />} />
+        <Route path="/pix/:externalId" element={<PixPage />} />
+        <Route path="/admin/pixels" element={<AdminPixelsPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
