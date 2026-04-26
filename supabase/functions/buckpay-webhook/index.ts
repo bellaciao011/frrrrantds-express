@@ -2,6 +2,7 @@
 // e dispara o evento Purchase no TikTok Events API quando o pagamento é confirmado.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
+import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") {
@@ -26,6 +27,16 @@ Deno.serve(async (req) => {
 
     const isPaid = event === "transaction.processed" || status === "paid";
 
+    // Carrega o pedido para saber se já estava pago (evita duplicar notificação)
+    // e para ter os dados (valor, loja, comprador)
+    const { data: existingOrder } = await supa
+      .from("orders")
+      .select("status, amount, store_slug, buyer_name, external_id, paid_at")
+      .eq("transaction_id", txId)
+      .maybeSingle();
+
+    const wasAlreadyPaid = existingOrder?.status === "paid" || !!existingOrder?.paid_at;
+
     const update: Record<string, unknown> = {};
     if (status) update.status = status;
     if (isPaid) {
@@ -40,6 +51,21 @@ Deno.serve(async (req) => {
 
     if (isPaid) {
       await trackPurchaseServerSide({ supa, transactionId: txId });
+
+      // Notifica Pushcut apenas na PRIMEIRA confirmação de pagamento
+      if (!wasAlreadyPaid && existingOrder) {
+        try {
+          await sendPushcutOrderNotification({
+            stage: "paid",
+            amount: existingOrder.amount ?? 0,
+            storeSlug: existingOrder.store_slug ?? "melissa",
+            buyerName: existingOrder.buyer_name,
+            externalId: existingOrder.external_id,
+          });
+        } catch (e) {
+          console.error("[buckpay-webhook] pushcut error", e);
+        }
+      }
     }
 
     return new Response(JSON.stringify({ ok: true }), {
