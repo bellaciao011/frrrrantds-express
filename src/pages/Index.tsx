@@ -162,12 +162,36 @@ export default function IndexPage() {
           </div>
 
           <div className="mx-auto max-w-5xl px-3 py-3">
-            {q && (
-              <p className="mb-3 text-sm text-muted-foreground">
-                Resultados para "<strong>{q}</strong>" — {filtered.length} produto(s)
-              </p>
+            {(q || activeCategoryLabel) && (
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                {activeCategoryLabel && (
+                  <button
+                    onClick={clearCategory}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary hover:bg-primary/20"
+                  >
+                    {activeCategoryLabel}
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                <p className="text-sm text-muted-foreground">
+                  {q && <>Resultados para "<strong>{q}</strong>" — </>}
+                  {filtered.length} produto(s)
+                </p>
+              </div>
             )}
-            {layout === "grid" ? (
+            {filtered.length === 0 ? (
+              <div className="py-16 text-center">
+                <p className="text-muted-foreground">Nenhum produto encontrado nesta categoria.</p>
+                {activeCategory && (
+                  <button
+                    onClick={clearCategory}
+                    className="mt-3 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
+                  >
+                    Ver todos os produtos
+                  </button>
+                )}
+              </div>
+            ) : layout === "grid" ? (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
                 {filtered.map((p) => (
                   <ProductCard key={p.id} product={p} layout="grid" />
@@ -186,21 +210,16 @@ export default function IndexPage() {
 
       {tab === "categorias" && (
         <div className="mx-auto max-w-5xl px-3 py-4">
+          <h2 className="mb-3 text-base font-bold">Escolha uma categoria</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {[
-              "Sandálias",
-              "Rasteiras",
-              "Bolsas",
-              "Botas",
-              "Mini Melissa",
-              "Coleção Hello Kitty",
-            ].map((cat) => (
+            {CATEGORIES.map((cat) => (
               <button
-                key={cat}
-                onClick={() => setTab("produtos")}
-                className="flex h-24 items-center justify-center rounded-xl bg-background font-semibold hover:bg-accent"
+                key={cat.id}
+                onClick={() => selectCategory(cat.id)}
+                className="flex h-28 flex-col items-center justify-center gap-2 rounded-xl border bg-background font-semibold transition-colors hover:bg-accent"
               >
-                {cat}
+                <span className="text-3xl">{cat.emoji}</span>
+                <span className="text-sm">{cat.label}</span>
               </button>
             ))}
           </div>
