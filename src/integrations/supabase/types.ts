@@ -29,8 +29,11 @@ export type Database = {
           payment_method: string
           pix_code: string | null
           pix_qrcode: string | null
+          purchase_tracked_at: string | null
           status: string
+          store_slug: string
           transaction_id: string | null
+          ttclid: string | null
           updated_at: string
         }
         Insert: {
@@ -47,8 +50,11 @@ export type Database = {
           payment_method: string
           pix_code?: string | null
           pix_qrcode?: string | null
+          purchase_tracked_at?: string | null
           status?: string
+          store_slug?: string
           transaction_id?: string | null
+          ttclid?: string | null
           updated_at?: string
         }
         Update: {
@@ -65,8 +71,44 @@ export type Database = {
           payment_method?: string
           pix_code?: string | null
           pix_qrcode?: string | null
+          purchase_tracked_at?: string | null
           status?: string
+          store_slug?: string
           transaction_id?: string | null
+          ttclid?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tracking_pixels: {
+        Row: {
+          access_token: string
+          created_at: string
+          id: string
+          is_active: boolean
+          label: string | null
+          pixel_id: string
+          store_slug: string
+          updated_at: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          pixel_id: string
+          store_slug?: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          pixel_id?: string
+          store_slug?: string
           updated_at?: string
         }
         Relationships: []
@@ -76,7 +118,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_active_pixels: {
+        Args: { _store_slug?: string }
+        Returns: {
+          pixel_id: string
+          store_slug: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

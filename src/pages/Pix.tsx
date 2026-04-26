@@ -6,6 +6,7 @@ import QRCode from "qrcode";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatBRL } from "@/data/products";
+import { trackPurchaseClient } from "@/lib/tiktokPixel";
 
 interface OrderRow {
   external_id: string;
@@ -14,6 +15,9 @@ interface OrderRow {
   pix_code: string | null;
   pix_qrcode: string | null;
   buyer_name: string;
+  buyer_email?: string | null;
+  buyer_phone?: string | null;
+  ttclid?: string | null;
 }
 
 export default function PixPage() {
@@ -29,7 +33,7 @@ export default function PixPage() {
     (async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name")
+        .select("external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid")
         .eq("external_id", externalId)
         .maybeSingle();
       if (!alive) return;
@@ -90,6 +94,19 @@ export default function PixPage() {
     const id = setInterval(() => setSecondsLeft((s) => Math.max(0, s - 1)), 1000);
     return () => clearInterval(id);
   }, [order]);
+
+  // Dispara Purchase no client quando o pedido vira "paid"
+  useEffect(() => {
+    if (!order || order.status !== "paid") return;
+    trackPurchaseClient({
+      value: order.amount / 100,
+      currency: "BRL",
+      email: order.buyer_email ?? undefined,
+      phone: order.buyer_phone ?? undefined,
+      order_id: order.external_id,
+      ttclid: order.ttclid,
+    });
+  }, [order?.status, order?.external_id]);
 
   const qrSrc = useMemo(() => {
     if (order?.pix_qrcode) {

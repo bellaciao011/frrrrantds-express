@@ -1,5 +1,7 @@
 // Recebe webhooks da BuckPay (transaction.created e transaction.processed)
+// e dispara o evento Purchase no TikTok Events API quando o pagamento é confirmado.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") {
@@ -22,9 +24,11 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
+    const isPaid = event === "transaction.processed" || status === "paid";
+
     const update: Record<string, unknown> = {};
     if (status) update.status = status;
-    if (event === "transaction.processed" || status === "paid") {
+    if (isPaid) {
       update.status = "paid";
       update.paid_at = new Date().toISOString();
     }
@@ -32,6 +36,10 @@ Deno.serve(async (req) => {
     if (Object.keys(update).length > 0) {
       const { error } = await supa.from("orders").update(update).eq("transaction_id", txId);
       if (error) console.error("[buckpay-webhook] update error", error);
+    }
+
+    if (isPaid) {
+      await trackPurchaseServerSide({ supa, transactionId: txId });
     }
 
     return new Response(JSON.stringify({ ok: true }), {
