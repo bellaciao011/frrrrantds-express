@@ -81,11 +81,10 @@ export default function IndexPage() {
       <FreeShippingBar />
 
       <nav className="sticky top-14 z-30 mx-auto mt-4 max-w-5xl border-b bg-background">
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-2">
           {[
             { id: "inicio" as Tab, label: "Página inicial" },
             { id: "produtos" as Tab, label: "Produtos" },
-            { id: "categorias" as Tab, label: "Categorias" },
           ].map((t) => (
             <button
               key={t.id}
