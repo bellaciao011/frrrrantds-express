@@ -225,6 +225,33 @@ export default function ProductPage() {
           <p className="font-medium">Devoluções gratuitas em 30 dias · Cancelamento fácil</p>
         </div>
 
+        {/* Tamanho */}
+        {tamanhos.length > 0 && (
+          <div className="mt-2 bg-background px-4 py-4">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-sm">
+                <span className="text-muted-foreground">Tamanho: </span>
+                <span className="font-semibold">{selectedSize ?? "Selecione"}</span>
+              </p>
+              <span className="text-xs text-muted-foreground">{tamanhos.length} opções</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {tamanhos.map((t) => (
+                <button
+                  key={t.titulo}
+                  onClick={() => setSelectedSize(t.titulo)}
+                  className={`min-w-[3.5rem] rounded-md border px-4 py-2 text-sm font-medium ${
+                    selectedSize === t.titulo
+                      ? "border-primary bg-primary/5 text-primary"
+                      : "border-border bg-background text-foreground"
+                  }`}
+                >
+                  {t.titulo}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Proteção do cliente */}
         <div className="mt-2 bg-amber-50 px-4 py-4">
