@@ -71,7 +71,7 @@ function useCountdown(seconds: number) {
 }
 
 export default function CheckoutPage() {
-  const { items, total: subtotal, setQty, remove } = useCart();
+  const { items, total: subtotal, count, setQty, remove } = useCart();
   const navigate = useNavigate();
   const countdown = useCountdown(5 * 3600);
 
@@ -99,12 +99,15 @@ export default function CheckoutPage() {
     [shippingId],
   );
 
-  // se frete grátis selecionado mas carrinho abaixo de R$120, volta para jadlog
+  const cepDigits = cep.replace(/\D/g, "");
+  const cepFilled = cepDigits.length === 8;
+
+  // se frete grátis selecionado mas qtd abaixo do mínimo, volta para jadlog
   useEffect(() => {
-    if (shippingId === "correio" && subtotal < 120) {
+    if (shippingId === "correio" && count < FREE_SHIPPING_MIN_QTY) {
       setShippingId("jadlog");
     }
-  }, [subtotal, shippingId]);
+  }, [count, shippingId]);
 
   // Desconto: diferença entre preço "de" (originalPrice) e preço "por"
   const discountTotal = useMemo(
@@ -116,7 +119,8 @@ export default function CheckoutPage() {
     [items],
   );
 
-  const grandTotal = subtotal + shipping.price;
+  const shippingApplied = cepFilled ? shipping.price : 0;
+  const grandTotal = subtotal + shippingApplied;
 
   // ========== handlers ==========
   const goNext = (target: Step) => {
