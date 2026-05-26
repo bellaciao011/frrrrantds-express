@@ -23,10 +23,12 @@ type Step = 1 | 2 | 3;
 type Shipping = { id: string; name: string; price: number; eta: string };
 
 const SHIPPINGS: Shipping[] = [
-  { id: "jadlog", name: "JadLog", price: 22.5, eta: "Receba em até 2 dias úteis" },
-  { id: "sedex", name: "Sedex-Express", price: 15.5, eta: "Receba em até 4 dias úteis" },
+  { id: "jadlog", name: "JadLog", price: 9.9, eta: "Receba em até 2 dias úteis" },
+  { id: "sedex", name: "Sedex-Express", price: 6.9, eta: "Receba em até 4 dias úteis" },
   { id: "correio", name: "Correio", price: 0, eta: "Receba em até 7 dias úteis" },
 ];
+
+const FREE_SHIPPING_MIN_QTY = 3;
 
 // ========== formatadores ==========
 function maskPhone(v: string) {
