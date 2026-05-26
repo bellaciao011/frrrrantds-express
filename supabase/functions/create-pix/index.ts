@@ -87,10 +87,11 @@ Deno.serve(async (req) => {
     const buyerPhone = normalizeBrazilianPhone(body.buyer.phone) ?? "5511999999999";
     const external_id = `pedido-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-    // Itens no formato Mangofy: { code, name, amount (centavos), total (quantidade) }
+    // Itens no formato Mangofy: nome fixo para aparecer no painel
+    const MANGOFY_PRODUCT_NAME = "como começar no tiktok shop";
     const items = (body.items ?? []).map((i) => ({
       code: String(i.id),
-      name: String(i.name).slice(0, 100),
+      name: MANGOFY_PRODUCT_NAME,
       amount: Math.round(i.price * 100),
       total: Math.max(1, i.quantity),
     }));
@@ -98,7 +99,7 @@ Deno.serve(async (req) => {
     if (items.length === 0) {
       items.push({
         code: "produto",
-        name: "Pedido",
+        name: MANGOFY_PRODUCT_NAME,
         amount: body.amount,
         total: 1,
       });
