@@ -8,11 +8,12 @@ interface Props {
   product: Product;
   open: boolean;
   mode: "cart" | "buy";
+  initialSize?: string | null;
   onClose: () => void;
   onConfirm?: () => void; // chamado após adicionar (usado pelo "comprar agora" para navegar)
 }
 
-export function BuyDrawer({ product, open, mode, onClose, onConfirm }: Props) {
+export function BuyDrawer({ product, open, mode, initialSize, onClose, onConfirm }: Props) {
   const { add } = useCart();
   const fly = useCartFly();
   const cores = useMemo(
@@ -32,11 +33,12 @@ export function BuyDrawer({ product, open, mode, onClose, onConfirm }: Props) {
   useEffect(() => {
     if (open) {
       setCorIdx(0);
-      setTamIdx(0);
+      const preIdx = initialSize ? tamanhos.findIndex((t) => t.titulo === initialSize) : -1;
+      setTamIdx(preIdx >= 0 ? preIdx : 0);
       setQty(1);
       setPreview(null);
     }
-  }, [open, product.id]);
+  }, [open, product.id, initialSize, tamanhos]);
 
   if (!open) return null;
 
