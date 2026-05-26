@@ -110,10 +110,9 @@ export default function PixPage() {
     });
   }, [order?.status, order?.external_id]);
 
-  // Redireciona conforme o estágio do funil
-  // PREVIEW: ignora status do pagamento para visualizar o upsell sem precisar pagar
+  // Redireciona conforme o estágio do funil — APENAS após confirmação do pagamento
   useEffect(() => {
-    if (!order) return;
+    if (!order || order.status !== "paid") return;
     const slug = (order.store_slug ?? "melissa").toLowerCase();
     if (slug === "melissa") {
       const t = setTimeout(() => navigate(`/up1/${order.external_id}`), 1800);
