@@ -344,9 +344,9 @@ export default function CheckoutPage() {
           <div className="flex justify-between py-1">
             <span>Frete</span>
             <span>
-              {step >= 2
+              {cepFilled
                 ? `${shipping.name} (${shipping.price === 0 ? "Grátis" : formatBRL(shipping.price)})`
-                : "Calculado na entrega"}
+                : "Calculado após o CEP"}
             </span>
           </div>
           <div className="mt-2 flex items-center justify-between border-t pt-2">
