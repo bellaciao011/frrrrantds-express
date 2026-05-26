@@ -547,10 +547,10 @@ function Step2(p: {
   state: string; setState: (v: string) => void;
   complement: string; setComplement: (v: string) => void;
   shippingId: string; setShippingId: (v: string) => void;
-  subtotal: number;
+  count: number;
   onNext: () => void;
 }) {
-  const freeShippingUnlocked = p.subtotal >= 120;
+  const freeShippingUnlocked = p.count >= 3;
   // ViaCEP autopreencher
   useEffect(() => {
     const raw = p.cep.replace(/\D/g, "");
