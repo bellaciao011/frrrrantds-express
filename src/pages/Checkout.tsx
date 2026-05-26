@@ -629,8 +629,8 @@ function Step2(p: {
       {!freeShippingUnlocked && (
         <div className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
           <Truck className="h-4 w-4 shrink-0" />
-          Frete grátis disponível em compras acima de R$ 120,00. Faltam{" "}
-          <strong>{formatBRL(120 - p.subtotal)}</strong>.
+          Frete grátis disponível na compra de 3 camisas ou mais. Faltam{" "}
+          <strong>{Math.max(0, 3 - p.count)}</strong>.
         </div>
       )}
 
