@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatBRL } from "@/data/products";
 import { trackPurchaseClient } from "@/lib/tiktokPixel";
+import { getUrlWithUtm } from "@/utils/utm";
 
 interface OrderRow {
   external_id: string;
@@ -115,7 +116,7 @@ export default function PixPage() {
     if (!order || order.status !== "paid") return;
     const slug = (order.store_slug ?? "berzerk").toLowerCase();
     if (slug === "berzerk") {
-      const t = setTimeout(() => navigate(`/up1/${order.external_id}`), 1800);
+      const t = setTimeout(() => navigate(getUrlWithUtm(`/up1/${order.external_id}`)), 1800);
       return () => clearTimeout(t);
     }
     if (slug === "up1") {
@@ -125,7 +126,7 @@ export default function PixPage() {
       const match = refName.match(/#([A-Za-z0-9_-]+)/);
       const originalId = match?.[1];
       if (originalId) {
-        const t = setTimeout(() => navigate(`/up2/${originalId}`), 1800);
+        const t = setTimeout(() => navigate(getUrlWithUtm(`/up2/${originalId}`)), 1800);
         return () => clearTimeout(t);
       }
     }
@@ -163,7 +164,7 @@ export default function PixPage() {
       <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <p className="text-muted-foreground">Pedido não encontrado.</p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate(getUrlWithUtm("/"))}
           className="mt-4 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground"
         >
           Voltar à loja
@@ -183,7 +184,7 @@ export default function PixPage() {
         </p>
         <p className="mt-2 text-sm text-muted-foreground">Pedido #{order.external_id}</p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate(getUrlWithUtm("/"))}
           className="mt-6 rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground"
         >
           Voltar à loja
@@ -202,7 +203,7 @@ export default function PixPage() {
       </Helmet>
       <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b bg-background px-3">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate(getUrlWithUtm("/"))}
           className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"
         >
           <ArrowLeft className="h-5 w-5" />

@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { AlertTriangle, Loader2, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/data/products";
+import { getUrlWithUtm } from "@/utils/utm";
 
 interface OrderItem {
   id?: string;
@@ -130,7 +131,7 @@ export default function Up2Page() {
       if (error) throw error;
       const newId = (data as { external_id?: string })?.external_id;
       if (!newId) throw new Error("Falha ao criar pagamento");
-      navigate(`/pix/${newId}`);
+      navigate(getUrlWithUtm(`/pix/${newId}`));
     } catch (e) {
       console.error(e);
       alert("Não foi possível gerar o pagamento. Tente novamente.");
@@ -151,7 +152,7 @@ export default function Up2Page() {
       <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <p className="text-muted-foreground">Pedido não encontrado.</p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate(getUrlWithUtm("/"))}
           className="mt-4 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground"
         >
           Voltar à loja
