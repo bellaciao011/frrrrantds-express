@@ -667,7 +667,7 @@ function Step2(p: {
               <div className="flex-1">
                 <p className="text-sm font-semibold">{s.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {locked ? "Disponível em compras acima de R$ 120,00" : s.eta}
+                  {locked ? "Disponível na compra de 3 camisas ou mais" : s.eta}
                 </p>
               </div>
               <span className={`text-sm font-semibold ${isFree && !locked ? "text-emerald-600" : ""}`}>
