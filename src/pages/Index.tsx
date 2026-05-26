@@ -73,7 +73,7 @@ export default function IndexPage() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Melissa — Promoções</title>
-        <meta name="description" content="Loja online com até 90% OFF e frete grátis." />
+        <meta name="description" content="Loja online com até 80% OFF e frete grátis." />
       </Helmet>
       <PromoPopup />
       <Header />
