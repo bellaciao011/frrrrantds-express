@@ -231,7 +231,7 @@ export default function CheckoutPage() {
         </p>
 
         {/* Frete grátis banner */}
-        {grandTotal >= 120 && (
+        {count >= FREE_SHIPPING_MIN_QTY && (
           <div className="flex items-center gap-2 rounded-md border border-sky-200 bg-sky-50 px-3 py-2.5 text-sm font-semibold text-sky-700">
             <Truck className="h-4 w-4" /> Você ganhou frete grátis!
           </div>
