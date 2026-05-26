@@ -50,13 +50,13 @@ export function PromoPopup() {
 
         <div className="overflow-hidden rounded-2xl bg-primary p-1.5 shadow-2xl">
           <div className="rounded-xl bg-background px-4 pb-5 pt-4 text-center">
-            <p className="text-2xl font-extrabold text-foreground">90% OFF</p>
+            <p className="text-2xl font-extrabold text-foreground">80% OFF</p>
             <p className="mt-1.5 text-sm font-bold text-primary">no seu pedido!</p>
             <p className="mt-3 text-xs leading-relaxed text-foreground/80">
               Você pode começar o ano com um novo hobby.
             </p>
             <p className="mt-1.5 text-xs leading-relaxed text-foreground/80">
-              Aproveita: produtos selecionados estão com até 90% OFF.
+              Aproveita: produtos selecionados estão com até 80% OFF.
             </p>
           </div>
 

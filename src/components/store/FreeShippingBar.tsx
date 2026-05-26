@@ -66,7 +66,7 @@ export function FreeShippingBar() {
           </button>
         </div>
         <div className="rounded-xl border border-discount-fg/20 bg-discount-bg/40 p-3">
-          <p className="text-sm font-bold text-discount-fg">Até 90% OFF</p>
+          <p className="text-sm font-bold text-discount-fg">Até 80% OFF</p>
           <p className="text-xs text-discount-fg/80">Em produtos selecionados</p>
           <button className="mt-2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground">
             Resgatar
