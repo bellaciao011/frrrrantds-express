@@ -667,11 +667,11 @@ function Step2(p: {
               <div className="flex-1">
                 <p className="text-sm font-semibold">{s.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {locked ? "Disponível na compra de 3 camisas ou mais" : s.eta}
+                  {locked ? "Disponível na compra de 2 camisas ou mais" : s.eta}
                 </p>
               </div>
               <span className={`text-sm font-semibold ${isFree && !locked ? "text-emerald-600" : ""}`}>
-                {s.price === 0 ? "R$ 0,00" : formatBRL(s.price)}
+                {s.price === 0 ? "Frete grátis" : formatBRL(s.price)}
               </span>
             </button>
           );
