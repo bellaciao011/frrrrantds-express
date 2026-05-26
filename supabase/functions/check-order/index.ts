@@ -1,4 +1,4 @@
-// Consulta o status de um pedido na Mangofy e atualiza o banco se mudou.
+// Consulta o status de um pedido na BuckPay e atualiza o banco se mudou.
 // Se detectar pagamento, dispara também o Purchase no TikTok (server-side).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
@@ -10,7 +10,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-const MANGOFY_BASE = "https://checkout.mangofy.com.br";
+const BUCKPAY_BASE = "https://api.realtechdev.com.br";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -28,65 +28,51 @@ Deno.serve(async (req) => {
       });
     }
 
-    const authorization = Deno.env.get("MANGOFY_AUTHORIZATION")!;
-    const storeCode = Deno.env.get("MANGOFY_STORE_CODE")!;
+    const token = Deno.env.get("BUCKPAY_TOKEN")!;
+    const userAgent = Deno.env.get("BUCKPAY_USER_AGENT")!;
 
-    const supa = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
-
-    // Busca o transaction_id (payment_code) do pedido
-    const { data: existingOrder } = await supa
-      .from("orders")
-      .select("status, amount, store_slug, buyer_name, paid_at, transaction_id")
-      .eq("external_id", externalId)
-      .maybeSingle();
-
-    if (!existingOrder?.transaction_id) {
-      return new Response(JSON.stringify({ external_id: externalId, status: existingOrder?.status ?? "pending" }), {
-        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const resp = await fetch(
-      `${MANGOFY_BASE}/api/v1/payment/${encodeURIComponent(existingOrder.transaction_id)}`,
-      {
-        headers: {
-          Authorization: authorization,
-          "Store-Code": storeCode,
-          Accept: "application/json",
-        },
+    const resp = await fetch(`${BUCKPAY_BASE}/v1/transactions/external_id/${encodeURIComponent(externalId)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "User-Agent": userAgent,
+        Accept: "application/json",
       },
-    );
+    });
 
     const text = await resp.text();
     let data: any;
     try { data = JSON.parse(text); } catch { data = { raw: text }; }
 
     if (!resp.ok) {
-      return new Response(JSON.stringify({ error: "Mangofy error", status: resp.status, details: data }), {
+      return new Response(JSON.stringify({ error: "BuckPay error", status: resp.status, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const t = data?.data ?? data;
-    const rawStatus = t?.payment_status ?? t?.status ?? "pending";
-    const isPaid = rawStatus === "approved" || rawStatus === "paid";
-    const status = isPaid
-      ? "paid"
-      : rawStatus === "refunded" || rawStatus === "chargedback" || rawStatus === "pending"
-        ? rawStatus
-        : "pending";
+    const status = t?.status ?? "pending";
+
+    // Atualiza banco se status mudou
+    const supa = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+
+    // Carrega pedido atual para evitar notificar duas vezes
+    const { data: existingOrder } = await supa
+      .from("orders")
+      .select("status, amount, store_slug, buyer_name, paid_at")
+      .eq("external_id", externalId)
+      .maybeSingle();
 
     const wasAlreadyPaid = existingOrder?.status === "paid" || !!existingOrder?.paid_at;
 
     const update: Record<string, unknown> = { status };
-    if (isPaid) update.paid_at = new Date().toISOString();
+    if (status === "paid") update.paid_at = new Date().toISOString();
 
     await supa.from("orders").update(update).eq("external_id", externalId);
 
-    if (isPaid) {
+    if (status === "paid") {
       await trackPurchaseServerSide({ supa, externalId });
 
       if (!wasAlreadyPaid && existingOrder) {

@@ -6,5 +6,5 @@ verify_jwt = false
 [functions.check-order]
 verify_jwt = false
 
-[functions.mangofy-webhook]
+[functions.buckpay-webhook]
 verify_jwt = false

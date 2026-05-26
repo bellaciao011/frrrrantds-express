@@ -1,4 +1,4 @@
-// Cria uma transação PIX na Mangofy e salva o pedido no banco
+// Cria uma transação PIX na BuckPay e salva o pedido no banco
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
 
@@ -8,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const MANGOFY_BASE = "https://checkout.mangofy.com.br";
+const BUCKPAY_BASE = "https://api.realtechdev.com.br";
 
 interface BuyerInput {
   name: string;
@@ -56,18 +56,18 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const authorization = Deno.env.get("MANGOFY_AUTHORIZATION");
-    const storeCode = Deno.env.get("MANGOFY_STORE_CODE");
-    if (!authorization || !storeCode) {
-      return new Response(JSON.stringify({ error: "Mangofy credentials not configured" }), {
+    const token = Deno.env.get("BUCKPAY_TOKEN");
+    const userAgent = Deno.env.get("BUCKPAY_USER_AGENT");
+    if (!token || !userAgent) {
+      return new Response(JSON.stringify({ error: "BuckPay credentials not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const body = (await req.json()) as Body;
 
-    if (!body.amount || body.amount < 500) {
-      return new Response(JSON.stringify({ error: "Valor mínimo de R$ 5,00" }), {
+    if (!body.amount || body.amount < 600) {
+      return new Response(JSON.stringify({ error: "Valor mínimo de R$ 6,00" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -77,62 +77,41 @@ Deno.serve(async (req) => {
       });
     }
 
-    const buyerDoc = onlyDigits(body.buyer.document);
-    if (!buyerDoc || (buyerDoc.length !== 11 && buyerDoc.length !== 14)) {
-      return new Response(JSON.stringify({ error: "CPF/CNPJ inválido" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const buyerPhone = normalizeBrazilianPhone(body.buyer.phone) ?? "5511999999999";
+    const buyerPhone = normalizeBrazilianPhone(body.buyer.phone);
     const external_id = `pedido-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-    // Itens no formato Mangofy: nome fixo para aparecer no painel
-    const MANGOFY_PRODUCT_NAME = "como começar no tiktok shop";
-    const items = (body.items ?? []).map((i) => ({
-      code: String(i.id),
-      name: MANGOFY_PRODUCT_NAME,
-      amount: Math.round(i.price * 100),
-      total: Math.max(1, i.quantity),
-    }));
-
-    if (items.length === 0) {
-      items.push({
-        code: "produto",
-        name: MANGOFY_PRODUCT_NAME,
-        amount: body.amount,
-        total: 1,
-      });
-    }
-
-    const postbackUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/mangofy-webhook`;
-
+    // Monta payload para BuckPay
+    const firstItem = body.items?.[0];
     const payload: Record<string, unknown> = {
+      external_id,
       payment_method: "pix",
-      payment_format: "regular",
-      installments: 1,
-      payment_amount: body.amount,
-      postback_url: postbackUrl,
-      external_code: external_id,
-      items,
-      customer: {
-        name: body.buyer.name.trim().slice(0, 255),
-        email: body.buyer.email.trim().slice(0, 254),
-        document: buyerDoc,
-        phone: buyerPhone.slice(0, 20),
-      },
-      pix: {
-        expires_in_days: 1,
+      amount: body.amount,
+      buyer: {
+        name: body.buyer.name.trim().slice(0, 100),
+        email: body.buyer.email.trim().slice(0, 100),
+        ...(onlyDigits(body.buyer.document) ? { document: onlyDigits(body.buyer.document) } : {}),
+        ...(buyerPhone ? { phone: buyerPhone } : {}),
       },
     };
 
-    console.log("[create-pix] Calling Mangofy", { external_id, amount: body.amount });
+    if (firstItem) {
+      payload.product = { id: String(firstItem.id), name: String(firstItem.name).slice(0, 100) };
+      payload.offer = {
+        id: `offer-${firstItem.id}`,
+        name: String(firstItem.name).slice(0, 100),
+        quantity: Math.max(1, Math.min(100, body.items.reduce((s, i) => s + i.quantity, 0))),
+      };
+    }
 
-    const resp = await fetch(`${MANGOFY_BASE}/api/v1/payment`, {
+    if (body.tracking) payload.tracking = body.tracking;
+
+    console.log("[create-pix] Calling BuckPay", { external_id, amount: body.amount });
+
+    const resp = await fetch(`${BUCKPAY_BASE}/v1/transactions`, {
       method: "POST",
       headers: {
-        Authorization: authorization,
-        "Store-Code": storeCode,
+        Authorization: `Bearer ${token}`,
+        "User-Agent": userAgent,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -144,33 +123,18 @@ Deno.serve(async (req) => {
     try { data = JSON.parse(text); } catch { data = { raw: text }; }
 
     if (!resp.ok) {
-      console.error("[create-pix] Mangofy error", resp.status, data);
-      return new Response(JSON.stringify({ error: "Mangofy error", status: resp.status, details: data }), {
+      console.error("[create-pix] BuckPay error", resp.status, data);
+      return new Response(JSON.stringify({ error: "BuckPay error", status: resp.status, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Extrai PIX da resposta — defensivo, tenta vários nomes de campo
     const t = data?.data ?? data;
-    const pixObj = t?.pix ?? t?.payment?.pix ?? {};
-    const pixCode =
-      pixObj?.copy_paste ??
-      pixObj?.copy_and_paste ??
-      pixObj?.qr_code ??
-      pixObj?.code ??
-      pixObj?.emv ??
-      t?.qr_code ??
-      null;
-    const pixQrRaw =
-      pixObj?.qrcode_base64 ??
-      pixObj?.qr_code_base64 ??
-      pixObj?.qrcode ??
-      null;
-    const pixQr =
-      typeof pixQrRaw === "string" && pixQrRaw.length > 200 ? pixQrRaw : null;
-    const txId = t?.payment_code ?? t?.code ?? t?.id ?? null;
+    const pixCode = t?.pix?.code ?? null;
+    const pixQr = t?.pix?.qrcode_base64 ?? null;
+    const txId = t?.id ?? null;
 
-    // Salva no banco
+    // Salva no banco com service role
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -186,8 +150,8 @@ Deno.serve(async (req) => {
       pix_qrcode: pixQr,
       buyer_name: body.buyer.name,
       buyer_email: body.buyer.email,
-      buyer_document: buyerDoc,
-      buyer_phone: buyerPhone,
+      buyer_document: onlyDigits(body.buyer.document) ?? null,
+      buyer_phone: buyerPhone ?? null,
       items: body.items ?? [],
       ttclid: body.ttclid ?? null,
       store_slug: body.store_slug ?? "melissa",
@@ -197,6 +161,7 @@ Deno.serve(async (req) => {
       console.error("[create-pix] DB insert error", dbErr);
     }
 
+    // Notifica Pushcut: pedido pendente
     try {
       await sendPushcutOrderNotification({
         stage: "pending",
