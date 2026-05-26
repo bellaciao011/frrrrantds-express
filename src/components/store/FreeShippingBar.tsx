@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart";
-import { formatBRL } from "@/data/products";
 
-const TARGET = 120;
+const TARGET = 2;
 
 export function FreeShippingBar() {
-  const { total } = useCart();
+  const { count } = useCart();
   const [time, setTime] = useState(20 * 60);
 
   useEffect(() => {
@@ -15,8 +14,8 @@ export function FreeShippingBar() {
 
   const mm = String(Math.floor(time / 60)).padStart(2, "0");
   const ss = String(time % 60).padStart(2, "0");
-  const remaining = Math.max(0, TARGET - total);
-  const pct = Math.min(100, (total / TARGET) * 100);
+  const remaining = Math.max(0, TARGET - count);
+  const pct = Math.min(100, (count / TARGET) * 100);
 
   return (
     <section className="mx-auto mt-3 max-w-5xl px-3">
@@ -29,11 +28,11 @@ export function FreeShippingBar() {
         </div>
         <p className="text-sm font-bold">
           {remaining > 0
-            ? `Faltam ${formatBRL(remaining)} para liberar o frete gratis.`
+            ? `Adicione mais ${remaining} ${remaining === 1 ? "camisa" : "camisas"} para liberar o frete grátis.`
             : "Frete grátis liberado! 🎉"}
         </p>
         <p className="mt-1 text-xs text-muted-foreground">
-          {formatBRL(total)} / {formatBRL(TARGET)}
+          {count} / {TARGET} camisas
         </p>
         <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
           <div
@@ -45,9 +44,10 @@ export function FreeShippingBar() {
           disabled={remaining > 0}
           className="mt-3 w-full rounded-sm bg-muted py-2.5 text-sm font-semibold text-foreground/60 disabled:opacity-60"
         >
-          Resgatar frete gratis
+          Resgatar frete grátis
         </button>
       </div>
+
 
       <div className="mt-3 grid grid-cols-2 gap-3">
         <div className="rounded-xl border border-shipping-fg/20 bg-shipping-bg/40 p-3 opacity-60">
