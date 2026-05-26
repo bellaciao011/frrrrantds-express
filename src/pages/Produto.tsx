@@ -17,10 +17,10 @@ const REVIEWS_4 = 857;
 const REVIEWS_WITH_MEDIA = 2500;
 
 const CREATORS = [
-  { name: "@berzerk.oficial", video: "/videos/berzerk-1.mp4", avatar: "https://ui-avatars.com/api/?name=Berzerk&background=000&color=fff&bold=true" },
-  { name: "@berzerk.store", video: "/videos/berzerk-2.mp4", avatar: "https://ui-avatars.com/api/?name=BZ&background=111&color=fff&bold=true" },
-  { name: "@berzerk.brasil", video: "/videos/berzerk-3.mp4", avatar: "https://ui-avatars.com/api/?name=BR&background=222&color=fff&bold=true" },
-  { name: "@berzerk.wear", video: "/videos/berzerk-4.mp4", avatar: "https://ui-avatars.com/api/?name=BW&background=000&color=fff&bold=true" },
+  { name: "@berzerk", video: "/videos/berzerk-1.mp4", avatar: logoBerzerk },
+  { name: "@berzerk", video: "/videos/berzerk-2.mp4", avatar: logoBerzerk },
+  { name: "@berzerk", video: "/videos/berzerk-3.mp4", avatar: logoBerzerk },
+  { name: "@berzerk", video: "/videos/berzerk-4.mp4", avatar: logoBerzerk },
 ];
 
 function useCountdown(seconds: number) {
