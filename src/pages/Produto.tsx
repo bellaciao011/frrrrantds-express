@@ -510,6 +510,7 @@ export default function ProductPage() {
         product={product}
         open={drawer !== null}
         mode={drawer ?? "cart"}
+        initialSize={selectedSize}
         onClose={() => setDrawer(null)}
         onConfirm={drawer === "buy" ? () => navigate("/checkout") : undefined}
       />
