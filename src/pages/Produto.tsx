@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
+import logoBerzerk from "@/assets/logo-berzerk.png";
 
 
 const REVIEWS_TOTAL = 207;
@@ -43,13 +44,15 @@ export default function ProductPage() {
   const [imgIdx, setImgIdx] = useState(0);
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const [selectedVar, setSelectedVar] = useState(0);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [drawer, setDrawer] = useState<"cart" | "buy" | null>(null);
   const baseImages = product?.images?.length ? product.images : (product ? [product.image] : []);
   const variantImages = (product?.variacoes ?? []).map((v) => v.imagem).filter(Boolean);
   const images: string[] = Array.from(new Set([...baseImages, ...variantImages]));
+  const tamanhos = (product?.variacoes ?? []).filter((v) => v.tipo === "tamanho");
 
   // reset ao trocar de produto
-  useEffect(() => { setImgIdx(0); setSelectedVar(0); }, [id]);
+  useEffect(() => { setImgIdx(0); setSelectedVar(0); setSelectedSize(null); }, [id]);
 
   if (!product) {
     return (
@@ -68,7 +71,7 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-muted/30 pb-24">
-      <Helmet><title>{product.name} — Melissa</title><meta name="description" content={`${product.name} por ${formatBRL(product.price)}`} /></Helmet>
+      <Helmet><title>{product.name} — Berzerk</title><meta name="description" content={`${product.name} por ${formatBRL(product.price)}`} /></Helmet>
       {/* Header */}
       <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b bg-background px-3">
         <button onClick={() => window.history.back()} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
@@ -222,6 +225,33 @@ export default function ProductPage() {
           <p className="font-medium">Devoluções gratuitas em 30 dias · Cancelamento fácil</p>
         </div>
 
+        {/* Tamanho */}
+        {tamanhos.length > 0 && (
+          <div className="mt-2 bg-background px-4 py-4">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-sm">
+                <span className="text-muted-foreground">Tamanho: </span>
+                <span className="font-semibold">{selectedSize ?? "Selecione"}</span>
+              </p>
+              <span className="text-xs text-muted-foreground">{tamanhos.length} opções</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {tamanhos.map((t) => (
+                <button
+                  key={t.titulo}
+                  onClick={() => setSelectedSize(t.titulo)}
+                  className={`min-w-[3.5rem] rounded-md border px-4 py-2 text-sm font-medium ${
+                    selectedSize === t.titulo
+                      ? "border-primary bg-primary/5 text-primary"
+                      : "border-border bg-background text-foreground"
+                  }`}
+                >
+                  {t.titulo}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Proteção do cliente */}
         <div className="mt-2 bg-amber-50 px-4 py-4">
@@ -353,10 +383,10 @@ export default function ProductPage() {
         <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-white overflow-hidden">
-              <img src="/melissa-logo.png" alt="Melissa" className="h-12 w-12 object-contain" />
+              <img src={logoBerzerk} alt="Berzerk" className="h-12 w-12 object-contain" />
             </div>
             <div>
-              <p className="font-bold">Melissa</p>
+              <p className="font-bold">Berzerk</p>
               <p className="text-sm text-muted-foreground">16300 vendido(s)</p>
             </div>
           </div>
@@ -480,6 +510,7 @@ export default function ProductPage() {
         product={product}
         open={drawer !== null}
         mode={drawer ?? "cart"}
+        initialSize={selectedSize}
         onClose={() => setDrawer(null)}
         onConfirm={drawer === "buy" ? () => navigate("/checkout") : undefined}
       />

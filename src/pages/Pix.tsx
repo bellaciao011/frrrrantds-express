@@ -113,8 +113,8 @@ export default function PixPage() {
   // Redireciona conforme o estágio do funil — APENAS após confirmação do pagamento
   useEffect(() => {
     if (!order || order.status !== "paid") return;
-    const slug = (order.store_slug ?? "melissa").toLowerCase();
-    if (slug === "melissa") {
+    const slug = (order.store_slug ?? "berzerk").toLowerCase();
+    if (slug === "berzerk") {
       const t = setTimeout(() => navigate(`/up1/${order.external_id}`), 1800);
       return () => clearTimeout(t);
     }

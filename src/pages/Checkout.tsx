@@ -169,7 +169,7 @@ export default function CheckoutPage() {
             quantity: i.quantity,
           })),
           ttclid,
-          store_slug: "melissa",
+          store_slug: "berzerk",
         },
       });
       if (error) throw error;
@@ -203,7 +203,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-white pb-36">
-      <Helmet><title>Resumo do Pedido — Melissa</title></Helmet>
+      <Helmet><title>Resumo do Pedido — Berzerk</title></Helmet>
       {/* HEADER */}
       <header className="sticky top-0 z-40 border-b bg-white">
         <div className="relative mx-auto flex h-14 max-w-md items-center justify-center px-3">

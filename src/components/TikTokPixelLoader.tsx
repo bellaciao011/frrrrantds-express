@@ -8,7 +8,7 @@ declare global {
   }
 }
 
-const STORE_SLUG = "melissa";
+const STORE_SLUG = "berzerk";
 
 /**
  * Carrega o SDK do TikTok no navegador para todos os pixels ativos da loja.
