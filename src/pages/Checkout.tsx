@@ -28,7 +28,7 @@ const SHIPPINGS: Shipping[] = [
   { id: "correio", name: "Correio", price: 0, eta: "Receba em até 7 dias úteis" },
 ];
 
-const FREE_SHIPPING_MIN_QTY = 3;
+const FREE_SHIPPING_MIN_QTY = 2;
 
 // ========== formatadores ==========
 function maskPhone(v: string) {
@@ -629,8 +629,8 @@ function Step2(p: {
       {!freeShippingUnlocked && (
         <div className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
           <Truck className="h-4 w-4 shrink-0" />
-          Frete grátis disponível na compra de 3 camisas ou mais. Faltam{" "}
-          <strong>{Math.max(0, 3 - p.count)}</strong>.
+          Frete grátis disponível na compra de 2 camisas ou mais. Faltam{" "}
+          <strong>{Math.max(0, 2 - p.count)}</strong>.
         </div>
       )}
 
@@ -667,11 +667,11 @@ function Step2(p: {
               <div className="flex-1">
                 <p className="text-sm font-semibold">{s.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {locked ? "Disponível na compra de 3 camisas ou mais" : s.eta}
+                  {locked ? "Disponível na compra de 2 camisas ou mais" : s.eta}
                 </p>
               </div>
               <span className={`text-sm font-semibold ${isFree && !locked ? "text-emerald-600" : ""}`}>
-                {s.price === 0 ? "R$ 0,00" : formatBRL(s.price)}
+                {s.price === 0 ? "Frete grátis" : formatBRL(s.price)}
               </span>
             </button>
           );
