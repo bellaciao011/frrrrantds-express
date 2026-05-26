@@ -392,7 +392,7 @@ export default function CheckoutPage() {
               setComplement={setComplement}
               shippingId={shippingId}
               setShippingId={setShippingId}
-              subtotal={subtotal}
+              count={count}
               onNext={() => goNext(3)}
             />
           )}
