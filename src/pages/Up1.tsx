@@ -219,7 +219,7 @@ export default function Up1Page() {
             <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               Emitente
             </p>
-            <p className="mt-2 text-sm font-bold">MELISSA OUTLET COMÉRCIO LTDA.</p>
+            <p className="mt-2 text-sm font-bold">BERZERK COMÉRCIO LTDA.</p>
             <p className="mt-1 text-xs text-muted-foreground">
               CNPJ: 47.508.411/0001-56 | IE: 110.842.557.119
             </p>
