@@ -1,7 +1,7 @@
 // Helpers para disparar eventos do TikTok Pixel no client
 import { supabase } from "@/integrations/supabase/client";
 
-const STORE_SLUG = "melissa";
+const STORE_SLUG = "berzerk";
 
 interface PurchaseEventData {
   value: number; // em REAIS (não centavos)

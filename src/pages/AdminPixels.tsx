@@ -23,7 +23,7 @@ export default function AdminPixelsPage() {
   const [pixelId, setPixelId] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const [label, setLabel] = useState("");
-  const [storeSlug, setStoreSlug] = useState("melissa");
+  const [storeSlug, setStoreSlug] = useState("berzerk");
 
   const refresh = async () => {
     setLoading(true);
@@ -51,7 +51,7 @@ export default function AdminPixelsPage() {
     const { error } = await supabase.from("tracking_pixels").insert({
       pixel_id: pixelId.trim(),
       access_token: accessToken.trim(),
-      store_slug: storeSlug.trim() || "melissa",
+      store_slug: storeSlug.trim() || "berzerk",
       label: label.trim() || null,
       is_active: true,
     });

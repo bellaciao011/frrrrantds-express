@@ -77,7 +77,7 @@ export default function CarrinhoPage() {
   return (
     <div className="min-h-screen bg-muted/30 pb-36">
       <Helmet>
-        <title>Carrinho — Melissa</title>
+        <title>Carrinho — Berzerk</title>
       </Helmet>
       <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b bg-background px-3">
         <button

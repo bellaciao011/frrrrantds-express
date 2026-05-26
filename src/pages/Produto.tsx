@@ -68,7 +68,7 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-muted/30 pb-24">
-      <Helmet><title>{product.name} — Melissa</title><meta name="description" content={`${product.name} por ${formatBRL(product.price)}`} /></Helmet>
+      <Helmet><title>{product.name} — Berzerk</title><meta name="description" content={`${product.name} por ${formatBRL(product.price)}`} /></Helmet>
       {/* Header */}
       <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b bg-background px-3">
         <button onClick={() => window.history.back()} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
