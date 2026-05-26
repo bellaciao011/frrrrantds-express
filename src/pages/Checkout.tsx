@@ -28,7 +28,7 @@ const SHIPPINGS: Shipping[] = [
   { id: "correio", name: "Correio", price: 0, eta: "Receba em até 7 dias úteis" },
 ];
 
-const FREE_SHIPPING_MIN_QTY = 3;
+const FREE_SHIPPING_MIN_QTY = 2;
 
 // ========== formatadores ==========
 function maskPhone(v: string) {
