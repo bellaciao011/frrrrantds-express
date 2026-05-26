@@ -1,13 +1,15 @@
+import logoBerzerk from "@/assets/logo-berzerk.png";
+
 export function StoreInfo() {
   return (
     <section className="mx-auto max-w-5xl px-3 pt-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full border bg-white overflow-hidden">
-            <img src="/melissa-logo.png" alt="Melissa" className="h-14 w-14 object-contain" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-full border bg-black overflow-hidden">
+            <img src={logoBerzerk} alt="Berzerk" className="h-14 w-14 object-contain" />
           </div>
           <div>
-            <h1 className="text-lg font-bold leading-tight">Melissa</h1>
+            <h1 className="text-lg font-bold leading-tight">Berzerk</h1>
             <p className="text-xs text-muted-foreground">99.176 vendido(s)</p>
           </div>
         </div>
