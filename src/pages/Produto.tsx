@@ -44,13 +44,15 @@ export default function ProductPage() {
   const [imgIdx, setImgIdx] = useState(0);
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const [selectedVar, setSelectedVar] = useState(0);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [drawer, setDrawer] = useState<"cart" | "buy" | null>(null);
   const baseImages = product?.images?.length ? product.images : (product ? [product.image] : []);
   const variantImages = (product?.variacoes ?? []).map((v) => v.imagem).filter(Boolean);
   const images: string[] = Array.from(new Set([...baseImages, ...variantImages]));
+  const tamanhos = (product?.variacoes ?? []).filter((v) => v.tipo === "tamanho");
 
   // reset ao trocar de produto
-  useEffect(() => { setImgIdx(0); setSelectedVar(0); }, [id]);
+  useEffect(() => { setImgIdx(0); setSelectedVar(0); setSelectedSize(null); }, [id]);
 
   if (!product) {
     return (
