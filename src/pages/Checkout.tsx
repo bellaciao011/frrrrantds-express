@@ -18,6 +18,7 @@ import { formatBRL } from "@/data/products";
 import { supabase } from "@/integrations/supabase/client";
 import { getStoredTtclid } from "@/lib/tiktokPixel";
 import { toast } from "sonner";
+import { getUrlWithUtm } from "@/utils/utm";
 
 type Step = 1 | 2 | 3;
 type Shipping = { id: string; name: string; price: number; eta: string };
@@ -174,7 +175,7 @@ export default function CheckoutPage() {
       });
       if (error) throw error;
       if (!data?.external_id) throw new Error("Falha ao gerar Pix.");
-      navigate(`/pix/${data.external_id }`);
+      navigate(getUrlWithUtm(`/pix/${data.external_id }`));
     } catch (e: any) {
       console.error(e);
       toast.error(e?.message ?? "Não foi possível gerar o Pix.");
@@ -191,7 +192,7 @@ export default function CheckoutPage() {
           <ShoppingBag className="mx-auto h-12 w-12 text-muted-foreground" />
           <p className="mt-3 text-muted-foreground">Seu carrinho está vazio.</p>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate(getUrlWithUtm("/"))}
             className="mt-4 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground"
           >
             Ver produtos

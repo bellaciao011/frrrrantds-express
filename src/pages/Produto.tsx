@@ -9,6 +9,7 @@ import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
 import logoBerzerk from "@/assets/logo-berzerk.png";
+import { getUrlWithUtm } from "@/utils/utm";
 
 
 const REVIEWS_TOTAL = 207;
@@ -454,7 +455,7 @@ export default function ProductPage() {
                       <ShoppingCart className="h-4 w-4" />
                     </button>
                     <button
-                      onClick={() => navigate(`/produto/${p.id }`)}
+                      onClick={() => navigate(getUrlWithUtm(`/produto/${p.id }`))}
                       className="flex-1 rounded-full bg-primary py-2 text-xs font-bold text-primary-foreground"
                     >
                       Comprar
@@ -512,7 +513,7 @@ export default function ProductPage() {
         mode={drawer ?? "cart"}
         initialSize={selectedSize}
         onClose={() => setDrawer(null)}
-        onConfirm={drawer === "buy" ? () => navigate("/checkout") : undefined}
+        onConfirm={drawer === "buy" ? () => navigate(getUrlWithUtm("/checkout")) : undefined}
       />
     </div>
   );

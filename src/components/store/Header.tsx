@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, ShoppingCart, Share2 } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/lib/cart";
+import { getUrlWithUtm } from "@/utils/utm";
 
 export function Header() {
   const { count } = useCart();
@@ -11,7 +12,7 @@ export function Header() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = q.trim();
-    if (trimmed) navigate(`/?q=${encodeURIComponent(trimmed)}`);
+    if (trimmed) navigate(getUrlWithUtm(`/?q=${encodeURIComponent(trimmed)}`));
   };
 
   return (

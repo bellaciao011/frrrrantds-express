@@ -4,6 +4,7 @@ import { ArrowLeft, Minus, Plus, ShoppingCart, Star, Trash2 } from "lucide-react
 import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL, products } from "@/data/products";
+import { getUrlWithUtm } from "@/utils/utm";
 
 function useRandomProducts(count: number, excludeIds: string[]) {
   return useMemo(() => {
@@ -197,7 +198,7 @@ export default function CarrinhoPage() {
               <span className="text-xl font-bold text-price">{formatBRL(total)}</span>
             </div>
             <button
-              onClick={() => navigate("/checkout")}
+              onClick={() => navigate(getUrlWithUtm("/checkout"))}
               className="w-full rounded-full bg-primary py-3.5 text-sm font-bold text-primary-foreground"
             >
               Finalizar Compra
