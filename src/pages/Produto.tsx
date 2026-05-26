@@ -16,11 +16,10 @@ const REVIEWS_4 = 857;
 const REVIEWS_WITH_MEDIA = 2500;
 
 const CREATORS = [
-  { name: "Lucas Rangel", video: "https://appv1.rabbtifyecom.pro/uploads/video1.mp4", avatar: "https://loja.frrrrantds.shop/uploads/LucasRangel.jpg" },
-  { name: "Nandy Zorzan", video: "https://appv1.rabbtifyecom.pro/uploads/video2.mp4", avatar: "https://loja.frrrrantds.shop/uploads/Nandy%20zorzan.jpg" },
-  { name: "Califórnices", video: "https://appv1.rabbtifyecom.pro/uploads/video3.mp4", avatar: "https://loja.frrrrantds.shop/uploads/Calif%C3%B3rnices.jpg" },
-  { name: "Ana Cecília", video: "https://appv1.rabbtifyecom.pro/uploads/video4.mp4", avatar: "https://loja.frrrrantds.shop/uploads/anacecilia.jpg" },
-  { name: "Lucas Rangel", video: "https://appv1.rabbtifyecom.pro/uploads/video5.mp4", avatar: "https://loja.frrrrantds.shop/uploads/LucasRangel.jpg" },
+  { name: "@berzerk.oficial", video: "/videos/berzerk-1.mp4", avatar: "https://ui-avatars.com/api/?name=Berzerk&background=000&color=fff&bold=true" },
+  { name: "@berzerk.store", video: "/videos/berzerk-2.mp4", avatar: "https://ui-avatars.com/api/?name=BZ&background=111&color=fff&bold=true" },
+  { name: "@berzerk.brasil", video: "/videos/berzerk-3.mp4", avatar: "https://ui-avatars.com/api/?name=BR&background=222&color=fff&bold=true" },
+  { name: "@berzerk.wear", video: "/videos/berzerk-4.mp4", avatar: "https://ui-avatars.com/api/?name=BW&background=000&color=fff&bold=true" },
 ];
 
 function useCountdown(seconds: number) {
@@ -223,38 +222,6 @@ export default function ProductPage() {
           <p className="font-medium">Devoluções gratuitas em 30 dias · Cancelamento fácil</p>
         </div>
 
-        {/* Variações (cores) */}
-        {product.variacoes && product.variacoes.length > 0 && (
-          <div className="border-t bg-background px-4 py-3">
-            <div className="mb-2 flex items-center justify-between">
-              <p className="text-sm">
-                <span className="text-muted-foreground">Cor: </span>
-                <span className="font-semibold">{product.variacoes[selectedVar]?.titulo}</span>
-              </p>
-              <span className="text-xs text-muted-foreground">
-                {product.variacoes.length} opções
-              </span>
-            </div>
-            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-              {product.variacoes.map((v, n) => (
-                <button
-                  key={n}
-                  onClick={() => {
-                    setSelectedVar(n);
-                    const idx = images.findIndex((x) => x === v.imagem);
-                    if (idx >= 0) setImgIdx(idx);
-                  }}
-                  className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 ${
-                    selectedVar === n ? "border-primary" : "border-transparent"
-                  }`}
-                  title={v.titulo}
-                >
-                  <img src={v.imagem} alt={v.titulo} className="h-full w-full object-cover" loading="lazy" />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Proteção do cliente */}
         <div className="mt-2 bg-amber-50 px-4 py-4">
