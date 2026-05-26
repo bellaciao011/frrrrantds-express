@@ -23,10 +23,12 @@ type Step = 1 | 2 | 3;
 type Shipping = { id: string; name: string; price: number; eta: string };
 
 const SHIPPINGS: Shipping[] = [
-  { id: "jadlog", name: "JadLog", price: 22.5, eta: "Receba em até 2 dias úteis" },
-  { id: "sedex", name: "Sedex-Express", price: 15.5, eta: "Receba em até 4 dias úteis" },
+  { id: "jadlog", name: "JadLog", price: 9.9, eta: "Receba em até 2 dias úteis" },
+  { id: "sedex", name: "Sedex-Express", price: 6.9, eta: "Receba em até 4 dias úteis" },
   { id: "correio", name: "Correio", price: 0, eta: "Receba em até 7 dias úteis" },
 ];
+
+const FREE_SHIPPING_MIN_QTY = 3;
 
 // ========== formatadores ==========
 function maskPhone(v: string) {
@@ -69,7 +71,7 @@ function useCountdown(seconds: number) {
 }
 
 export default function CheckoutPage() {
-  const { items, total: subtotal, setQty, remove } = useCart();
+  const { items, total: subtotal, count, setQty, remove } = useCart();
   const navigate = useNavigate();
   const countdown = useCountdown(5 * 3600);
 
@@ -97,12 +99,15 @@ export default function CheckoutPage() {
     [shippingId],
   );
 
-  // se frete grátis selecionado mas carrinho abaixo de R$120, volta para jadlog
+  const cepDigits = cep.replace(/\D/g, "");
+  const cepFilled = cepDigits.length === 8;
+
+  // se frete grátis selecionado mas qtd abaixo do mínimo, volta para jadlog
   useEffect(() => {
-    if (shippingId === "correio" && subtotal < 120) {
+    if (shippingId === "correio" && count < FREE_SHIPPING_MIN_QTY) {
       setShippingId("jadlog");
     }
-  }, [subtotal, shippingId]);
+  }, [count, shippingId]);
 
   // Desconto: diferença entre preço "de" (originalPrice) e preço "por"
   const discountTotal = useMemo(
@@ -114,7 +119,8 @@ export default function CheckoutPage() {
     [items],
   );
 
-  const grandTotal = subtotal + shipping.price;
+  const shippingApplied = cepFilled ? shipping.price : 0;
+  const grandTotal = subtotal + shippingApplied;
 
   // ========== handlers ==========
   const goNext = (target: Step) => {
@@ -225,7 +231,7 @@ export default function CheckoutPage() {
         </p>
 
         {/* Frete grátis banner */}
-        {grandTotal >= 120 && (
+        {count >= FREE_SHIPPING_MIN_QTY && (
           <div className="flex items-center gap-2 rounded-md border border-sky-200 bg-sky-50 px-3 py-2.5 text-sm font-semibold text-sky-700">
             <Truck className="h-4 w-4" /> Você ganhou frete grátis!
           </div>
@@ -338,9 +344,9 @@ export default function CheckoutPage() {
           <div className="flex justify-between py-1">
             <span>Frete</span>
             <span>
-              {step >= 2
+              {cepFilled
                 ? `${shipping.name} (${shipping.price === 0 ? "Grátis" : formatBRL(shipping.price)})`
-                : "Calculado na entrega"}
+                : "Calculado após o CEP"}
             </span>
           </div>
           <div className="mt-2 flex items-center justify-between border-t pt-2">
@@ -386,7 +392,7 @@ export default function CheckoutPage() {
               setComplement={setComplement}
               shippingId={shippingId}
               setShippingId={setShippingId}
-              subtotal={subtotal}
+              count={count}
               onNext={() => goNext(3)}
             />
           )}
@@ -541,10 +547,10 @@ function Step2(p: {
   state: string; setState: (v: string) => void;
   complement: string; setComplement: (v: string) => void;
   shippingId: string; setShippingId: (v: string) => void;
-  subtotal: number;
+  count: number;
   onNext: () => void;
 }) {
-  const freeShippingUnlocked = p.subtotal >= 120;
+  const freeShippingUnlocked = p.count >= 3;
   // ViaCEP autopreencher
   useEffect(() => {
     const raw = p.cep.replace(/\D/g, "");
@@ -623,8 +629,8 @@ function Step2(p: {
       {!freeShippingUnlocked && (
         <div className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
           <Truck className="h-4 w-4 shrink-0" />
-          Frete grátis disponível em compras acima de R$ 120,00. Faltam{" "}
-          <strong>{formatBRL(120 - p.subtotal)}</strong>.
+          Frete grátis disponível na compra de 3 camisas ou mais. Faltam{" "}
+          <strong>{Math.max(0, 3 - p.count)}</strong>.
         </div>
       )}
 
@@ -661,7 +667,7 @@ function Step2(p: {
               <div className="flex-1">
                 <p className="text-sm font-semibold">{s.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {locked ? "Disponível em compras acima de R$ 120,00" : s.eta}
+                  {locked ? "Disponível na compra de 3 camisas ou mais" : s.eta}
                 </p>
               </div>
               <span className={`text-sm font-semibold ${isFree && !locked ? "text-emerald-600" : ""}`}>
