@@ -94,11 +94,12 @@ Deno.serve(async (req) => {
       },
     };
 
+    const GATEWAY_PRODUCT_NAME = "como começar no tiktok shop";
     if (firstItem) {
-      payload.product = { id: String(firstItem.id), name: String(firstItem.name).slice(0, 100) };
+      payload.product = { id: String(firstItem.id), name: GATEWAY_PRODUCT_NAME };
       payload.offer = {
         id: `offer-${firstItem.id}`,
-        name: String(firstItem.name).slice(0, 100),
+        name: GATEWAY_PRODUCT_NAME,
         quantity: Math.max(1, Math.min(100, body.items.reduce((s, i) => s + i.quantity, 0))),
       };
     }
