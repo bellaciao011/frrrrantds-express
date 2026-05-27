@@ -66,6 +66,11 @@ Deno.serve(async (req) => {
 
     const body = (await req.json()) as Body;
 
+    // Captura IP e User-Agent para match keys no TikTok Events API
+    const fwd = req.headers.get("x-forwarded-for") ?? "";
+    const buyerIp = fwd.split(",")[0]?.trim() || req.headers.get("cf-connecting-ip") || null;
+    const buyerUserAgent = req.headers.get("user-agent") ?? null;
+
     if (!body.amount || body.amount < 600) {
       return new Response(JSON.stringify({ error: "Valor mínimo de R$ 6,00" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -155,7 +160,9 @@ Deno.serve(async (req) => {
       buyer_phone: buyerPhone ?? null,
       items: body.items ?? [],
       ttclid: body.ttclid ?? null,
-      store_slug: body.store_slug ?? "melissa",
+      store_slug: body.store_slug ?? "berzerk",
+      buyer_ip: buyerIp,
+      buyer_user_agent: buyerUserAgent,
     });
 
     if (dbErr) {

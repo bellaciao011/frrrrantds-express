@@ -101,6 +101,18 @@ export default function PixPage() {
   // Dispara Purchase no client quando o pedido vira "paid"
   useEffect(() => {
     if (!order || order.status !== "paid") return;
+    const itemsArr = Array.isArray(order.items)
+      ? (order.items as Array<{ id?: string; name?: string; price?: number; quantity?: number }>)
+      : [];
+    const contents = itemsArr.length
+      ? itemsArr.map((i) => ({
+          content_id: String(i.id ?? order.external_id),
+          content_type: "product" as const,
+          content_name: i.name,
+          quantity: i.quantity ?? 1,
+          price: i.price,
+        }))
+      : undefined;
     trackPurchaseClient({
       value: order.amount / 100,
       currency: "BRL",
@@ -108,6 +120,8 @@ export default function PixPage() {
       phone: order.buyer_phone ?? undefined,
       order_id: order.external_id,
       ttclid: order.ttclid,
+      contents,
+      description: itemsArr[0]?.name,
     });
   }, [order?.status, order?.external_id]);
 

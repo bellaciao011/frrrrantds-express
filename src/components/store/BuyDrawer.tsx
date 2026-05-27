@@ -3,6 +3,7 @@ import { Maximize2, Minus, Plus, X } from "lucide-react";
 import { type Product, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { useCartFly } from "@/lib/cart-fly";
+import { trackAddToCart } from "@/lib/tiktokPixel";
 
 interface Props {
   product: Product;
@@ -49,6 +50,12 @@ export function BuyDrawer({ product, open, mode, initialSize, onClose, onConfirm
   const handleConfirm = () => {
     const size = tamanhos[tamIdx]?.titulo;
     for (let i = 0; i < qty; i++) add(product, size);
+    trackAddToCart({
+      content_id: product.id,
+      content_name: product.name,
+      price: product.price,
+      quantity: qty,
+    });
     onClose();
     if (mode === "buy") {
       fly.trigger();

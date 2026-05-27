@@ -10,6 +10,7 @@ import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
 import logoBerzerk from "@/assets/logo-berzerk.png";
 import { getUrlWithUtm } from "@/utils/utm";
+import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
 
 
 const REVIEWS_TOTAL = 207;
@@ -54,6 +55,16 @@ export default function ProductPage() {
 
   // reset ao trocar de produto
   useEffect(() => { setImgIdx(0); setSelectedVar(0); setSelectedSize(null); }, [id]);
+
+  // TikTok ViewContent
+  useEffect(() => {
+    if (!product) return;
+    trackViewContent({
+      content_id: product.id,
+      content_name: product.name,
+      price: product.price,
+    });
+  }, [product?.id]);
 
   if (!product) {
     return (
@@ -448,7 +459,10 @@ export default function ProductPage() {
                   </div>
                   <div className="mt-2 flex items-center gap-1 px-1 pb-1">
                     <button
-                      onClick={() => add(p)}
+                      onClick={() => {
+                        add(p);
+                        trackAddToCart({ content_id: p.id, content_name: p.name, price: p.price, quantity: 1 });
+                      }}
                       className="flex h-9 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
                       aria-label="Adicionar"
                     >

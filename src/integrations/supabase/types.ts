@@ -19,8 +19,10 @@ export type Database = {
           amount: number
           buyer_document: string | null
           buyer_email: string
+          buyer_ip: string | null
           buyer_name: string
           buyer_phone: string | null
+          buyer_user_agent: string | null
           created_at: string
           external_id: string
           id: string
@@ -40,8 +42,10 @@ export type Database = {
           amount: number
           buyer_document?: string | null
           buyer_email: string
+          buyer_ip?: string | null
           buyer_name: string
           buyer_phone?: string | null
+          buyer_user_agent?: string | null
           created_at?: string
           external_id: string
           id?: string
@@ -61,8 +65,10 @@ export type Database = {
           amount?: number
           buyer_document?: string | null
           buyer_email?: string
+          buyer_ip?: string | null
           buyer_name?: string
           buyer_phone?: string | null
+          buyer_user_agent?: string | null
           created_at?: string
           external_id?: string
           id?: string

@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/data/products";
 import { supabase } from "@/integrations/supabase/client";
-import { getStoredTtclid } from "@/lib/tiktokPixel";
+import { getStoredTtclid, trackInitiateCheckout, trackAddPaymentInfo } from "@/lib/tiktokPixel";
 import { toast } from "sonner";
 import { getUrlWithUtm } from "@/utils/utm";
 
@@ -123,6 +123,23 @@ export default function CheckoutPage() {
   const shippingApplied = cepFilled ? shipping.price : 0;
   const grandTotal = subtotal + shippingApplied;
 
+  // TikTok InitiateCheckout ao entrar no checkout
+  useEffect(() => {
+    if (items.length === 0) return;
+    trackInitiateCheckout({
+      value: subtotal,
+      contents: items.map((i) => ({
+        content_id: i.id,
+        content_type: "product",
+        content_name: i.name,
+        quantity: i.quantity,
+        price: i.price,
+      })),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
   // ========== handlers ==========
   const goNext = (target: Step) => {
     if (target === 2) {
@@ -175,6 +192,18 @@ export default function CheckoutPage() {
       });
       if (error) throw error;
       if (!data?.external_id) throw new Error("Falha ao gerar Pix.");
+      trackAddPaymentInfo({
+        value: grandTotal,
+        contents: items.map((i) => ({
+          content_id: i.id,
+          content_type: "product",
+          content_name: i.name,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+        order_id: data.external_id,
+        identify: { email, phone },
+      });
       navigate(getUrlWithUtm(`/pix/${data.external_id }`));
     } catch (e: any) {
       console.error(e);
