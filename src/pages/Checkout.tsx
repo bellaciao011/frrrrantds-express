@@ -123,6 +123,23 @@ export default function CheckoutPage() {
   const shippingApplied = cepFilled ? shipping.price : 0;
   const grandTotal = subtotal + shippingApplied;
 
+  // TikTok InitiateCheckout ao entrar no checkout
+  useEffect(() => {
+    if (items.length === 0) return;
+    trackInitiateCheckout({
+      value: subtotal,
+      contents: items.map((i) => ({
+        content_id: i.id,
+        content_type: "product",
+        content_name: i.name,
+        quantity: i.quantity,
+        price: i.price,
+      })),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
   // ========== handlers ==========
   const goNext = (target: Step) => {
     if (target === 2) {
