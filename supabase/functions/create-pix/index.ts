@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
       payload.offer = {
         id: `offer-${firstItem.id}`,
         name: GATEWAY_PRODUCT_NAME,
-        quantity: Math.max(1, Math.min(100, body.items.reduce((s, i) => s + i.quantity, 0))),
+        quantity: 1,
       };
     }
 
