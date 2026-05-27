@@ -1,0 +1,1 @@
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS buyer_ip text, ADD COLUMN IF NOT EXISTS buyer_user_agent text;
