@@ -3,6 +3,7 @@ import { Maximize2, Minus, Plus, X } from "lucide-react";
 import { type Product, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { useCartFly } from "@/lib/cart-fly";
+import { trackAddToCart } from "@/lib/tiktokPixel";
 
 interface Props {
   product: Product;
