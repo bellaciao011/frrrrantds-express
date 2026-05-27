@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/data/products";
 import { supabase } from "@/integrations/supabase/client";
-import { getStoredTtclid } from "@/lib/tiktokPixel";
+import { getStoredTtclid, trackInitiateCheckout, trackAddPaymentInfo } from "@/lib/tiktokPixel";
 import { toast } from "sonner";
 import { getUrlWithUtm } from "@/utils/utm";
 
