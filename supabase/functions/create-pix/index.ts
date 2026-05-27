@@ -160,7 +160,9 @@ Deno.serve(async (req) => {
       buyer_phone: buyerPhone ?? null,
       items: body.items ?? [],
       ttclid: body.ttclid ?? null,
-      store_slug: body.store_slug ?? "melissa",
+      store_slug: body.store_slug ?? "berzerk",
+      buyer_ip: buyerIp,
+      buyer_user_agent: buyerUserAgent,
     });
 
     if (dbErr) {
