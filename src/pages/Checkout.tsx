@@ -192,6 +192,18 @@ export default function CheckoutPage() {
       });
       if (error) throw error;
       if (!data?.external_id) throw new Error("Falha ao gerar Pix.");
+      trackAddPaymentInfo({
+        value: grandTotal,
+        contents: items.map((i) => ({
+          content_id: i.id,
+          content_type: "product",
+          content_name: i.name,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+        order_id: data.external_id,
+        identify: { email, phone },
+      });
       navigate(getUrlWithUtm(`/pix/${data.external_id }`));
     } catch (e: any) {
       console.error(e);
