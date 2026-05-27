@@ -50,6 +50,12 @@ export function BuyDrawer({ product, open, mode, initialSize, onClose, onConfirm
   const handleConfirm = () => {
     const size = tamanhos[tamIdx]?.titulo;
     for (let i = 0; i < qty; i++) add(product, size);
+    trackAddToCart({
+      content_id: product.id,
+      content_name: product.name,
+      price: product.price,
+      quantity: qty,
+    });
     onClose();
     if (mode === "buy") {
       fly.trigger();
