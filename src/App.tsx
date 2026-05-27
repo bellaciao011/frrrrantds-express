@@ -8,6 +8,7 @@ import Up1Page from "@/pages/Up1";
 import Up2Page from "@/pages/Up2";
 import AdminPixelsPage from "@/pages/AdminPixels";
 import TikTokPixelLoader from "@/components/TikTokPixelLoader";
+import ScrollToTop from "@/components/ScrollToTop";
 
 function NotFound() {
   return (
