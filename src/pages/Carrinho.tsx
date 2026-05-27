@@ -54,7 +54,10 @@ function RecommendedSection({ excludeIds }: { excludeIds: string[] }) {
                     </p>
                   </div>
                   <button
-                    onClick={() => add(p)}
+                    onClick={() => {
+                      add(p);
+                      trackAddToCart({ content_id: p.id, content_name: p.name, price: p.price, quantity: 1 });
+                    }}
                     className="flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
                   >
                     <ShoppingCart className="h-3 w-3" /> Adicionar
