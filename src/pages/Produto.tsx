@@ -10,6 +10,7 @@ import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
 import logoBerzerk from "@/assets/logo-berzerk.png";
 import { getUrlWithUtm } from "@/utils/utm";
+import { trackViewContent } from "@/lib/tiktokPixel";
 
 
 const REVIEWS_TOTAL = 207;
