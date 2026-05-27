@@ -459,7 +459,10 @@ export default function ProductPage() {
                   </div>
                   <div className="mt-2 flex items-center gap-1 px-1 pb-1">
                     <button
-                      onClick={() => add(p)}
+                      onClick={() => {
+                        add(p);
+                        trackAddToCart({ content_id: p.id, content_name: p.name, price: p.price, quantity: 1 });
+                      }}
                       className="flex h-9 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
                       aria-label="Adicionar"
                     >
