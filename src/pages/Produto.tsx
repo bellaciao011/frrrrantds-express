@@ -56,6 +56,16 @@ export default function ProductPage() {
   // reset ao trocar de produto
   useEffect(() => { setImgIdx(0); setSelectedVar(0); setSelectedSize(null); }, [id]);
 
+  // TikTok ViewContent
+  useEffect(() => {
+    if (!product) return;
+    trackViewContent({
+      content_id: product.id,
+      content_name: product.name,
+      price: product.price,
+    });
+  }, [product?.id]);
+
   if (!product) {
     return (
       <div className="flex min-h-screen items-center justify-center">
