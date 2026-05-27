@@ -148,17 +148,14 @@ export async function trackPurchaseServerSide(opts: {
   const { data: pixels, error: pxErr } = await supa
     .from("tracking_pixels")
     .select("pixel_id,access_token")
-    .eq("is_active", true)
-    .eq("store_slug", order.store_slug ?? "melissa");
+    .eq("is_active", true);
 
   if (pxErr) {
     console.error("[tiktok] pixels error", pxErr);
     return;
   }
   if (!pixels || pixels.length === 0) {
-    console.log(
-      `[tiktok] nenhum pixel ativo para store_slug=${order.store_slug}`,
-    );
+    console.log(`[tiktok] nenhum pixel ativo`);
     return;
   }
 
