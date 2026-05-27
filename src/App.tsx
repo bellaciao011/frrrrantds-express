@@ -33,6 +33,7 @@ export default function App() {
   return (
     <>
       <TikTokPixelLoader />
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<IndexPage />} />
         <Route path="/carrinho" element={<CarrinhoPage />} />
