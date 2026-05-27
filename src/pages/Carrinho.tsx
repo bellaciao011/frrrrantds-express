@@ -202,7 +202,19 @@ export default function CarrinhoPage() {
               <span className="text-xl font-bold text-price">{formatBRL(total)}</span>
             </div>
             <button
-              onClick={() => navigate(getUrlWithUtm("/checkout"))}
+              onClick={() => {
+                trackInitiateCheckout({
+                  value: total,
+                  contents: items.map((i) => ({
+                    content_id: i.id,
+                    content_type: "product",
+                    content_name: i.name,
+                    quantity: i.quantity,
+                    price: i.price,
+                  })),
+                });
+                navigate(getUrlWithUtm("/checkout"));
+              }}
               className="w-full rounded-full bg-primary py-3.5 text-sm font-bold text-primary-foreground"
             >
               Finalizar Compra
