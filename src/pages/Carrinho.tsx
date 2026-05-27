@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL, products } from "@/data/products";
 import { getUrlWithUtm } from "@/utils/utm";
+import { trackAddToCart, trackInitiateCheckout } from "@/lib/tiktokPixel";
 
 function useRandomProducts(count: number, excludeIds: string[]) {
   return useMemo(() => {
