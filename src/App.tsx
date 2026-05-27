@@ -9,6 +9,7 @@ import Up2Page from "@/pages/Up2";
 import AdminPixelsPage from "@/pages/AdminPixels";
 import TikTokPixelLoader from "@/components/TikTokPixelLoader";
 import ScrollToTop from "@/components/ScrollToTop";
+import UtmPersistence from "@/components/UtmPersistence";
 
 function NotFound() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
     <>
       <TikTokPixelLoader />
       <ScrollToTop />
+      <UtmPersistence />
       <Routes>
         <Route path="/" element={<IndexPage />} />
         <Route path="/carrinho" element={<CarrinhoPage />} />
