@@ -282,68 +282,6 @@ export default function ProductPage() {
           </ul>
         </div>
 
-        {/* Vídeos dos criadores */}
-        <div className="mt-2 bg-background px-4 py-4">
-          <div className="mb-3 flex items-baseline justify-between">
-            <div className="flex items-center gap-2">
-              <Video className="h-5 w-5" />
-              <h2 className="text-lg font-bold">Vídeos dos criadores</h2>
-            </div>
-            <p className="text-sm text-muted-foreground">Conteúdo enviado por quem testou</p>
-          </div>
-          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
-            {CREATORS.map((c, n) => (
-              <button
-                key={n}
-                onClick={() => setActiveVideo(n)}
-                className="relative h-64 w-44 shrink-0 overflow-hidden rounded-2xl bg-muted"
-              >
-                <video
-                  src={c.video}
-                  className="h-full w-full object-cover"
-                  muted
-                  loop
-                  playsInline
-                  autoPlay
-                  preload="metadata"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                    <Play className="ml-0.5 h-5 w-5 fill-foreground text-foreground" />
-                  </div>
-                </div>
-                <div className="absolute bottom-2 left-2 right-2 flex items-center gap-2 text-white">
-                  <img src={c.avatar} alt={c.name} className="h-7 w-7 shrink-0 rounded-full object-cover ring-2 ring-white" />
-                  <p className="truncate text-sm font-semibold drop-shadow">{c.name}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Modal de vídeo */}
-        {activeVideo !== null && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
-            onClick={() => setActiveVideo(null)}
-          >
-            <button
-              onClick={() => setActiveVideo(null)}
-              className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white text-2xl"
-            >
-              ×
-            </button>
-            <video
-              src={CREATORS[activeVideo].video}
-              className="max-h-full max-w-full rounded-lg"
-              controls
-              autoPlay
-              playsInline
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-        )}
 
         {/* Descrição */}
         <div className="mt-2 bg-background px-4 py-4">
