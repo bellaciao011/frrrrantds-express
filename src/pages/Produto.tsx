@@ -2,7 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
   ArrowLeft, Bookmark, ChevronLeft, ChevronRight, Home, MessageCircle, MoreHorizontal,
-  Play, Share2, ShieldCheck, ShoppingCart, Star, Ticket, Video, Zap,
+  Share2, ShieldCheck, ShoppingCart, Star, Ticket, Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { products, formatBRL } from "@/data/products";
