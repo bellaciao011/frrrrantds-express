@@ -18,12 +18,6 @@ const REVIEWS_5 = 12300;
 const REVIEWS_4 = 857;
 const REVIEWS_WITH_MEDIA = 2500;
 
-const CREATORS = [
-  { name: "@berzerk", video: "/videos/berzerk-1.mp4", avatar: logoBerzerk },
-  { name: "@berzerk", video: "/videos/berzerk-2.mp4", avatar: logoBerzerk },
-  { name: "@berzerk", video: "/videos/berzerk-3.mp4", avatar: logoBerzerk },
-  { name: "@berzerk", video: "/videos/berzerk-4.mp4", avatar: logoBerzerk },
-];
 
 function useCountdown(seconds: number) {
   const [t, setT] = useState(seconds);
