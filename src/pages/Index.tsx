@@ -72,8 +72,8 @@ export default function IndexPage() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Berzerk — Promoções</title>
-        <meta name="description" content="Loja online com até 80% OFF e frete grátis." />
+        <title>corrida 2 — Olympikus em Promoção</title>
+        <meta name="description" content="Tênis Olympikus com até 85% OFF e frete grátis." />
       </Helmet>
       <PromoPopup />
       <Header />
