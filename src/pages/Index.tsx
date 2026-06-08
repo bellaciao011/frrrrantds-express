@@ -18,7 +18,7 @@ export default function IndexPage() {
   const q = params.get("q") ?? undefined;
   const categoryParam = params.get("cat") as CategoryId | null;
   const [tab, setTab] = useState<Tab>(categoryParam ? "produtos" : "produtos");
-  const [sort, setSort] = useState<Sort>("preco-asc");
+  const [sort, setSort] = useState<Sort>("preco-desc");
   const [layout, setLayout] = useState<"list" | "grid">("list");
   const [activeCategory, setActiveCategory] = useState<CategoryId | null>(categoryParam);
 
