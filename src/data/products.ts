@@ -122,8 +122,7 @@ const mk = (
   sold,
 });
 
-// Ordenado do mais caro para o mais barato
-export const products: Product[] = [
+const baseProducts: Product[] = [
   mk("olympikus-corre-supra-2", "Tênis Olympikus Corre Supra 2", GAL.g50, SUPRA2_CORES, 121.97, 1299.0, 70, 543),
   mk("olympikus-corre-5", "Tênis de Corrida Olympikus Corre 5", GAL.g337, CORRE5_CORES, 91.68, 569.99, 60, 732),
   mk("olympikus-corre-grafeno-3", "Tênis Olympikus Corre Grafeno 3", GAL.g47, GRAFENO3_CORES, 89.82, 799.99, 80, 3521),
@@ -131,6 +130,19 @@ export const products: Product[] = [
   mk("olympikus-corre-turbo", "Tênis Olympikus Corre Turbo", GAL.g195, TURBO_CORES, 67.39, 669.99, 60, 7321),
   mk("olympikus-corre-4", "Tênis Olympikus Corre 4", GAL.g19, CORRE4_CORES, 62.21, 569.99, 60, 732),
 ];
+
+// Expande cada cor como card próprio (igual ao site de referência).
+// Variações completas ficam disponíveis ao abrir o produto.
+export const products: Product[] = baseProducts.flatMap((p) =>
+  p.variacoes
+    .filter((v) => v.tipo === "cor")
+    .map((cor, i) => ({
+      ...p,
+      id: i === 0 ? p.id : `${p.id}-${i + 1}`,
+      name: `${p.name} - ${cor.titulo}`,
+      image: cor.imagem,
+    })),
+);
 
 export function formatBRL(value: number): string {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
