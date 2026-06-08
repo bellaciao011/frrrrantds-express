@@ -102,12 +102,12 @@ export function BuyDrawer({ product, open, mode, initialSize, onClose, onConfirm
             {cores.length > 0 && (
               <div className="mb-4">
                 <p className="mb-2 text-sm font-semibold">Cor</p>
-                <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
+                <div className="grid grid-cols-3 gap-2">
                   {cores.map((c, i) => (
                     <button
                       key={i}
                       onClick={() => setCorIdx(i)}
-                      className={`relative w-32 shrink-0 overflow-hidden rounded-xl border bg-background ${
+                      className={`relative overflow-hidden rounded-lg border bg-background ${
                         corIdx === i ? "border-primary ring-2 ring-primary/30" : "border-border"
                       }`}
                     >
@@ -116,17 +116,18 @@ export function BuyDrawer({ product, open, mode, initialSize, onClose, onConfirm
                           e.stopPropagation();
                           setPreview(c.imagem);
                         }}
-                        className="absolute left-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-foreground/40 text-white"
+                        className="absolute left-1 top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/40 text-white"
                       >
-                        <Maximize2 className="h-3 w-3" />
+                        <Maximize2 className="h-2.5 w-2.5" />
                       </span>
                       <div className="aspect-square bg-muted">
                         <img src={c.imagem} alt={c.titulo} className="h-full w-full object-contain" loading="lazy" />
                       </div>
-                      <p className="border-t py-2 text-center text-sm font-medium">{c.titulo}</p>
+                      <p className="border-t py-1 text-center text-xs font-medium truncate px-1">{c.titulo}</p>
                     </button>
                   ))}
                 </div>
+
               </div>
             )}
 
