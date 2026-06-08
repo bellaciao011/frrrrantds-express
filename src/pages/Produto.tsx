@@ -38,7 +38,7 @@ export default function ProductPage() {
   const countdown = useCountdown(5 * 60 + 43);
   const [bookmarked, setBookmarked] = useState(false);
   const [imgIdx, setImgIdx] = useState(0);
-  const [activeVideo, setActiveVideo] = useState<number | null>(null);
+  
   const [selectedVar, setSelectedVar] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [drawer, setDrawer] = useState<"cart" | "buy" | null>(null);
