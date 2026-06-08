@@ -19,21 +19,15 @@ export interface Product {
 }
 
 const SIZES: ProductVariation[] = [
-  { titulo: "38", imagem: "", tipo: "tamanho" },
-  { titulo: "39", imagem: "", tipo: "tamanho" },
-  { titulo: "40", imagem: "", tipo: "tamanho" },
-  { titulo: "41", imagem: "", tipo: "tamanho" },
-  { titulo: "42", imagem: "", tipo: "tamanho" },
-  { titulo: "43", imagem: "", tipo: "tamanho" },
-];
+  "34","35","36","37","38","39","40","41","42","43","44","45",
+].map((t) => ({ titulo: t, imagem: "", tipo: "tamanho" }));
 
 const DESCRIPTION =
   "Tênis Olympikus desenvolvido para corredores que buscam alto desempenho, conforto e durabilidade. Cabedal em mesh respirável, entressola com tecnologia de amortecimento responsivo e solado de borracha de alta resistência para máxima aderência e estabilidade no asfalto.";
 
 const IMG = (file: string) => `https://abrilchegou.shop/tenis/img/${file}`;
-const G = (files: string[]) => files.map(IMG);
 
-// Galerias completas extraídas do site de origem (cada produto tem várias fotos)
+// Galerias completas extraídas do site de origem
 const GAL = {
   g19: ["g_19_7a1094b9fb.webp","g_19_112f274da6.webp","g_19_349ac28812.webp","g_19_4a12d1b77d.png","g_19_7b9288f11d.jpg","g_19_96aced7870.webp","g_19_b6e3499c33.webp","g_19_bf25c58e3b.webp","g_19_c0bc577a52.webp","g_19_c842baba08.webp"],
   g20: ["g_20_0cf2dd3373.webp","g_20_4ca8f64d81.webp","g_20_82e36b7ed6.webp","g_20_973ce9922f.webp","g_20_a1de574cc5.webp","g_20_ab198a1bb5.webp","g_20_e1cfb4c38f.webp","g_20_f77d8784f1.webp"],
@@ -51,43 +45,91 @@ const GAL = {
   g337: ["g_337_446755cadc.jpg","g_337_09c7efcaee.jpg","g_337_11cd042915.jpg","g_337_30b0d088a2.jpg","g_337_345e23319c.jpg","g_337_4b6f409f6d.jpg","g_337_572a102c66.jpg","g_337_6437a60719.jpg","g_337_db866c3f12.jpg"],
 };
 
+const cor = (titulo: string, imagem: string): ProductVariation => ({ titulo, imagem, tipo: "cor" });
+
+// Supra 2 — 6 cores (mesma galeria, thumbs distintos)
+const SUPRA2_CORES: ProductVariation[] = [
+  cor("Bege/Verde", IMG("g_50_aac1db7134.jpg")),
+  cor("Branco/Azul", IMG("g_50_1842e60120.webp")),
+  cor("Verde/Roxo", IMG("g_50_197e5d15f4.webp")),
+  cor("Laranja/Rosa", IMG("g_50_1bb13c39a2.webp")),
+  cor("Azul/Limão", IMG("g_50_3f011bdf3c.webp")),
+  cor("Branco/Preto", IMG("g_50_713651d82e.webp")),
+];
+
+// Corre 5 — 2 cores
+const CORRE5_CORES: ProductVariation[] = [
+  cor("Branco", IMG("g_337_446755cadc.jpg")),
+  cor("Amarelo", IMG("g_337_09c7efcaee.jpg")),
+];
+
+// Corre 4 — 9 cores (uma por galeria)
+const CORRE4_CORES: ProductVariation[] = [
+  cor("Creme", IMG(GAL.g19[0])),
+  cor("Vanderlei", IMG(GAL.g193[0])),
+  cor("Preto", IMG(GAL.g42[0])),
+  cor("Branco", IMG(GAL.g44[0])),
+  cor("Rosa", IMG(GAL.g45[0])),
+  cor("Laranja", IMG(GAL.g46[0])),
+  cor("Multicor", IMG(GAL.g194[0])),
+  cor("50 anos", IMG(GAL.g20[0])),
+  cor("Branco/Laranja", IMG(GAL.g196[0])),
+];
+
+// Grafeno 3 — cores variadas (g47 tem 18 imagens)
+const GRAFENO3_CORES: ProductVariation[] = [
+  cor("Preto/Verde", IMG("g_47_917b9a33dd.webp")),
+  cor("Branco", IMG("g_47_112f7dc1a1.webp")),
+  cor("Azul", IMG("g_47_19af747e4a.webp")),
+  cor("Vermelho", IMG("g_47_234e1b34f8.webp")),
+  cor("Cinza", IMG("g_47_3221b77fd4.webp")),
+  cor("Rosa", IMG("g_47_46ef7cf146.webp")),
+];
+
+// Trilha 2 — cores
+const TRILHA2_CORES: ProductVariation[] = [
+  cor("Preto/Verde", IMG("g_104_73f5b47aae.jpg")),
+  cor("Cinza", IMG("g_104_1f10ac7acd.webp")),
+  cor("Azul", IMG("g_104_38bf695ec8.webp")),
+];
+
+// Turbo — cores
+const TURBO_CORES: ProductVariation[] = [
+  cor("Preto", IMG("g_195_fb2bfdf839.jpg")),
+  cor("Branco", IMG("g_195_091ac74d49.webp")),
+  cor("Azul", IMG("g_195_504985ee22.webp")),
+];
+
 const mk = (
   id: string,
   name: string,
   gal: string[],
+  cores: ProductVariation[],
   price: number,
   originalPrice: number,
   discount: number,
-  sold = 732,
+  sold: number,
 ): Product => ({
   id,
   name,
-  image: IMG(gal[0]),
-  images: G(gal),
+  image: cores[0]?.imagem || IMG(gal[0]),
+  images: gal.map(IMG),
   price,
   originalPrice,
   discount,
   description: DESCRIPTION,
-  variacoes: SIZES,
+  variacoes: [...cores, ...SIZES],
   sold,
 });
 
 // Ordenado do mais caro para o mais barato
 export const products: Product[] = [
-  mk("olympikus-corre-supra-2", "Tênis Olympikus Corre Supra 2", GAL.g50, 121.97, 1299.0, 70, 543),
-  mk("olympikus-corre-5", "Tênis de Corrida Olympikus Corre 5", GAL.g337, 91.68, 569.99, 60, 732),
-  mk("olympikus-corre-grafeno-3", "Tênis Olympikus Corre Grafeno 3", GAL.g47, 89.82, 799.99, 80, 3521),
-  mk("olympikus-corre-trilha-2", "Tênis Olympikus Corre Trilha 2", GAL.g104, 88.34, 599.99, 60, 134),
-  mk("olympikus-corre-turbo", "Tênis Olympikus Corre Turbo", GAL.g195, 67.39, 669.99, 60, 7321),
-  mk("olympikus-corre-4-v1", "Tênis Olympikus Corre 4", GAL.g19, 62.21, 569.99, 60, 732),
-  mk("olympikus-corre-4-v2", "Tênis Olympikus Corre 4", GAL.g20, 62.21, 599.99, 60, 528),
-  mk("olympikus-corre-4-v3", "Tênis Olympikus Corre 4", GAL.g44, 62.21, 569.99, 60, 732),
-  mk("olympikus-corre-4-v4", "Tênis Olympikus Corre 4", GAL.g45, 62.21, 569.99, 60, 732),
-  mk("olympikus-corre-4-v5", "Tênis Olympikus Corre 4", GAL.g46, 62.21, 569.99, 60, 732),
-  mk("olympikus-corre-4-v6", "Tênis Olympikus Corre 4", GAL.g193, 62.21, 569.99, 60, 732),
-  mk("olympikus-corre-4-v7", "Tênis Olympikus Corre 4", GAL.g42, 62.21, 569.99, 60, 732),
-  mk("olympikus-corre-4-v8", "Tênis Olympikus Corre 4", GAL.g194, 62.21, 569.99, 60, 732),
-  mk("olympikus-corre-4-v9", "Tênis Olympikus Corre 4", GAL.g196, 62.21, 569.99, 60, 732),
+  mk("olympikus-corre-supra-2", "Tênis Olympikus Corre Supra 2", GAL.g50, SUPRA2_CORES, 121.97, 1299.0, 70, 543),
+  mk("olympikus-corre-5", "Tênis de Corrida Olympikus Corre 5", GAL.g337, CORRE5_CORES, 91.68, 569.99, 60, 732),
+  mk("olympikus-corre-grafeno-3", "Tênis Olympikus Corre Grafeno 3", GAL.g47, GRAFENO3_CORES, 89.82, 799.99, 80, 3521),
+  mk("olympikus-corre-trilha-2", "Tênis Olympikus Corre Trilha 2", GAL.g104, TRILHA2_CORES, 88.34, 599.99, 60, 134),
+  mk("olympikus-corre-turbo", "Tênis Olympikus Corre Turbo", GAL.g195, TURBO_CORES, 67.39, 669.99, 60, 7321),
+  mk("olympikus-corre-4", "Tênis Olympikus Corre 4", GAL.g19, CORRE4_CORES, 62.21, 569.99, 60, 732),
 ];
 
 export function formatBRL(value: number): string {
