@@ -78,6 +78,15 @@ export default function CheckoutPage() {
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
   const [pixExternalId, setPixExternalId] = useState<string | null>(null);
+  const pixAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (pixExternalId && pixAreaRef.current) {
+      setTimeout(() => {
+        pixAreaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  }, [pixExternalId]);
 
   // Identificação
   const [email, setEmail] = useState("");
