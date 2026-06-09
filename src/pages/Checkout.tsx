@@ -153,7 +153,6 @@ export default function CheckoutPage() {
       }
     }
     setStep(target);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const finalize = async () => {
