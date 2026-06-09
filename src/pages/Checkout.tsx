@@ -719,7 +719,7 @@ function Step2(p: {
 
       <button
         onClick={p.onNext}
-        className="w-full rounded-md bg-slate-900 py-3 text-sm font-bold text-white"
+        className="w-full rounded-md bg-gradient-to-r from-[#ff0050] via-[#000000] to-[#00f2ea] py-3 text-sm font-bold text-white shadow-md"
       >
         Ir para pagamento
       </button>
