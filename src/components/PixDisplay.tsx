@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { formatBRL } from "@/data/products";
 import { trackPurchaseClient } from "@/lib/tiktokPixel";
 import { getUrlWithUtm } from "@/utils/utm";
+import { copyText } from "@/lib/clipboard";
+
 
 interface OrderRow {
   external_id: string;
@@ -163,13 +165,11 @@ export default function PixDisplay({ externalId }: { externalId: string }) {
 
   const copy = async () => {
     if (!order?.pix_code) return;
-    try {
-      await navigator.clipboard.writeText(order.pix_code);
-      toast.success("Código Pix copiado!");
-    } catch {
-      toast.error("Não foi possível copiar.");
-    }
+    const ok = await copyText(order.pix_code);
+    if (ok) toast.success("Código Pix copiado!");
+    else toast.error("Selecione e copie manualmente o código.");
   };
+
 
   if (loading) {
     return (

@@ -23,15 +23,38 @@ const TRACKED_KEYS = [
   "ref",
 ];
 
-function safeStorage(): Storage | null {
+function readStored(): string {
+  if (typeof window === "undefined") return "";
   try {
-    return window.sessionStorage;
+    const ls = window.localStorage.getItem(STORAGE_KEY);
+    if (ls) return ls;
   } catch {
-    return null;
+    // ignore
+  }
+  try {
+    return window.sessionStorage.getItem(STORAGE_KEY) ?? "";
+  } catch {
+    return "";
   }
 }
 
-/** Captura UTMs/click ids da URL atual e persiste em sessionStorage. */
+function writeStored(value: string) {
+  if (typeof window === "undefined") return;
+  // Escreve em ambos: localStorage sobrevive entre sessões do TTWebview,
+  // sessionStorage é fallback se localStorage estiver bloqueado.
+  try {
+    window.localStorage.setItem(STORAGE_KEY, value);
+  } catch {
+    // ignore
+  }
+  try {
+    window.sessionStorage.setItem(STORAGE_KEY, value);
+  } catch {
+    // ignore
+  }
+}
+
+/** Captura UTMs/click ids da URL atual e persiste. */
 export function captureTrackingParams(): URLSearchParams {
   const stored = getStoredParams();
   if (typeof window === "undefined") return stored;
@@ -49,20 +72,17 @@ export function captureTrackingParams(): URLSearchParams {
   });
 
   if (changed) {
-    const storage = safeStorage();
-    storage?.setItem(STORAGE_KEY, stored.toString());
+    writeStored(stored.toString());
   }
 
   return stored;
 }
 
-/** Recupera params salvos em sessionStorage. */
+/** Recupera params salvos. */
 export function getStoredParams(): URLSearchParams {
-  if (typeof window === "undefined") return new URLSearchParams();
-  const storage = safeStorage();
-  const raw = storage?.getItem(STORAGE_KEY) ?? "";
-  return new URLSearchParams(raw);
+  return new URLSearchParams(readStored());
 }
+
 
 /**
  * Anexa UTMs/click ids (URL atual + sessionStorage) a uma URL de destino.
