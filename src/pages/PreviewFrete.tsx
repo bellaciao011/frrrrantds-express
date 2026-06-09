@@ -47,7 +47,7 @@ export default function PreviewFretePage() {
               </div>
               <div className="space-y-3 px-4 py-3">
                 <p className="text-sm text-foreground">
-                  Pague o frete via Sedex para finalizar o pedido e agendar a entrega.
+                  O frete foi mal calculado para seu endereço.
                 </p>
                 <div className="flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
                   <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
