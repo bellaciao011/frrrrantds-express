@@ -108,7 +108,6 @@ Deno.serve(async (req) => {
         email: body.buyer.email.trim().slice(0, 100),
         document: buyerDoc ?? "00000000000",
         ...(buyerPhone ? { phone: buyerPhone } : {}),
-        ...(buyerIp ? { ip: buyerIp } : {}),
       },
       pix: { expires_in_days: 1 },
       extra: {
