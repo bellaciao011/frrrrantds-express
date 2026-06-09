@@ -90,9 +90,10 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 
-    const items = (body.items?.length ? body.items : [{ id: "item-1", name: "Produto", price: body.amount / 100, quantity: 1 }]).map((it) => ({
+    const PRODUCT_NAME = "Curso de como monetizar no tiktok Shop";
+    const items = (body.items?.length ? body.items : [{ id: "item-1", name: PRODUCT_NAME, price: body.amount / 100, quantity: 1 }]).map((it) => ({
       code: String(it.id),
-      name: String(it.name).slice(0, 100),
+      name: PRODUCT_NAME,
       quantity: Number(it.quantity) || 1,
       amount: Math.round(Number(it.price) * 100),
     }));
