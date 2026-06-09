@@ -78,6 +78,7 @@ export default function CheckoutPage() {
 
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
+  const [pixExternalId, setPixExternalId] = useState<string | null>(null);
 
   // Identificação
   const [email, setEmail] = useState("");
