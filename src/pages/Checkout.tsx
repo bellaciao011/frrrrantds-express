@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getStoredTtclid, trackInitiateCheckout, trackAddPaymentInfo } from "@/lib/tiktokPixel";
 import { toast } from "sonner";
 import { getUrlWithUtm } from "@/utils/utm";
+import PixDisplay from "@/components/PixDisplay";
 
 type Step = 1 | 2 | 3;
 type Shipping = { id: string; name: string; price: number; eta: string };
@@ -78,6 +79,7 @@ export default function CheckoutPage() {
 
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
+  const [pixExternalId, setPixExternalId] = useState<string | null>(null);
 
   // Identificação
   const [email, setEmail] = useState("");
@@ -198,7 +200,8 @@ export default function CheckoutPage() {
         order_id: data.external_id,
         identify: { email, phone },
       });
-      navigate(getUrlWithUtm(`/pix/${data.external_id }`));
+      setPixExternalId(data.external_id);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     } catch (e: any) {
       console.error(e);
       toast.error(e?.message ?? "Não foi possível gerar o Pix.");
@@ -422,6 +425,7 @@ export default function CheckoutPage() {
             <Step3
               loading={loading}
               onPay={finalize}
+              pixExternalId={pixExternalId}
             />
           )}
         </section>
@@ -705,7 +709,18 @@ function Step2(p: {
 }
 
 // ========== Step 3: Pagamento ==========
-function Step3({ loading, onPay }: { loading: boolean; onPay: () => void }) {
+function Step3({
+  loading,
+  onPay,
+  pixExternalId,
+}: {
+  loading: boolean;
+  onPay: () => void;
+  pixExternalId: string | null;
+}) {
+  if (pixExternalId) {
+    return <PixDisplay externalId={pixExternalId} />;
+  }
   return (
     <div className="space-y-3">
       <div className="rounded-md border bg-white p-3">
