@@ -147,10 +147,13 @@ export default function PixPage() {
   }, [order?.status, order?.external_id, order?.store_slug, order?.items, navigate]);
 
   const qrSrc = useMemo(() => {
-    if (order?.pix_qrcode) {
-      return order.pix_qrcode.startsWith("data:")
-        ? order.pix_qrcode
-        : `data:image/png;base64,${order.pix_qrcode}`;
+    const v = order?.pix_qrcode;
+    if (v) {
+      if (v.startsWith("data:")) return v;
+      // só trata como base64 se realmente parecer base64 (não é EMV/copia-e-cola)
+      if (/^[A-Za-z0-9+/=\s]+$/.test(v) && !v.startsWith("00020")) {
+        return `data:image/png;base64,${v}`;
+      }
     }
     return qrFromCode;
   }, [order?.pix_qrcode, qrFromCode]);
