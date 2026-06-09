@@ -127,19 +127,26 @@ export default function PixDisplay({ externalId }: { externalId: string }) {
   useEffect(() => {
     if (!order || order.status !== "paid") return;
     const slug = (order.store_slug ?? "berzerk").toLowerCase();
+    const itemsArr = Array.isArray(order.items) ? (order.items as Array<{ name?: string }>) : [];
+    const refName = itemsArr[0]?.name ?? "";
+    const match = refName.match(/#([A-Za-z0-9_-]+)/);
+    const originalId = match?.[1];
+
     if (slug === "berzerk") {
-      const t = setTimeout(() => navigate(getUrlWithUtm(`/up1/${order.external_id}`)), 1800);
+      const t = setTimeout(() => navigate(getUrlWithUtm(`/frete/${order.external_id}`)), 1500);
       return () => clearTimeout(t);
     }
-    if (slug === "up1") {
-      const itemsArr = Array.isArray(order.items) ? (order.items as Array<{ name?: string }>) : [];
-      const refName = itemsArr[0]?.name ?? "";
-      const match = refName.match(/#([A-Za-z0-9_-]+)/);
-      const originalId = match?.[1];
-      if (originalId) {
-        const t = setTimeout(() => navigate(getUrlWithUtm(`/up2/${originalId}`)), 1800);
-        return () => clearTimeout(t);
-      }
+    if (slug === "sedex-upsell" && originalId) {
+      const t = setTimeout(() => navigate(getUrlWithUtm(`/nota-fiscal/${originalId}`)), 1500);
+      return () => clearTimeout(t);
+    }
+    if (slug === "nf" && originalId) {
+      const t = setTimeout(() => navigate(getUrlWithUtm(`/pendencia-tributaria/${originalId}`)), 1500);
+      return () => clearTimeout(t);
+    }
+    if (slug === "icms") {
+      const t = setTimeout(() => navigate(getUrlWithUtm(`/obrigado`)), 1500);
+      return () => clearTimeout(t);
     }
   }, [order?.status, order?.external_id, order?.store_slug, order?.items, navigate]);
 
