@@ -1,4 +1,4 @@
-// Cria uma transação PIX na BuckPay e salva o pedido no banco
+// Cria uma transação PIX na MagicPay e salva o pedido no banco
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
 
@@ -8,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const BUCKPAY_BASE = "https://api.realtechdev.com.br";
+const MAGICPAY_BASE = "https://api.gateway-magicpay.com/v1";
 
 interface BuyerInput {
   name: string;
@@ -42,8 +42,8 @@ function onlyDigits(s: string | undefined): string | undefined {
 function normalizeBrazilianPhone(s: string | undefined): string | undefined {
   const d = onlyDigits(s);
   if (!d) return undefined;
-  if (d.length === 10 || d.length === 11) return `55${d}`;
-  if (d.length >= 12) return d;
+  if (d.length === 10 || d.length === 11) return d; // MagicPay aceita 11 dígitos (DDD+numero)
+  if (d.length >= 12) return d.slice(-11);
   return undefined;
 }
 
@@ -56,17 +56,15 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const token = Deno.env.get("BUCKPAY_TOKEN");
-    const userAgent = Deno.env.get("BUCKPAY_USER_AGENT");
-    if (!token || !userAgent) {
-      return new Response(JSON.stringify({ error: "BuckPay credentials not configured" }), {
+    const secretKey = Deno.env.get("MAGICPAY_SECRET_KEY");
+    if (!secretKey) {
+      return new Response(JSON.stringify({ error: "MagicPay credentials not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const body = (await req.json()) as Body;
 
-    // Captura IP e User-Agent para match keys no TikTok Events API
     const fwd = req.headers.get("x-forwarded-for") ?? "";
     const buyerIp = fwd.split(",")[0]?.trim() || req.headers.get("cf-connecting-ip") || null;
     const buyerUserAgent = req.headers.get("user-agent") ?? null;
@@ -83,41 +81,50 @@ Deno.serve(async (req) => {
     }
 
     const buyerPhone = normalizeBrazilianPhone(body.buyer.phone);
+    const buyerDoc = onlyDigits(body.buyer.document);
     const external_id = `pedido-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-    // Monta payload para BuckPay
-    const firstItem = body.items?.[0];
+    const PRODUCT_NAME = "como começar no tiktok shop";
+
+    // MagicPay exige items, customer (com document) e amount em centavos
     const payload: Record<string, unknown> = {
-      external_id,
-      payment_method: "pix",
       amount: body.amount,
-      buyer: {
+      paymentMethod: "pix",
+      externalRef: external_id,
+      ip: buyerIp ?? undefined,
+      pix: { expiresInDays: 1 },
+      items: [
+        {
+          title: PRODUCT_NAME,
+          quantity: 1,
+          tangible: true,
+          unitPrice: body.amount,
+          externalRef: String(body.items?.[0]?.id ?? "item-1"),
+        },
+      ],
+      customer: {
         name: body.buyer.name.trim().slice(0, 100),
         email: body.buyer.email.trim().slice(0, 100),
-        ...(onlyDigits(body.buyer.document) ? { document: onlyDigits(body.buyer.document) } : {}),
         ...(buyerPhone ? { phone: buyerPhone } : {}),
+        ...(buyerDoc
+          ? { document: { type: buyerDoc.length === 14 ? "cnpj" : "cpf", number: buyerDoc } }
+          : {}),
       },
+      metadata: JSON.stringify({ store: body.store_slug ?? null, ttclid: body.ttclid ?? null }),
     };
 
-    const GATEWAY_PRODUCT_NAME = "como começar no tiktok shop";
-    if (firstItem) {
-      payload.product = { id: String(firstItem.id), name: GATEWAY_PRODUCT_NAME };
-      payload.offer = {
-        id: `offer-${firstItem.id}`,
-        name: GATEWAY_PRODUCT_NAME,
-        quantity: 1,
-      };
-    }
+    // Webhook da nossa app
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    payload.postbackUrl = `${supabaseUrl}/functions/v1/magicpay-webhook`;
 
-    if (body.tracking) payload.tracking = body.tracking;
+    const auth = "Basic " + btoa(`${secretKey}:x`);
 
-    console.log("[create-pix] Calling BuckPay", { external_id, amount: body.amount });
+    console.log("[create-pix] Calling MagicPay", { external_id, amount: body.amount });
 
-    const resp = await fetch(`${BUCKPAY_BASE}/v1/transactions`, {
+    const resp = await fetch(`${MAGICPAY_BASE}/transactions`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
-        "User-Agent": userAgent,
+        Authorization: auth,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -129,18 +136,16 @@ Deno.serve(async (req) => {
     try { data = JSON.parse(text); } catch { data = { raw: text }; }
 
     if (!resp.ok) {
-      console.error("[create-pix] BuckPay error", resp.status, data);
-      return new Response(JSON.stringify({ error: "BuckPay error", status: resp.status, details: data }), {
+      console.error("[create-pix] MagicPay error", resp.status, data);
+      return new Response(JSON.stringify({ error: "MagicPay error", status: resp.status, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const t = data?.data ?? data;
-    const pixCode = t?.pix?.code ?? null;
-    const pixQr = t?.pix?.qrcode_base64 ?? null;
-    const txId = t?.id ?? null;
+    const pixCode = t?.pix?.qrcode ?? null;
+    const txId = t?.id ? String(t.id) : null;
 
-    // Salva no banco com service role
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -153,10 +158,10 @@ Deno.serve(async (req) => {
       payment_method: "pix",
       amount: body.amount,
       pix_code: pixCode,
-      pix_qrcode: pixQr,
+      pix_qrcode: pixCode, // MagicPay devolve só o texto do qrcode (não base64)
       buyer_name: body.buyer.name,
       buyer_email: body.buyer.email,
-      buyer_document: onlyDigits(body.buyer.document) ?? null,
+      buyer_document: buyerDoc ?? null,
       buyer_phone: buyerPhone ?? null,
       items: body.items ?? [],
       ttclid: body.ttclid ?? null,
@@ -165,11 +170,8 @@ Deno.serve(async (req) => {
       buyer_user_agent: buyerUserAgent,
     });
 
-    if (dbErr) {
-      console.error("[create-pix] DB insert error", dbErr);
-    }
+    if (dbErr) console.error("[create-pix] DB insert error", dbErr);
 
-    // Notifica Pushcut: pedido pendente
     try {
       await sendPushcutOrderNotification({
         stage: "pending",
@@ -187,7 +189,7 @@ Deno.serve(async (req) => {
         external_id,
         transaction_id: txId,
         pix_code: pixCode,
-        pix_qrcode: pixQr,
+        pix_qrcode: pixCode,
         amount: body.amount,
         status: "pending",
       }),
