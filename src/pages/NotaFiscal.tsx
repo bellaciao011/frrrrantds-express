@@ -219,9 +219,7 @@ export default function NotaFiscalPage() {
 
             <div className="border-t px-4 py-3 text-xs">
               <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Emitente</p>
-              <p className="mt-1 text-sm font-bold">BERZERK COMÉRCIO LTDA.</p>
-              <p className="text-muted-foreground">CNPJ: 47.508.411/0001-56 | IE: 110.842.557.119</p>
-              <p className="text-muted-foreground">Av. Brigadeiro Faria Lima, 1755 — São Paulo/SP — CEP: 01452-001</p>
+              <p className="mt-1 text-sm font-bold">OLYMPICOS</p>
             </div>
 
             <div className="border-t px-4 py-3 text-xs">
