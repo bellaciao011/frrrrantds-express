@@ -199,7 +199,8 @@ export default function CheckoutPage() {
         order_id: data.external_id,
         identify: { email, phone },
       });
-      navigate(getUrlWithUtm(`/pix/${data.external_id }`));
+      setPixExternalId(data.external_id);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     } catch (e: any) {
       console.error(e);
       toast.error(e?.message ?? "Não foi possível gerar o Pix.");
