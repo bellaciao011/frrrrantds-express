@@ -39,39 +39,40 @@ export function PromoPopup() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-[280px]">
+      <div className="relative w-full max-w-[340px]">
         <button
           onClick={close}
-          className="absolute -top-10 right-0 flex h-8 w-8 items-center justify-center rounded-full text-primary"
+          className="absolute -top-12 right-0 flex h-10 w-10 items-center justify-center rounded-full text-primary"
           aria-label="Fechar"
         >
-          <X className="h-6 w-6" strokeWidth={3} />
+          <X className="h-7 w-7" strokeWidth={3} />
         </button>
 
-        <div className="overflow-hidden rounded-2xl bg-primary p-1.5 shadow-2xl">
-          <div className="rounded-xl bg-background px-4 pb-5 pt-4 text-center">
-            <p className="text-2xl font-extrabold text-foreground">80% OFF</p>
-            <p className="mt-1.5 text-sm font-bold text-primary">no seu pedido!</p>
-            <p className="mt-3 text-xs leading-relaxed text-foreground/80">
+        <div className="overflow-hidden rounded-2xl bg-primary p-2 shadow-2xl">
+          <div className="rounded-xl bg-background px-5 pb-6 pt-5 text-center">
+            <p className="text-3xl font-extrabold text-foreground">80% OFF</p>
+            <p className="mt-2 text-lg font-bold text-primary">no seu pedido!</p>
+            <p className="mt-4 text-base leading-relaxed text-foreground/80">
               Você pode começar o ano com um novo hobby.
             </p>
-            <p className="mt-1.5 text-xs leading-relaxed text-foreground/80">
+            <p className="mt-2 text-base leading-relaxed text-foreground/80">
               Aproveita: produtos selecionados estão com até 80% OFF.
             </p>
           </div>
 
           <div className="px-2 pb-2 pt-3 text-center">
-            <p className="rounded-full bg-primary/80 py-1.5 text-xs font-bold text-primary-foreground">
+            <p className="rounded-full bg-primary/80 py-2 text-sm font-bold text-primary-foreground">
               Termina em {hh}:{mm}:{ss}
             </p>
           </div>
 
           <button
             onClick={close}
-            className="mx-2 mb-2 block w-[calc(100%-1rem)] rounded-full bg-background py-2.5 text-sm font-extrabold text-primary shadow-lg"
+            className="mx-2 mb-2 block w-[calc(100%-1rem)] rounded-full bg-background py-3 text-base font-extrabold text-primary shadow-lg"
           >
             Resgatar agora
           </button>
+
         </div>
       </div>
     </div>
