@@ -11,6 +11,8 @@ import NotaFiscalPage from "@/pages/NotaFiscal";
 import PendenciaTributariaPage from "@/pages/PendenciaTributaria";
 import ObrigadoPage from "@/pages/Obrigado";
 import AdminPixelsPage from "@/pages/AdminPixels";
+import PreviewFretePage from "@/pages/PreviewFrete";
+import PreviewNotaFiscalPage from "@/pages/PreviewNotaFiscal";
 import TikTokPixelLoader from "@/components/TikTokPixelLoader";
 import ScrollToTop from "@/components/ScrollToTop";
 import UtmPersistence from "@/components/UtmPersistence";
@@ -52,6 +54,8 @@ export default function App() {
         <Route path="/nota-fiscal/:externalId" element={<NotaFiscalPage />} />
         <Route path="/pendencia-tributaria/:externalId" element={<PendenciaTributariaPage />} />
         <Route path="/obrigado" element={<ObrigadoPage />} />
+        <Route path="/preview/frete" element={<PreviewFretePage />} />
+        <Route path="/preview/nota-fiscal" element={<PreviewNotaFiscalPage />} />
         <Route path="/admin/pixels" element={<AdminPixelsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

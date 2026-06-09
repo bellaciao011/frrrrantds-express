@@ -12,7 +12,7 @@ import {
   Truck,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/data/products";
 import { supabase } from "@/integrations/supabase/client";
@@ -78,6 +78,15 @@ export default function CheckoutPage() {
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
   const [pixExternalId, setPixExternalId] = useState<string | null>(null);
+  const pixAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (pixExternalId && pixAreaRef.current) {
+      setTimeout(() => {
+        pixAreaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  }, [pixExternalId]);
 
   // Identificação
   const [email, setEmail] = useState("");
@@ -426,11 +435,13 @@ export default function CheckoutPage() {
           )}
 
           {step === 3 && (
-            <Step3
-              loading={loading}
-              onPay={finalize}
-              pixExternalId={pixExternalId}
-            />
+            <div ref={pixAreaRef}>
+              <Step3
+                loading={loading}
+                onPay={finalize}
+                pixExternalId={pixExternalId}
+              />
+            </div>
           )}
         </section>
       </main>
