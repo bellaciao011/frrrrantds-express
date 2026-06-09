@@ -708,7 +708,18 @@ function Step2(p: {
 }
 
 // ========== Step 3: Pagamento ==========
-function Step3({ loading, onPay }: { loading: boolean; onPay: () => void }) {
+function Step3({
+  loading,
+  onPay,
+  pixExternalId,
+}: {
+  loading: boolean;
+  onPay: () => void;
+  pixExternalId: string | null;
+}) {
+  if (pixExternalId) {
+    return <PixDisplay externalId={pixExternalId} />;
+  }
   return (
     <div className="space-y-3">
       <div className="rounded-md border bg-white p-3">
