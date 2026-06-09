@@ -11,6 +11,8 @@ import NotaFiscalPage from "@/pages/NotaFiscal";
 import PendenciaTributariaPage from "@/pages/PendenciaTributaria";
 import ObrigadoPage from "@/pages/Obrigado";
 import AdminPixelsPage from "@/pages/AdminPixels";
+import PreviewFretePage from "@/pages/PreviewFrete";
+import PreviewNotaFiscalPage from "@/pages/PreviewNotaFiscal";
 import TikTokPixelLoader from "@/components/TikTokPixelLoader";
 import ScrollToTop from "@/components/ScrollToTop";
 import UtmPersistence from "@/components/UtmPersistence";
