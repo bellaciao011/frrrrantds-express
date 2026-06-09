@@ -16,16 +16,18 @@ const STORE_SLUG = "berzerk";
  */
 export default function TikTokPixelLoader() {
   useEffect(() => {
-    // 1) Captura ttclid da URL e salva (persistente por sessão)
+    // 1) Captura ttclid da URL e salva (persistente em localStorage + sessionStorage)
     try {
       const url = new URL(window.location.href);
       const ttclid = url.searchParams.get("ttclid");
       if (ttclid) {
-        sessionStorage.setItem("ttclid", ttclid);
+        try { localStorage.setItem("ttclid", ttclid); } catch { /* ignore */ }
+        try { sessionStorage.setItem("ttclid", ttclid); } catch { /* ignore */ }
       }
     } catch {
       // ignore
     }
+
 
     // 2) Busca pixels ativos e carrega o SDK
     let cancelled = false;

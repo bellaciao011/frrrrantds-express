@@ -227,8 +227,13 @@ export async function trackPurchaseClient(data: PurchaseEventData) {
 export function getStoredTtclid(): string | null {
   if (typeof window === "undefined") return null;
   try {
+    const ls = localStorage.getItem("ttclid");
+    if (ls) return ls;
+  } catch { /* ignore */ }
+  try {
     return sessionStorage.getItem("ttclid");
   } catch {
     return null;
   }
 }
+
