@@ -9,7 +9,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-const MANGOFY_BASE = "https://checkout.mangofy.com.br/api/v1";
+const MANGOFY_BASE = "http://18.231.128.145:3001";
 
 function normalizeStatus(s?: string): string {
   if (!s) return "pending";
@@ -36,6 +36,7 @@ Deno.serve(async (req) => {
 
     const apiKey = Deno.env.get("MANGOFY_AUTHORIZATION")!;
     const storeCode = Deno.env.get("MANGOFY_STORE_CODE")!;
+    const proxySecret = Deno.env.get("PROXY_SECRET") ?? "";
 
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -59,6 +60,7 @@ Deno.serve(async (req) => {
         Authorization: apiKey,
         "Store-Code": storeCode,
         Accept: "application/json",
+        "x-proxy-secret": proxySecret,
       },
     });
 

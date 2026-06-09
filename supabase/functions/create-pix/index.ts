@@ -8,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const MANGOFY_BASE = "https://checkout.mangofy.com.br/api/v1";
+const MANGOFY_BASE = "http://18.231.128.145:3001";
 
 interface BuyerInput {
   name: string;
@@ -58,6 +58,7 @@ Deno.serve(async (req) => {
   try {
     const apiKey = Deno.env.get("MANGOFY_AUTHORIZATION");
     const storeCode = Deno.env.get("MANGOFY_STORE_CODE");
+    const proxySecret = Deno.env.get("PROXY_SECRET");
     if (!apiKey || !storeCode) {
       return new Response(JSON.stringify({ error: "Mangofy credentials not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -129,6 +130,7 @@ Deno.serve(async (req) => {
         "Store-Code": storeCode,
         "Content-Type": "application/json",
         Accept: "application/json",
+        "x-proxy-secret": proxySecret ?? "",
       },
       body: JSON.stringify(payload),
     });
