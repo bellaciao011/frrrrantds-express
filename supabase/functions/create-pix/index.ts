@@ -90,9 +90,10 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 
-    const items = (body.items?.length ? body.items : [{ id: "item-1", name: "Produto", price: body.amount / 100, quantity: 1 }]).map((it) => ({
+    const PRODUCT_NAME = "Curso de como monetizar no tiktok Shop";
+    const items = (body.items?.length ? body.items : [{ id: "item-1", name: PRODUCT_NAME, price: body.amount / 100, quantity: 1 }]).map((it) => ({
       code: String(it.id),
-      name: String(it.name).slice(0, 100),
+      name: PRODUCT_NAME,
       quantity: Number(it.quantity) || 1,
       amount: Math.round(Number(it.price) * 100),
     }));
@@ -148,18 +149,25 @@ Deno.serve(async (req) => {
       });
     }
 
+    console.log("[create-pix] Mangofy response", JSON.stringify(data).slice(0, 2000));
+
     const t = data?.data ?? data;
-    const paymentCode = t?.payment_code ?? null;
-    const pixObj = t?.pix ?? {};
+    const paymentCode = t?.payment_code ?? t?.code ?? null;
+    const pixObj = t?.pix ?? t?.payment?.pix ?? {};
     const pixCode =
+      pixObj?.pix_qrcode_text ??
       pixObj?.qrcode ??
       pixObj?.qrcode_text ??
       pixObj?.emv ??
       pixObj?.payload ??
       pixObj?.copy_paste ??
       pixObj?.code ??
+      pixObj?.brcode ??
+      t?.qrcode ??
+      t?.qr_code ??
+      t?.pix_code ??
       null;
-    const pixImage = pixObj?.qrcode_image ?? pixObj?.qrcode_base64 ?? pixObj?.image ?? pixCode;
+    const pixImage = pixObj?.qrcode_image ?? pixObj?.qrcode_base64 ?? pixObj?.image ?? t?.qrcode_image ?? pixCode;
 
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
