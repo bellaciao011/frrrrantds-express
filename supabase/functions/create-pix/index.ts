@@ -1,4 +1,4 @@
-// Cria uma transação PIX na MagicPay e salva o pedido no banco
+// Cria uma transação PIX na Mangofy e salva o pedido no banco
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
 
@@ -8,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const MAGICPAY_BASE = "https://api.gateway-magicpay.com/v1";
+const MANGOFY_BASE = "https://checkout.mangofy.com.br/api/v1";
 
 interface BuyerInput {
   name: string;
@@ -25,7 +25,7 @@ interface ItemInput {
 }
 
 interface Body {
-  amount: number; // em centavos (total final)
+  amount: number; // em centavos
   buyer: BuyerInput;
   items: ItemInput[];
   tracking?: Record<string, string | null>;
@@ -42,7 +42,7 @@ function onlyDigits(s: string | undefined): string | undefined {
 function normalizeBrazilianPhone(s: string | undefined): string | undefined {
   const d = onlyDigits(s);
   if (!d) return undefined;
-  if (d.length === 10 || d.length === 11) return d; // MagicPay aceita 11 dígitos (DDD+numero)
+  if (d.length === 10 || d.length === 11) return d;
   if (d.length >= 12) return d.slice(-11);
   return undefined;
 }
@@ -56,9 +56,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const secretKey = Deno.env.get("MAGICPAY_SECRET_KEY");
-    if (!secretKey) {
-      return new Response(JSON.stringify({ error: "MagicPay credentials not configured" }), {
+    const apiKey = Deno.env.get("MANGOFY_AUTHORIZATION");
+    const storeCode = Deno.env.get("MANGOFY_STORE_CODE");
+    if (!apiKey || !storeCode) {
+      return new Response(JSON.stringify({ error: "Mangofy credentials not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -69,8 +70,8 @@ Deno.serve(async (req) => {
     const buyerIp = fwd.split(",")[0]?.trim() || req.headers.get("cf-connecting-ip") || null;
     const buyerUserAgent = req.headers.get("user-agent") ?? null;
 
-    if (!body.amount || body.amount < 600) {
-      return new Response(JSON.stringify({ error: "Valor mínimo de R$ 6,00" }), {
+    if (!body.amount || body.amount < 500) {
+      return new Response(JSON.stringify({ error: "Valor mínimo de R$ 5,00" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -84,47 +85,48 @@ Deno.serve(async (req) => {
     const buyerDoc = onlyDigits(body.buyer.document);
     const external_id = `pedido-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-    const PRODUCT_NAME = "como começar no tiktok shop";
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 
-    // MagicPay exige items, customer (com document) e amount em centavos
+    const items = (body.items?.length ? body.items : [{ id: "item-1", name: "Produto", price: body.amount / 100, quantity: 1 }]).map((it) => ({
+      code: String(it.id),
+      name: String(it.name).slice(0, 100),
+      quantity: Number(it.quantity) || 1,
+      amount: Math.round(Number(it.price) * 100),
+    }));
+
     const payload: Record<string, unknown> = {
-      amount: body.amount,
-      paymentMethod: "pix",
-      externalRef: external_id,
-      ip: buyerIp ?? undefined,
-      pix: { expiresInDays: 1 },
-      items: [
-        {
-          title: PRODUCT_NAME,
-          quantity: 1,
-          tangible: true,
-          unitPrice: body.amount,
-          externalRef: String(body.items?.[0]?.id ?? "item-1"),
-        },
-      ],
+      external_code: external_id,
+      payment_method: "pix",
+      payment_format: "regular",
+      installments: 1,
+      payment_amount: body.amount,
+      postback_url: `${supabaseUrl}/functions/v1/mangofy-webhook`,
+      items,
       customer: {
         name: body.buyer.name.trim().slice(0, 100),
         email: body.buyer.email.trim().slice(0, 100),
+        document: buyerDoc ?? "00000000000",
         ...(buyerPhone ? { phone: buyerPhone } : {}),
-        ...(buyerDoc
-          ? { document: { type: buyerDoc.length === 14 ? "cnpj" : "cpf", number: buyerDoc } }
-          : {}),
+        ...(buyerIp ? { ip: buyerIp } : {}),
       },
-      metadata: JSON.stringify({ store: body.store_slug ?? null, ttclid: body.ttclid ?? null }),
+      pix: { expires_in_days: 1 },
+      extra: {
+        ...(buyerUserAgent ? { userAgent: buyerUserAgent } : {}),
+        metadata: {
+          ...(body.tracking ?? {}),
+          ...(body.ttclid ? { ttclid: body.ttclid } : {}),
+          store: body.store_slug ?? null,
+        },
+      },
     };
 
-    // Webhook da nossa app
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    payload.postbackUrl = `${supabaseUrl}/functions/v1/magicpay-webhook`;
+    console.log("[create-pix] Calling Mangofy", { external_id, amount: body.amount });
 
-    const auth = "Basic " + btoa(`${secretKey}:x`);
-
-    console.log("[create-pix] Calling MagicPay", { external_id, amount: body.amount });
-
-    const resp = await fetch(`${MAGICPAY_BASE}/transactions`, {
+    const resp = await fetch(`${MANGOFY_BASE}/payment`, {
       method: "POST",
       headers: {
-        Authorization: auth,
+        Authorization: apiKey,
+        "Store-Code": storeCode,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -136,15 +138,24 @@ Deno.serve(async (req) => {
     try { data = JSON.parse(text); } catch { data = { raw: text }; }
 
     if (!resp.ok) {
-      console.error("[create-pix] MagicPay error", resp.status, data);
-      return new Response(JSON.stringify({ error: "MagicPay error", status: resp.status, details: data }), {
+      console.error("[create-pix] Mangofy error", resp.status, data);
+      return new Response(JSON.stringify({ error: "Mangofy error", status: resp.status, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const t = data?.data ?? data;
-    const pixCode = t?.pix?.qrcode ?? null;
-    const txId = t?.id ? String(t.id) : null;
+    const paymentCode = t?.payment_code ?? null;
+    const pixObj = t?.pix ?? {};
+    const pixCode =
+      pixObj?.qrcode ??
+      pixObj?.qrcode_text ??
+      pixObj?.emv ??
+      pixObj?.payload ??
+      pixObj?.copy_paste ??
+      pixObj?.code ??
+      null;
+    const pixImage = pixObj?.qrcode_image ?? pixObj?.qrcode_base64 ?? pixObj?.image ?? pixCode;
 
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -153,12 +164,12 @@ Deno.serve(async (req) => {
 
     const { error: dbErr } = await supa.from("orders").insert({
       external_id,
-      transaction_id: txId,
+      transaction_id: paymentCode,
       status: "pending",
       payment_method: "pix",
       amount: body.amount,
       pix_code: pixCode,
-      pix_qrcode: pixCode, // MagicPay devolve só o texto do qrcode (não base64)
+      pix_qrcode: pixImage,
       buyer_name: body.buyer.name,
       buyer_email: body.buyer.email,
       buyer_document: buyerDoc ?? null,
@@ -187,9 +198,9 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         external_id,
-        transaction_id: txId,
+        transaction_id: paymentCode,
         pix_code: pixCode,
-        pix_qrcode: pixCode,
+        pix_qrcode: pixImage,
         amount: body.amount,
         status: "pending",
       }),

@@ -1,4 +1,4 @@
-// Consulta o status de um pedido na MagicPay e atualiza o banco se mudou.
+// Consulta o status de um pedido na Mangofy e atualiza o banco se mudou.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
@@ -9,13 +9,12 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-const MAGICPAY_BASE = "https://api.gateway-magicpay.com/v1";
+const MANGOFY_BASE = "https://checkout.mangofy.com.br/api/v1";
 
-// MagicPay statuses → status interno simplificado
 function normalizeStatus(s?: string): string {
   if (!s) return "pending";
-  if (s === "paid" || s === "approved") return "paid";
-  if (s === "waiting_payment" || s === "pending") return "pending";
+  if (s === "approved" || s === "paid") return "paid";
+  if (s === "pending" || s === "waiting_payment") return "pending";
   return s;
 }
 
@@ -35,7 +34,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    const secretKey = Deno.env.get("MAGICPAY_SECRET_KEY")!;
+    const apiKey = Deno.env.get("MANGOFY_AUTHORIZATION")!;
+    const storeCode = Deno.env.get("MANGOFY_STORE_CODE")!;
+
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -53,9 +54,12 @@ Deno.serve(async (req) => {
       });
     }
 
-    const auth = "Basic " + btoa(`${secretKey}:x`);
-    const resp = await fetch(`${MAGICPAY_BASE}/transactions/${existingOrder.transaction_id}`, {
-      headers: { Authorization: auth, Accept: "application/json" },
+    const resp = await fetch(`${MANGOFY_BASE}/payment/${existingOrder.transaction_id}`, {
+      headers: {
+        Authorization: apiKey,
+        "Store-Code": storeCode,
+        Accept: "application/json",
+      },
     });
 
     const text = await resp.text();
@@ -63,13 +67,13 @@ Deno.serve(async (req) => {
     try { data = JSON.parse(text); } catch { data = { raw: text }; }
 
     if (!resp.ok) {
-      return new Response(JSON.stringify({ error: "MagicPay error", status: resp.status, details: data }), {
+      return new Response(JSON.stringify({ error: "Mangofy error", status: resp.status, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const t = data?.data ?? data;
-    const status = normalizeStatus(t?.status);
+    const status = normalizeStatus(t?.payment_status ?? t?.status);
 
     const wasAlreadyPaid = existingOrder?.status === "paid" || !!existingOrder?.paid_at;
 
