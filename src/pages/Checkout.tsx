@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getStoredTtclid, trackInitiateCheckout, trackAddPaymentInfo } from "@/lib/tiktokPixel";
 import { toast } from "sonner";
 import { getUrlWithUtm } from "@/utils/utm";
+import PixDisplay from "@/components/PixDisplay";
 
 type Step = 1 | 2 | 3;
 type Shipping = { id: string; name: string; price: number; eta: string };
