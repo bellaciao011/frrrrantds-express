@@ -9,6 +9,7 @@ const corsHeaders = {
 };
 
 const MANGOFY_BASE = "http://18.231.128.145:3001";
+const DEFAULT_CUSTOMER_IP = "18.231.128.145";
 
 interface BuyerInput {
   name: string;
@@ -69,6 +70,7 @@ Deno.serve(async (req) => {
 
     const fwd = req.headers.get("x-forwarded-for") ?? "";
     const buyerIp = fwd.split(",")[0]?.trim() || req.headers.get("cf-connecting-ip") || null;
+    const mangofyCustomerIp = Deno.env.get("MANGOFY_CUSTOMER_IP") ?? DEFAULT_CUSTOMER_IP;
     const buyerUserAgent = req.headers.get("user-agent") ?? null;
 
     if (!body.amount || body.amount < 500) {
@@ -107,6 +109,7 @@ Deno.serve(async (req) => {
         name: body.buyer.name.trim().slice(0, 100),
         email: body.buyer.email.trim().slice(0, 100),
         document: buyerDoc ?? "00000000000",
+        ip: mangofyCustomerIp,
         ...(buyerPhone ? { phone: buyerPhone } : {}),
       },
       pix: { expires_in_days: 1 },
