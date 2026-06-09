@@ -131,18 +131,21 @@ const baseProducts: Product[] = [
   mk("olympikus-corre-4", "Tênis Olympikus Corre 4", GAL.g19, CORRE4_CORES, 62.21, 569.99, 60, 732),
 ];
 
-// Expande cada cor como card próprio (igual ao site de referência).
-// Variações completas ficam disponíveis ao abrir o produto.
-export const products: Product[] = baseProducts.flatMap((p) =>
-  p.variacoes
+// Apenas o Corre 4 é expandido em vários cards (uma por cor) igual ao site de referência.
+// Os demais aparecem como card único, usando a foto lateral principal da galeria.
+const EXPAND_IDS = new Set(["olympikus-corre-4"]);
+
+export const products: Product[] = baseProducts.flatMap((p) => {
+  if (!EXPAND_IDS.has(p.id)) return [p];
+  return p.variacoes
     .filter((v) => v.tipo === "cor")
     .map((cor, i) => ({
       ...p,
       id: i === 0 ? p.id : `${p.id}-${i + 1}`,
       name: `${p.name} - ${cor.titulo}`,
       image: cor.imagem,
-    })),
-);
+    }));
+});
 
 export function formatBRL(value: number): string {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
