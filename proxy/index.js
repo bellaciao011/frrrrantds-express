@@ -2,7 +2,7 @@ const express = require("express");
 
 const app = express();
 const PROXY_SECRET = process.env.PROXY_SECRET;
-const MANGOFY_BASE = "https://checkout.mangofy.com.br/api/v1";
+const MANGOFY_BASE = "https://app.mangofy.com.br/api/v1";
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
