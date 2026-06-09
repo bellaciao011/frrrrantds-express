@@ -149,9 +149,11 @@ Deno.serve(async (req) => {
       });
     }
 
+    console.log("[create-pix] Mangofy response", JSON.stringify(data).slice(0, 2000));
+
     const t = data?.data ?? data;
-    const paymentCode = t?.payment_code ?? null;
-    const pixObj = t?.pix ?? {};
+    const paymentCode = t?.payment_code ?? t?.code ?? null;
+    const pixObj = t?.pix ?? t?.payment?.pix ?? {};
     const pixCode =
       pixObj?.qrcode ??
       pixObj?.qrcode_text ??
@@ -159,8 +161,12 @@ Deno.serve(async (req) => {
       pixObj?.payload ??
       pixObj?.copy_paste ??
       pixObj?.code ??
+      pixObj?.brcode ??
+      t?.qrcode ??
+      t?.qr_code ??
+      t?.pix_code ??
       null;
-    const pixImage = pixObj?.qrcode_image ?? pixObj?.qrcode_base64 ?? pixObj?.image ?? pixCode;
+    const pixImage = pixObj?.qrcode_image ?? pixObj?.qrcode_base64 ?? pixObj?.image ?? t?.qrcode_image ?? pixCode;
 
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
