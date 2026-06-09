@@ -517,6 +517,7 @@ function Step1(p: {
       <Field label="E-mail">
         <input
           type="email"
+          placeholder="Digite seu e-mail"
           value={p.email}
           onChange={(e) => p.setEmail(e.target.value)}
           className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
@@ -525,7 +526,7 @@ function Step1(p: {
       <Field label="Telefone">
         <input
           inputMode="tel"
-          placeholder="(99) 99999-9999"
+          placeholder="Digite seu telefone"
           value={p.phone}
           onChange={(e) => p.setPhone(e.target.value)}
           className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
@@ -533,6 +534,7 @@ function Step1(p: {
       </Field>
       <Field label="Nome completo">
         <input
+          placeholder="Digite seu nome completo"
           value={p.name}
           onChange={(e) => p.setName(e.target.value)}
           className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
@@ -541,7 +543,7 @@ function Step1(p: {
       <Field label="CPF/CNPJ">
         <input
           inputMode="numeric"
-          placeholder="000.000.000-00"
+          placeholder="Digite seu CPF/CNPJ"
           value={p.doc}
           onChange={(e) => p.setDoc(e.target.value)}
           className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
