@@ -69,7 +69,7 @@ export function ProductCard({
           </div>
         </div>
 
-        <BuyDrawer product={product} open={drawer} mode="cart" onClose={() => setDrawer(false)} />
+        <BuyDrawer product={product} open={drawer} mode="cart" onClose={() => setDrawer(false)} onConfirm={goCart} />
       </>
     );
   }
