@@ -54,6 +54,8 @@ export default function App() {
         <Route path="/nota-fiscal/:externalId" element={<NotaFiscalPage />} />
         <Route path="/pendencia-tributaria/:externalId" element={<PendenciaTributariaPage />} />
         <Route path="/obrigado" element={<ObrigadoPage />} />
+        <Route path="/preview/frete" element={<PreviewFretePage />} />
+        <Route path="/preview/nota-fiscal" element={<PreviewNotaFiscalPage />} />
         <Route path="/admin/pixels" element={<AdminPixelsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
