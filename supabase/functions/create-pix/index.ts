@@ -167,7 +167,7 @@ Deno.serve(async (req) => {
       t?.qr_code ??
       t?.pix_code ??
       null;
-    const pixImage = pixObj?.qrcode_image ?? pixObj?.qrcode_base64 ?? pixObj?.image ?? t?.qrcode_image ?? pixCode;
+    const pixImage = pixObj?.qrcode_image ?? pixObj?.qrcode_base64 ?? pixObj?.image ?? t?.qrcode_image ?? null;
 
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
