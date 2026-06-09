@@ -435,11 +435,13 @@ export default function CheckoutPage() {
           )}
 
           {step === 3 && (
-            <Step3
-              loading={loading}
-              onPay={finalize}
-              pixExternalId={pixExternalId}
-            />
+            <div ref={pixAreaRef}>
+              <Step3
+                loading={loading}
+                onPay={finalize}
+                pixExternalId={pixExternalId}
+              />
+            </div>
           )}
         </section>
       </main>
