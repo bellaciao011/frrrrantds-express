@@ -424,6 +424,7 @@ export default function CheckoutPage() {
             <Step3
               loading={loading}
               onPay={finalize}
+              pixExternalId={pixExternalId}
             />
           )}
         </section>
