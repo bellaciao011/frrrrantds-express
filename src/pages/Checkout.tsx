@@ -268,6 +268,7 @@ export default function CheckoutPage() {
             {items.map((i) => {
               const original = i.originalPrice ?? i.price;
               const off = original > i.price ? Math.round((1 - i.price / original) * 100) : 0;
+              const locked = !!pixExternalId;
               return (
                 <div key={i.id + (i.size ?? "")} className="flex gap-3 p-3">
                   <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
@@ -278,13 +279,15 @@ export default function CheckoutPage() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p className="line-clamp-2 text-sm font-semibold">{i.name}</p>
-                      <button
-                        onClick={() => remove(i.id)}
-                        className="text-muted-foreground hover:text-foreground"
-                        aria-label="Remover"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
+                      {!locked && (
+                        <button
+                          onClick={() => remove(i.id)}
+                          className="text-muted-foreground hover:text-foreground"
+                          aria-label="Remover"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                     {i.size && (
                       <p className="text-xs text-muted-foreground">{i.size}</p>
@@ -308,21 +311,25 @@ export default function CheckoutPage() {
                           </p>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 rounded-full border px-2 py-1">
-                        <button
-                          onClick={() => setQty(i.id, Math.max(1, i.quantity - 1))}
-                          className="text-muted-foreground"
-                        >
-                          <Minus className="h-3.5 w-3.5" />
-                        </button>
-                        <span className="w-5 text-center text-sm font-semibold">{i.quantity}</span>
-                        <button
-                          onClick={() => setQty(i.id, i.quantity + 1)}
-                          className="text-muted-foreground"
-                        >
-                          <Plus className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
+                      {!locked ? (
+                        <div className="flex items-center gap-2 rounded-full border px-2 py-1">
+                          <button
+                            onClick={() => setQty(i.id, Math.max(1, i.quantity - 1))}
+                            className="text-muted-foreground"
+                          >
+                            <Minus className="h-3.5 w-3.5" />
+                          </button>
+                          <span className="w-5 text-center text-sm font-semibold">{i.quantity}</span>
+                          <button
+                            onClick={() => setQty(i.id, i.quantity + 1)}
+                            className="text-muted-foreground"
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">Qtd: {i.quantity}</span>
+                      )}
                     </div>
                     <p className="mt-1 text-right text-sm font-semibold">
                       Subtotal: {formatBRL(i.price * i.quantity)}
