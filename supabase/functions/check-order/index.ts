@@ -1,5 +1,4 @@
-// Consulta o status de um pedido na BuckPay e atualiza o banco se mudou.
-// Se detectar pagamento, dispara também o Purchase no TikTok (server-side).
+// Consulta o status de um pedido na MagicPay e atualiza o banco se mudou.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
@@ -10,7 +9,15 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-const BUCKPAY_BASE = "https://api.realtechdev.com.br";
+const MAGICPAY_BASE = "https://api.gateway-magicpay.com/v1";
+
+// MagicPay statuses → status interno simplificado
+function normalizeStatus(s?: string): string {
+  if (!s) return "pending";
+  if (s === "paid" || s === "approved") return "paid";
+  if (s === "waiting_payment" || s === "pending") return "pending";
+  return s;
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -28,15 +35,27 @@ Deno.serve(async (req) => {
       });
     }
 
-    const token = Deno.env.get("BUCKPAY_TOKEN")!;
-    const userAgent = Deno.env.get("BUCKPAY_USER_AGENT")!;
+    const secretKey = Deno.env.get("MAGICPAY_SECRET_KEY")!;
+    const supa = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
 
-    const resp = await fetch(`${BUCKPAY_BASE}/v1/transactions/external_id/${encodeURIComponent(externalId)}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "User-Agent": userAgent,
-        Accept: "application/json",
-      },
+    const { data: existingOrder } = await supa
+      .from("orders")
+      .select("status, amount, store_slug, buyer_name, paid_at, transaction_id")
+      .eq("external_id", externalId)
+      .maybeSingle();
+
+    if (!existingOrder?.transaction_id) {
+      return new Response(JSON.stringify({ external_id: externalId, status: existingOrder?.status ?? "pending" }), {
+        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const auth = "Basic " + btoa(`${secretKey}:x`);
+    const resp = await fetch(`${MAGICPAY_BASE}/transactions/${existingOrder.transaction_id}`, {
+      headers: { Authorization: auth, Accept: "application/json" },
     });
 
     const text = await resp.text();
@@ -44,26 +63,13 @@ Deno.serve(async (req) => {
     try { data = JSON.parse(text); } catch { data = { raw: text }; }
 
     if (!resp.ok) {
-      return new Response(JSON.stringify({ error: "BuckPay error", status: resp.status, details: data }), {
+      return new Response(JSON.stringify({ error: "MagicPay error", status: resp.status, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const t = data?.data ?? data;
-    const status = t?.status ?? "pending";
-
-    // Atualiza banco se status mudou
-    const supa = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
-
-    // Carrega pedido atual para evitar notificar duas vezes
-    const { data: existingOrder } = await supa
-      .from("orders")
-      .select("status, amount, store_slug, buyer_name, paid_at")
-      .eq("external_id", externalId)
-      .maybeSingle();
+    const status = normalizeStatus(t?.status);
 
     const wasAlreadyPaid = existingOrder?.status === "paid" || !!existingOrder?.paid_at;
 
