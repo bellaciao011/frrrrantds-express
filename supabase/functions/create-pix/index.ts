@@ -155,6 +155,7 @@ Deno.serve(async (req) => {
     const paymentCode = t?.payment_code ?? t?.code ?? null;
     const pixObj = t?.pix ?? t?.payment?.pix ?? {};
     const pixCode =
+      pixObj?.pix_qrcode_text ??
       pixObj?.qrcode ??
       pixObj?.qrcode_text ??
       pixObj?.emv ??
