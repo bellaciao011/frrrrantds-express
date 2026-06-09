@@ -47,23 +47,23 @@ const GAL = {
 
 const cor = (titulo: string, imagem: string): ProductVariation => ({ titulo, imagem, tipo: "cor" });
 
-// Supra 2 — 6 cores (mesma galeria, thumbs distintos)
+// Supra 2 — 6 cores (todas em vista lateral)
 const SUPRA2_CORES: ProductVariation[] = [
   cor("Bege/Verde", IMG("g_50_aac1db7134.jpg")),
-  cor("Branco/Azul", IMG("g_50_1842e60120.webp")),
-  cor("Verde/Roxo", IMG("g_50_197e5d15f4.webp")),
-  cor("Laranja/Rosa", IMG("g_50_1bb13c39a2.webp")),
-  cor("Azul/Limão", IMG("g_50_3f011bdf3c.webp")),
-  cor("Branco/Preto", IMG("g_50_713651d82e.webp")),
+  cor("Branco/Azul", IMG("g_50_1bb13c39a2.webp")),
+  cor("Verde/Roxo", IMG("g_50_713651d82e.webp")),
+  cor("Laranja/Rosa", IMG("g_50_a6bc50c430.webp")),
+  cor("Azul/Limão", IMG("g_50_9f4e7dd66f.webp")),
+  cor("Branco/Laranja", IMG("g_50_ac401e3d2c.webp")),
 ];
 
-// Corre 5 — 2 cores
+// Corre 5 — 2 cores (laterais)
 const CORRE5_CORES: ProductVariation[] = [
   cor("Branco", IMG("g_337_446755cadc.jpg")),
-  cor("Amarelo", IMG("g_337_09c7efcaee.jpg")),
+  cor("Preto/Amarelo", IMG("g_337_30b0d088a2.jpg")),
 ];
 
-// Corre 4 — 9 cores (uma por galeria)
+// Corre 4 — 9 cores (uma por galeria, todas laterais)
 const CORRE4_CORES: ProductVariation[] = [
   cor("Creme", IMG(GAL.g19[0])),
   cor("Vanderlei", IMG(GAL.g193[0])),
@@ -76,28 +76,26 @@ const CORRE4_CORES: ProductVariation[] = [
   cor("Branco/Laranja", IMG(GAL.g196[0])),
 ];
 
-// Grafeno 3 — cores variadas (g47 tem 18 imagens)
+// Grafeno 3 — 6 cores (todas laterais)
 const GRAFENO3_CORES: ProductVariation[] = [
-  cor("Preto/Verde", IMG("g_47_917b9a33dd.webp")),
-  cor("Branco", IMG("g_47_112f7dc1a1.webp")),
-  cor("Azul", IMG("g_47_19af747e4a.webp")),
-  cor("Vermelho", IMG("g_47_234e1b34f8.webp")),
-  cor("Cinza", IMG("g_47_3221b77fd4.webp")),
-  cor("Rosa", IMG("g_47_46ef7cf146.webp")),
+  cor("Preto", IMG("g_47_aaac1e12da.webp")),
+  cor("Bege", IMG("g_47_690aa1ee4e.webp")),
+  cor("Azul", IMG("g_47_896c9cb28f.webp")),
+  cor("Vermelho", IMG("g_47_3221b77fd4.webp")),
+  cor("Turquesa", IMG("g_47_47a69448dc.webp")),
+  cor("Roxo", IMG("g_47_917b9a33dd.webp")),
 ];
 
-// Trilha 2 — cores
+// Trilha 2 — 3 cores (laterais)
 const TRILHA2_CORES: ProductVariation[] = [
-  cor("Preto/Verde", IMG("g_104_73f5b47aae.jpg")),
-  cor("Cinza", IMG("g_104_1f10ac7acd.webp")),
-  cor("Azul", IMG("g_104_38bf695ec8.webp")),
+  cor("Laranja", IMG("g_104_73f5b47aae.jpg")),
+  cor("Preto", IMG("g_104_7aa53b1e1c.webp")),
+  cor("Azul", IMG("g_104_422290fb99.jpg")),
 ];
 
-// Turbo — cores
+// Turbo — 1 cor (galeria possui apenas a azul lateral)
 const TURBO_CORES: ProductVariation[] = [
-  cor("Preto", IMG("g_195_fb2bfdf839.jpg")),
-  cor("Branco", IMG("g_195_091ac74d49.webp")),
-  cor("Azul", IMG("g_195_504985ee22.webp")),
+  cor("Azul", IMG("g_195_fb2bfdf839.jpg")),
 ];
 
 const mk = (
