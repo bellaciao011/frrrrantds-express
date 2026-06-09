@@ -81,7 +81,7 @@ export default function PixDisplay({ externalId }: { externalId: string }) {
       } catch (e) {
         console.warn(e);
       }
-    }, 6000);
+    }, 5000);
     return () => clearInterval(id);
   }, [order, externalId]);
 
