@@ -93,7 +93,7 @@ export default function CheckoutPage() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [complement, setComplement] = useState("");
-  const [shippingId, setShippingId] = useState<string>("jadlog");
+  const [shippingId, setShippingId] = useState<string>("correio");
 
   const shipping = useMemo(
     () => SHIPPINGS.find((s) => s.id === shippingId) ?? SHIPPINGS[0],
