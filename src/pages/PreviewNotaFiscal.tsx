@@ -167,6 +167,8 @@ export default function PreviewNotaFiscalPage() {
             <div className="border-t px-4 py-3 text-xs">
               <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Emitente</p>
               <p className="mt-1 text-sm font-bold">OLYMPICOS</p>
+              <p className="text-muted-foreground">CNPJ: 18.565.468/0012-41</p>
+              <p className="text-muted-foreground">Estrada Municipal Luiz Lopes Neto, 21, Tenentes — Extrema/MG — CEP: 37640-000</p>
             </div>
 
             <div className="border-t px-4 py-3 text-xs">
