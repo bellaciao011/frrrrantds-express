@@ -559,7 +559,7 @@ function Step1(p: {
 
       <button
         onClick={p.onNext}
-        className="w-full rounded-md bg-gradient-to-r from-[#ff0050] via-[#000000] to-[#00f2ea] py-3 text-sm font-bold text-white shadow-md"
+        className="w-full rounded-md bg-[#FF3366] py-3 text-sm font-bold text-white shadow-md"
       >
         Ir para entrega
       </button>
@@ -719,7 +719,7 @@ function Step2(p: {
 
       <button
         onClick={p.onNext}
-        className="w-full rounded-md bg-gradient-to-r from-[#ff0050] via-[#000000] to-[#00f2ea] py-3 text-sm font-bold text-white shadow-md"
+        className="w-full rounded-md bg-[#FF3366] py-3 text-sm font-bold text-white shadow-md"
       >
         Ir para pagamento
       </button>
@@ -747,7 +747,7 @@ function Step3({ loading, onPay }: { loading: boolean; onPay: () => void }) {
       <button
         onClick={onPay}
         disabled={loading}
-        className="flex w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-[#ff0050] via-[#000000] to-[#00f2ea] py-3.5 text-sm font-bold uppercase tracking-wide text-white shadow-md disabled:opacity-60"
+        className="flex w-full items-center justify-center gap-2 rounded-md bg-[#FF3366] py-3.5 text-sm font-bold uppercase tracking-wide text-white shadow-md disabled:opacity-60"
       >
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
         {loading ? "Gerando Pix..." : "Finalizar Compra"}
