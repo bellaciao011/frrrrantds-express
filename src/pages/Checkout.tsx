@@ -365,33 +365,8 @@ export default function CheckoutPage() {
           </section>
         )}
 
-        {/* RESUMO FINANCEIRO */}
-        <section className="rounded-lg border bg-white px-4 py-3 text-sm">
-          <h3 className="mb-2 font-bold">Resumo financeiro</h3>
-          <div className="flex justify-between py-1">
-            <span>Subtotal</span>
-            <span>{formatBRL(subtotal + discountTotal)}</span>
-          </div>
-          {discountTotal > 0 && (
-            <div className="flex justify-between py-1 font-semibold text-rose-500">
-              <span>Descontos</span>
-              <span>{formatBRL(discountTotal)}</span>
-            </div>
-          )}
-          <div className="flex justify-between py-1">
-            <span>Frete</span>
-            <span>
-              {cepFilled
-                ? `${shipping.name} (${shipping.price === 0 ? "Grátis" : formatBRL(shipping.price)})`
-                : "Calculado após o CEP"}
-            </span>
-          </div>
-          <div className="mt-2 flex items-center justify-between border-t pt-2">
-            <span className="text-base font-bold">Total</span>
-            <span className="text-lg font-bold">{formatBRL(grandTotal)}</span>
-          </div>
-          <p className="text-right text-xs text-muted-foreground">Impostos inclusos</p>
-        </section>
+
+
 
         {/* STEPS */}
         <section className="rounded-lg border bg-white p-4">
