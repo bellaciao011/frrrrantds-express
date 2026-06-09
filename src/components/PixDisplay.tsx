@@ -205,19 +205,14 @@ export default function PixDisplay({ externalId }: { externalId: string }) {
 
   return (
     <div className="space-y-3">
-      <div className="rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 p-4 text-center text-white">
-        <p className="text-xs opacity-90">Aguardando pagamento</p>
-        <p className="mt-1 text-3xl font-extrabold">{formatBRL(order.amount / 100)}</p>
-        <p className="mt-1 text-xs opacity-90">
+      <div className="rounded-xl border bg-white p-4 text-center">
+        <p className="text-xs font-medium text-muted-foreground">Aguardando pagamento</p>
+        <p className="mt-1 text-2xl font-bold text-foreground">{formatBRL(order.amount / 100)}</p>
+        <p className="mt-1 text-[11px] text-muted-foreground">
           Expira em {mm}:{ss}
         </p>
-      </div>
 
-      <div className="rounded-xl border bg-white p-4 text-center">
-        <h2 className="flex items-center justify-center gap-2 text-sm font-semibold">
-          <QrCode className="h-4 w-4" /> Escaneie o QR Code
-        </h2>
-        <div className="mx-auto mt-3 flex aspect-square w-56 items-center justify-center rounded-lg border bg-white p-2">
+        <div className="mx-auto mt-4 flex aspect-square w-56 items-center justify-center rounded-lg border bg-white p-2">
           {qrSrc ? (
             <img src={qrSrc} alt="QR Code Pix" className="h-full w-full object-contain" />
           ) : (
