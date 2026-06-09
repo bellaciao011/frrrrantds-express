@@ -519,7 +519,7 @@ function Step1(p: {
           type="email"
           value={p.email}
           onChange={(e) => p.setEmail(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
       <Field label="Telefone">
@@ -528,14 +528,14 @@ function Step1(p: {
           placeholder="(99) 99999-9999"
           value={p.phone}
           onChange={(e) => p.setPhone(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
       <Field label="Nome completo">
         <input
           value={p.name}
           onChange={(e) => p.setName(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
       <Field label="CPF/CNPJ">
@@ -544,7 +544,7 @@ function Step1(p: {
           placeholder="000.000.000-00"
           value={p.doc}
           onChange={(e) => p.setDoc(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
 
@@ -608,7 +608,7 @@ function Step2(p: {
           placeholder="00000-000"
           value={p.cep}
           onChange={(e) => p.setCep(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
       <Field label="Endereço">
@@ -616,35 +616,35 @@ function Step2(p: {
           placeholder="Rua / Avenida"
           value={p.address}
           onChange={(e) => p.setAddress(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
       <Field label="Número">
         <input
           value={p.number}
           onChange={(e) => p.setNumber(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
       <Field label="Bairro">
         <input
           value={p.district}
           onChange={(e) => p.setDistrict(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
       <Field label="Cidade">
         <input
           value={p.city}
           onChange={(e) => p.setCity(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
       <Field label="Estado">
         <input
           value={p.state}
           onChange={(e) => p.setState(e.target.value.toUpperCase().slice(0, 2))}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
       <Field label="Complemento">
@@ -652,7 +652,7 @@ function Step2(p: {
           placeholder="Apartamento, bloco, referência (opcional)"
           value={p.complement}
           onChange={(e) => p.setComplement(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
         />
       </Field>
 
