@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Star } from "lucide-react";
 import { type Product, formatBRL } from "@/data/products";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
 import { optimizedImg, optimizedSrcSet } from "@/lib/img";
+import { getUrlWithUtm } from "@/utils/utm";
 
 export function ProductCard({
   product,
@@ -14,6 +15,8 @@ export function ProductCard({
 }) {
   const off = Math.round(100 - (product.price / product.originalPrice) * 100);
   const [drawer, setDrawer] = useState(false);
+  const navigate = useNavigate();
+  const goCart = () => navigate(getUrlWithUtm("/carrinho"));
 
   if (layout === "grid") {
     return (
