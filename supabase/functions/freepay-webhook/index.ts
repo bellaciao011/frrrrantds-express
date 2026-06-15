@@ -86,6 +86,12 @@ Deno.serve(async (req) => {
       } catch (e) {
         console.error("[freepay-webhook] pushcut error", e);
       }
+
+      try {
+        await trackPurchaseServerSide({ supa, externalId: order.external_id });
+      } catch (e) {
+        console.error("[freepay-webhook] tiktok purchase error", e);
+      }
     }
 
     return new Response(JSON.stringify({ ok: true, status }), {
