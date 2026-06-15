@@ -440,6 +440,26 @@ export default function ProductPage() {
           </div>
         </div>
 
+        {/* Vídeos de criadores */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <h2 className="mb-3 text-lg font-bold">Vídeos de criadores</h2>
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
+            {creatorVideos.map((v, i) => (
+              <video
+                key={i}
+                src={v}
+                className="h-72 w-44 shrink-0 rounded-xl bg-black object-cover"
+                controls
+                playsInline
+                preload="metadata"
+                muted
+              />
+            ))}
+          </div>
+        </div>
+
+
+
         {/* Você também pode gostar */}
         <div className="mt-2 bg-muted/30 px-3 py-4">
           <h2 className="mb-3 px-1 text-lg font-bold">Você também pode gostar</h2>
