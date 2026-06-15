@@ -7,7 +7,7 @@ import { StoreInfo } from "@/components/store/StoreInfo";
 import { FreeShippingBar } from "@/components/store/FreeShippingBar";
 import { ProductCard } from "@/components/store/ProductCard";
 import { PromoPopup } from "@/components/store/PromoPopup";
-import { products } from "@/data/products";
+import { listingProducts as products } from "@/data/products";
 import { CATEGORIES, filterByCategory, productMatchesCategory, type CategoryId } from "@/lib/categories";
 
 type Tab = "inicio" | "produtos" | "categorias";
