@@ -45,7 +45,7 @@ function useCountdown(seconds: number) {
 export default function ProductPage() {
   const { id = "" } = useParams<{ id: string }>();
   const product = products.find((p) => p.id === id);
-  const { add } = useCart();
+  const { add, count: cartCount } = useCart();
   const navigate = useNavigate();
   const countdown = useCountdown(5 * 60 + 43);
   const [bookmarked, setBookmarked] = useState(false);
