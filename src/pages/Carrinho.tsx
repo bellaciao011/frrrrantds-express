@@ -146,16 +146,16 @@ export default function CarrinhoPage() {
           <>
             {/* Seller */}
             <div className="flex items-center gap-2 px-1">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full border bg-white">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full border bg-white overflow-hidden">
                 <img
-                  src="https://abrilchegou.shop/tenis/img/logo.png"
-                  alt="Olympikus"
+                  src={logoMeijile.url}
+                  alt="Meijile"
                   className="h-7 w-7 object-contain"
                   onError={(e) => ((e.currentTarget.style.display = "none"))}
                 />
               </div>
               <div>
-                <p className="text-sm font-bold leading-tight">Olympikus</p>
+                <p className="text-sm font-bold leading-tight">Meijile</p>
                 <p className="flex items-center gap-1 text-[11px] text-sky-600">
                   <BadgeCheck className="h-3 w-3" /> Loja Verificada
                 </p>
