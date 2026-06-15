@@ -126,6 +126,20 @@ export function ProductCard({
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
             <span>5 | 100 vendido(s)</span>
           </div>
+          {cores.length > 0 && (
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {cores.slice(0, 6).map((c) => (
+                <img
+                  key={c.titulo}
+                  src={c.imagem}
+                  alt={c.titulo}
+                  title={c.titulo}
+                  className="h-7 w-7 rounded-full border object-cover"
+                  loading="lazy"
+                />
+              ))}
+            </div>
+          )}
           <div className="mt-auto flex items-end justify-between">
             <div>
               <p className="text-lg font-bold text-price">{formatBRL(product.price)}</p>
