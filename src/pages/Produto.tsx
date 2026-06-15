@@ -11,6 +11,11 @@ import { BuyDrawer } from "@/components/store/BuyDrawer";
 import logoBerzerk from "@/assets/logo-berzerk.png";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
+import vid1 from "@/assets/videos/1a4e7724-d072-4f6d-8d21-47a6fef2a2aa.mp4.asset.json";
+import vid2 from "@/assets/videos/e54aedee-628c-4dc2-a0d8-1f1117b249a2.mp4.asset.json";
+import vid3 from "@/assets/videos/c724b2e0-4ce4-4dac-aa63-5931b423ca45.mp4.asset.json";
+import vid4 from "@/assets/videos/7fda6f58-9fb4-4c2c-a35f-5b8847b4e648.mp4.asset.json";
+const creatorVideos: string[] = [vid1.url, vid2.url, vid3.url, vid4.url];
 
 
 const REVIEWS_TOTAL = 521;
@@ -439,6 +444,26 @@ export default function ProductPage() {
             ))}
           </div>
         </div>
+
+        {/* Vídeos de criadores */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <h2 className="mb-3 text-lg font-bold">Vídeos de criadores</h2>
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
+            {creatorVideos.map((v, i) => (
+              <video
+                key={i}
+                src={v}
+                className="h-72 w-44 shrink-0 rounded-xl bg-black object-cover"
+                controls
+                playsInline
+                preload="metadata"
+                muted
+              />
+            ))}
+          </div>
+        </div>
+
+
 
         {/* Você também pode gostar */}
         <div className="mt-2 bg-muted/30 px-3 py-4">
