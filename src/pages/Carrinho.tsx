@@ -21,6 +21,7 @@ import { useCart } from "@/lib/cart";
 import { formatBRL, products } from "@/data/products";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackAddToCart, trackInitiateCheckout } from "@/lib/tiktokPixel";
+import logoMeijile from "@/assets/logo-meijile.png.asset.json";
 
 function useRandomProducts(count: number, excludeIds: string[]) {
   return useMemo(() => {
