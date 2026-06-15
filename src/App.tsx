@@ -13,6 +13,7 @@ import ObrigadoPage from "@/pages/Obrigado";
 import AdminPixelsPage from "@/pages/AdminPixels";
 import PreviewFretePage from "@/pages/PreviewFrete";
 import PreviewNotaFiscalPage from "@/pages/PreviewNotaFiscal";
+import CupomPage from "@/pages/Cupom";
 import TikTokPixelLoader from "@/components/TikTokPixelLoader";
 import ScrollToTop from "@/components/ScrollToTop";
 import UtmPersistence from "@/components/UtmPersistence";
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/preview/frete" element={<PreviewFretePage />} />
         <Route path="/preview/nota-fiscal" element={<PreviewNotaFiscalPage />} />
         <Route path="/admin/pixels" element={<AdminPixelsPage />} />
+        <Route path="/cupom" element={<CupomPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
