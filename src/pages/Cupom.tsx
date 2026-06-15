@@ -166,16 +166,20 @@ export default function CupomPage() {
               <span>Expira em {countdown}</span>
             </div>
 
-            <Link
-              to={getUrlWithUtm("/")}
-              className="mt-5 block w-full rounded-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 py-4 text-base font-extrabold uppercase tracking-wide text-white shadow-lg active:scale-[0.98]"
-              style={{ animation: "glowPulse 2s ease-in-out infinite" }}
+            <button
+              type="button"
+              onClick={handleClaim}
+              disabled={claiming}
+              ref={btnRef}
+              className="mt-5 block w-full rounded-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 py-4 text-base font-extrabold uppercase tracking-wide text-white shadow-lg transition-transform active:scale-[0.98] disabled:opacity-90"
+              style={{ animation: claiming ? "btnBounce .5s ease-out" : "glowPulse 2s ease-in-out infinite" }}
             >
               <span className="inline-flex items-center justify-center gap-2">
                 <Flame className="h-5 w-5 fill-yellow-200" /> Garantir Cupom
                 <Ticket className="h-5 w-5" />
               </span>
-            </Link>
+            </button>
+
 
             <p className="mt-3 text-[11px] text-muted-foreground">
               *Desconto aplicado automaticamente no carrinho
