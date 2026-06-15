@@ -72,6 +72,7 @@ export const products: Product[] = [
     imgPretaB3.url,
     imgPretaB4.url,
   ]),
+  make("dourada-flores", "Dourada Flores Pérolas", [imgDourada1.url, imgDourada2.url]),
 ];
 
 export function formatBRL(value: number): string {
