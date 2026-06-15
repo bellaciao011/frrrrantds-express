@@ -1,10 +1,10 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
-  ArrowLeft, Bookmark, ChevronLeft, ChevronRight, Home, MessageCircle, MoreHorizontal,
-  Share2, ShieldCheck, ShoppingCart, Star, Ticket, Zap,
+  ArrowLeft, Bookmark, ChevronDown, ChevronLeft, ChevronRight, Home, MessageCircle, MoreHorizontal,
+  Share2, ShieldCheck, ShoppingCart, Star, Ticket, Truck, Zap,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
@@ -13,10 +13,17 @@ import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
 
 
-const REVIEWS_TOTAL = 207;
-const REVIEWS_5 = 12300;
-const REVIEWS_4 = 857;
-const REVIEWS_WITH_MEDIA = 2500;
+const REVIEWS_TOTAL = 521;
+const REVIEWS_AVG = 4.8;
+const REVIEWS_BREAKDOWN = [
+  { stars: 5, count: 470 },
+  { stars: 4, count: 33 },
+  { stars: 3, count: 10 },
+  { stars: 2, count: 3 },
+  { stars: 1, count: 5 },
+];
+const REVIEWS_WITH_MEDIA = 218;
+
 
 
 function useCountdown(seconds: number) {
