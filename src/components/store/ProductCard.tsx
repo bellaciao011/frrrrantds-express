@@ -17,6 +17,7 @@ export function ProductCard({
   const [drawer, setDrawer] = useState(false);
   const navigate = useNavigate();
   const goCart = () => navigate(getUrlWithUtm("/carrinho"));
+  const cores = (product.variacoes ?? []).filter((v) => v.tipo === "cor");
 
   if (layout === "grid") {
     return (
