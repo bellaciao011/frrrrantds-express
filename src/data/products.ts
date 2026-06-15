@@ -28,6 +28,17 @@ import imgGlitterDouradaPe from "@/assets/sandalia/8a8c1654-5c09-446f-8c41-25b84
 import imgGlitterTurquesaPe from "@/assets/sandalia/aac0b9af-5a7f-4ccf-9024-441d5851d7fa.png.asset.json";
 import imgGlitterRosaPe from "@/assets/sandalia/cfc2f81c-86cf-464c-b79e-bf8b2e1bb50e.png.asset.json";
 
+// Nova: Birken Tribal Pérolas - 3 cores
+import imgTribalPrata1 from "@/assets/sandalia/e75a3cc2-c7a3-485a-8f2e-11421a48a240.png.asset.json";
+import imgTribalPrata2 from "@/assets/sandalia/0606ad3b-b0d2-4361-af63-1792e371e084.png.asset.json";
+import imgTribalPrataPe from "@/assets/sandalia/a4b33746-468b-40ba-a01e-bad44e8c0cbd.png.asset.json";
+import imgTribalDourada1 from "@/assets/sandalia/7f8210c8-ef62-4c80-b7a0-b3b9e8e31b06.png.asset.json";
+import imgTribalDourada2 from "@/assets/sandalia/a57c4400-ce2e-4e3a-94ea-d6f32243324a.png.asset.json";
+import imgTribalDouradaPe from "@/assets/sandalia/a4cf1acd-ad9a-4c30-bd60-6875366abb54.png.asset.json";
+import imgTribalPreta1 from "@/assets/sandalia/afc21fa5-71f3-4535-957f-16f2049ff861.png.asset.json";
+import imgTribalPreta2 from "@/assets/sandalia/c10aaba8-0b56-47b7-92ff-bde2e277e021.png.asset.json";
+import imgTribalPretaPe from "@/assets/sandalia/aa4ebd58-a118-432d-806f-390e0d34b601.png.asset.json";
+
 
 export interface ProductVariation {
   titulo: string;
