@@ -570,7 +570,7 @@ export default function ProductPage() {
         mode={drawer ?? "cart"}
         initialSize={selectedSize}
         onClose={() => setDrawer(null)}
-        onConfirm={drawer === "buy" ? () => navigate(getUrlWithUtm("/checkout")) : undefined}
+        onConfirm={drawer === "buy" ? () => navigate(getUrlWithUtm("/checkout")) : () => navigate(getUrlWithUtm("/carrinho"))}
       />
     </div>
   );
