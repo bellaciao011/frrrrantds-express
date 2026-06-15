@@ -94,7 +94,7 @@ export interface Product {
 }
 
 const SIZES: ProductVariation[] = [
-  "33", "34", "35", "36", "37", "38", "39",
+  "33", "34", "35", "36", "37", "38", "39", "40", "41", "42",
 ].map((t) => ({ titulo: t, imagem: "", tipo: "tamanho" }));
 
 const DESCRIPTION =
