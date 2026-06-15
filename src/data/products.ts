@@ -75,8 +75,8 @@ const make = (
 });
 
 export const products: Product[] = [
-  make("rosa", "Rosa", [imgRosa.url]),
-  make("turquesa", "Turquesa", [imgTurquesa.url]),
+  make("rosa", "Rosa", [imgRosa.url, imgRosa2.url]),
+  make("turquesa", "Turquesa", [imgTurquesa.url, imgTurquesa2.url]),
   make("nude-perolas", "Nude Pérolas", [imgNude1.url, imgNude2.url, imgNude3.url]),
   make("bronze", "Bronze", [imgBronze1.url, imgBronze2.url]),
   make("preta", "Preta", [imgPreta1.url, imgPreta2.url]),
