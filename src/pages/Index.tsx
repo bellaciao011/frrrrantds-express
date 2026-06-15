@@ -6,7 +6,7 @@ import { Header } from "@/components/store/Header";
 import { StoreInfo } from "@/components/store/StoreInfo";
 import { FreeShippingBar } from "@/components/store/FreeShippingBar";
 import { ProductCard } from "@/components/store/ProductCard";
-import { PromoPopup } from "@/components/store/PromoPopup";
+
 import { listingProducts as products } from "@/data/products";
 import { CATEGORIES, filterByCategory, productMatchesCategory, type CategoryId } from "@/lib/categories";
 
@@ -75,7 +75,7 @@ export default function IndexPage() {
         <title>Meijile — Sandálias em Promoção</title>
         <meta name="description" content="Sandálias Meijile com até 85% OFF e frete grátis." />
       </Helmet>
-      <PromoPopup />
+      
       <Header />
       <StoreInfo />
       <FreeShippingBar />
