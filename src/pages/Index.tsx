@@ -75,7 +75,7 @@ export default function IndexPage() {
         <title>Meijile — Sandálias em Promoção</title>
         <meta name="description" content="Sandálias Meijile com até 85% OFF e frete grátis." />
       </Helmet>
-      <PromoPopup />
+      
       <Header />
       <StoreInfo />
       <FreeShippingBar />
