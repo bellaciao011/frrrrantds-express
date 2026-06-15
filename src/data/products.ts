@@ -85,6 +85,34 @@ export const products: Product[] = [
     imgPretaB4.url,
   ]),
   make("dourada-flores", "Dourada Flores Pérolas", [imgDourada1.url, imgDourada2.url]),
+  {
+    id: "sandalia-birken-glitter-strass",
+    name: "Sandália Birken Glitter Strass Brilho Duas Fivelas",
+    image: imgGlitterLifestyle.url,
+    images: [
+      imgGlitterLifestyle.url,
+      imgGlitterPreta.url,
+      imgGlitterDourada.url,
+      imgGlitterTurquesa.url,
+      imgGlitterRosa.url,
+      imgGlitterPretaPe.url,
+      imgGlitterDouradaPe.url,
+      imgGlitterTurquesaPe.url,
+      imgGlitterRosaPe.url,
+    ],
+    price: 89.9,
+    originalPrice: 299.9,
+    discount: 70,
+    description: DESCRIPTION,
+    variacoes: [
+      { titulo: "Preta", imagem: imgGlitterPreta.url, tipo: "cor" },
+      { titulo: "Dourada", imagem: imgGlitterDourada.url, tipo: "cor" },
+      { titulo: "Turquesa", imagem: imgGlitterTurquesa.url, tipo: "cor" },
+      { titulo: "Rosa", imagem: imgGlitterRosa.url, tipo: "cor" },
+      ...SIZES,
+    ],
+    sold: 980,
+  },
 ];
 
 export function formatBRL(value: number): string {
