@@ -29,7 +29,7 @@ export interface CreateTransactionInput {
   amount: number; // centavos
   payment_method: "pix" | "credit_card" | "boleto";
   postback_url: string;
-  metadata?: string;
+  metadata?: Record<string, unknown>;
   customer: FreepayCustomer;
   items: FreepayItem[];
   pix?: { expires_in_days: number };
