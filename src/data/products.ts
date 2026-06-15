@@ -126,6 +126,33 @@ export const products: Product[] = [
     ],
     sold: 980,
   },
+  {
+    id: "sandalia-birken-tribal-perolas",
+    name: "Sandália Birken Tribal Pérolas Bordada Duas Fivelas",
+    image: imgTribalPrata1.url,
+    images: [
+      imgTribalPrata1.url,
+      imgTribalDourada1.url,
+      imgTribalPreta1.url,
+      imgTribalPrata2.url,
+      imgTribalDourada2.url,
+      imgTribalPreta2.url,
+      imgTribalPrataPe.url,
+      imgTribalDouradaPe.url,
+      imgTribalPretaPe.url,
+    ],
+    price: 89.9,
+    originalPrice: 299.9,
+    discount: 70,
+    description: DESCRIPTION,
+    variacoes: [
+      { titulo: "Prata Pérolas", imagem: imgTribalPrata1.url, tipo: "cor" },
+      { titulo: "Dourada", imagem: imgTribalDourada1.url, tipo: "cor" },
+      { titulo: "Preta", imagem: imgTribalPreta1.url, tipo: "cor" },
+      ...SIZES,
+    ],
+    sold: 742,
+  },
 ];
 
 export function formatBRL(value: number): string {
