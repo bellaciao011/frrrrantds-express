@@ -494,17 +494,43 @@ export default function ProductPage() {
           </div>
         </div>
 
-        {/* Política de privacidade */}
-        <div className="mt-2 bg-background px-4 py-6 text-center">
-          <h3 className="font-bold">Políticas e Privacidade</h3>
-          <a href="#" className="mt-1 block text-sm font-semibold text-blue-600 underline">
-            Política de Privacidade
-          </a>
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-            Seus dados são tratados conforme a legislação vigente e usados apenas para
-            processar pedidos e atendimento.
-          </p>
+        {/* Breadcrumb */}
+        <nav className="mt-2 bg-background px-4 py-3 text-xs text-muted-foreground">
+          <ol className="flex flex-wrap items-center gap-x-1 gap-y-1">
+            <li>Berzerk Shop</li><li>›</li>
+            <li>Sapatos</li><li>›</li>
+            <li>Sapatos femininos</li><li>›</li>
+            <li>Sandálias e chinelos</li>
+          </ol>
+        </nav>
+
+        {/* Footer accordion */}
+        <div className="mt-2 bg-background">
+          {[
+            { title: "Comprar", items: ["Como comprar", "Formas de pagamento", "Rastrear pedido", "Trocas e devoluções"] },
+            { title: "Vender", items: ["Seja parceiro", "Programa de afiliados"] },
+            { title: "Sobre", items: ["Sobre a Berzerk", "Imprensa", "Carreiras"] },
+            { title: "Suporte ao cliente", items: ["Central de ajuda", "Fale conosco", "WhatsApp"] },
+            { title: "Jurídico", items: ["Termos de uso", "Política de Privacidade", "Política de Cookies"] },
+          ].map((sec) => (
+            <details key={sec.title} className="group border-b">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-4 font-semibold">
+                {sec.title}
+                <ChevronDown className="h-5 w-5 transition-transform group-open:rotate-180" />
+              </summary>
+              <ul className="px-4 pb-4 text-sm text-muted-foreground space-y-2">
+                {sec.items.map((it) => <li key={it}>{it}</li>)}
+              </ul>
+            </details>
+          ))}
         </div>
+
+        {/* Bottom strip */}
+        <div className="mt-2 flex items-center gap-4 bg-background px-4 py-4 text-xs">
+          <span className="flex items-center gap-1.5"><Truck className="h-4 w-4" /> Frete grátis</span>
+          <span className="flex items-center gap-1.5"><Ticket className="h-4 w-4" /> Ofertas para novos clientes</span>
+        </div>
+
       </div>
 
       {/* Footer fixo de ação */}
