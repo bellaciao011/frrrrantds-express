@@ -12,6 +12,8 @@ import imgPretaB1 from "@/assets/sandalia/8607dc97-43df-4837-9637-d18b0eb38586.p
 import imgPretaB2 from "@/assets/sandalia/72cdeeaa-9647-4a83-b303-7145bf66eeb8.png.asset.json";
 import imgPretaB3 from "@/assets/sandalia/2d45db41-5854-4c4b-ae3a-ad9c54b28c43.png.asset.json";
 import imgPretaB4 from "@/assets/sandalia/67975ae3-fdc0-4d8b-88cf-b4876de11697.png.asset.json";
+import imgDourada1 from "@/assets/sandalia/b142f35d-5efb-4708-9826-ede2a8a40387.png.asset.json";
+import imgDourada2 from "@/assets/sandalia/58135f13-13ba-4835-ae7e-34bd0fe82be1.png.asset.json";
 
 export interface ProductVariation {
   titulo: string;
@@ -70,6 +72,7 @@ export const products: Product[] = [
     imgPretaB3.url,
     imgPretaB4.url,
   ]),
+  make("dourada-flores", "Dourada Flores Pérolas", [imgDourada1.url, imgDourada2.url]),
 ];
 
 export function formatBRL(value: number): string {
