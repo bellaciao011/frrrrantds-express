@@ -61,6 +61,20 @@ export function ProductCard({
                 {formatBRL(product.originalPrice)}
               </p>
             </div>
+            {cores.length > 0 && (
+              <div className="mt-1.5 flex flex-wrap gap-1">
+                {cores.slice(0, 5).map((c) => (
+                  <img
+                    key={c.titulo}
+                    src={c.imagem}
+                    alt={c.titulo}
+                    title={c.titulo}
+                    className="h-6 w-6 rounded-full border object-cover"
+                    loading="lazy"
+                  />
+                ))}
+              </div>
+            )}
             <button
               onClick={() => setDrawer(true)}
               className="relative z-10 mt-2 flex w-full items-center justify-center gap-1 rounded-full bg-primary py-1.5 text-xs font-semibold text-primary-foreground"
