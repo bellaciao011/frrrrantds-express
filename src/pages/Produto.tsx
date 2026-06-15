@@ -294,41 +294,104 @@ export default function ProductPage() {
 
         {/* Avaliações dos clientes */}
         <div className="mt-2 bg-background px-4 py-4">
-          <h2 className="text-lg font-bold">Avaliações dos clientes ({REVIEWS_TOTAL})</h2>
-          <div className="mt-2 flex items-center gap-2">
-            <span className="text-2xl font-bold">4.7</span>
-            <span className="text-sm text-muted-foreground">/5</span>
-            <div className="flex">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              ))}
-            </div>
-          </div>
-          <p className="mt-3 text-sm text-muted-foreground">Nenhuma avaliação ainda.</p>
+          <h2 className="text-lg font-bold">Avaliações dos clientes</h2>
 
-          <div className="mt-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="text-base font-bold">Avaliações da loja (13,9 mil)</h3>
-                <p className="text-xs text-muted-foreground">Resumo e classificação dos clientes</p>
-              </div>
-              <ChevronRight className="h-5 w-5 text-muted-foreground" />
-            </div>
-            <div className="mt-3 flex gap-2 overflow-x-auto">
-              <button className="shrink-0 rounded-full border bg-muted/40 px-3 py-1.5 text-xs">
-                Inclui imagens ou vídeos <span className="text-muted-foreground">({(REVIEWS_WITH_MEDIA / 1000).toLocaleString("pt-BR")} mil)</span>
-              </button>
-              <button className="flex shrink-0 items-center gap-1 rounded-full border bg-muted/40 px-3 py-1.5 text-xs">
-                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" /> 5
-                <span className="text-muted-foreground">({(REVIEWS_5 / 1000).toLocaleString("pt-BR")} mil)</span>
-              </button>
-              <button className="flex shrink-0 items-center gap-1 rounded-full border bg-muted/40 px-3 py-1.5 text-xs">
-                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" /> 4
-                <span className="text-muted-foreground">({REVIEWS_4})</span>
-              </button>
-            </div>
+          <div className="mt-3 flex items-baseline gap-2">
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <span className="text-3xl font-extrabold leading-none">{REVIEWS_AVG.toFixed(1).replace(".", ",")}</span>
+            <span className="text-sm text-muted-foreground">· {REVIEWS_TOTAL} avaliações globais</span>
           </div>
+
+          <div className="mt-3 space-y-1.5">
+            {REVIEWS_BREAKDOWN.map((b) => {
+              const pct = (b.count / REVIEWS_TOTAL) * 100;
+              return (
+                <div key={b.stars} className="flex items-center gap-2 text-xs">
+                  <span className="flex w-6 items-center gap-0.5">{b.stars} <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" /></span>
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+                    <div className="h-full rounded-full bg-foreground" style={{ width: `${pct}%` }} />
+                  </div>
+                  <span className="w-10 text-right tabular-nums text-muted-foreground">{b.count}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Fotos de avaliações */}
+          <p className="mt-5 text-sm font-bold">Fotos de avaliações</p>
+          <div className="mt-2 -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+            {images.slice(0, 6).map((src, i) => (
+              <div key={i} className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
+                <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                <span className="absolute bottom-0.5 left-0.5 rounded-sm bg-yellow-400 px-1 text-[10px] font-bold text-yellow-900">★★★★★</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Tabs */}
+          <div className="mt-4 flex gap-4 border-b text-sm">
+            <button className="border-b-2 border-foreground pb-2 font-semibold">Recomendado</button>
+            <button className="pb-2 text-muted-foreground">Mais recentes</button>
+          </div>
+
+          {/* Filtros */}
+          <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+            <button className="flex shrink-0 items-center gap-1 rounded-full border border-foreground bg-background px-3 py-1 text-xs font-semibold">
+              <Star className="h-3 w-3 fill-foreground text-foreground" /> Tudo
+            </button>
+            <button className="shrink-0 rounded-full border bg-muted/40 px-3 py-1 text-xs">
+              Inclui imagens ou vídeos ({REVIEWS_WITH_MEDIA})
+            </button>
+            <button className="shrink-0 rounded-full border bg-muted/40 px-3 py-1 text-xs">
+              Compras verificadas
+            </button>
+          </div>
+
+          <p className="mt-3 text-xs text-muted-foreground">Exibindo {REVIEWS_TOTAL} de {REVIEWS_TOTAL} avaliações</p>
+
+          {/* Reviews */}
+          <div className="mt-2 divide-y">
+            {sampleReviews.map((r, idx) => (
+              <article key={idx} className="py-4">
+                <header className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-bold">{r.initial}</div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">{r.name} · <span className="text-xs font-normal text-muted-foreground">Compras verificadas</span></p>
+                    <p className="text-[11px] text-muted-foreground">BR</p>
+                  </div>
+                </header>
+                <div className="mt-1 flex">
+                  {[1,2,3,4,5].map((i) => (
+                    <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <p className="mt-2 text-sm leading-relaxed">
+                  <span className="font-semibold">Forma e tamanho:</span> {r.forma} <span className="font-semibold">Aroma:</span> {r.aroma} <span className="font-semibold">Usabilidade:</span> {r.uso} <span className="font-semibold">Cor:</span> {r.cor}
+                </p>
+                {r.photos > 0 && (
+                  <div className="mt-2 flex gap-1.5">
+                    {images.slice(idx, idx + 2).map((src, i) => (
+                      <div key={i} className="h-14 w-14 overflow-hidden rounded-md bg-muted">
+                        <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                      </div>
+                    ))}
+                    {r.photos > 2 && (
+                      <div className="relative h-14 w-14 overflow-hidden rounded-md bg-muted">
+                        <img src={images[(idx + 2) % images.length]} alt="" className="h-full w-full object-cover opacity-60" loading="lazy" />
+                        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-foreground">+{r.photos - 2}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                <p className="mt-2 text-xs text-muted-foreground">Item: {r.item}</p>
+                <p className="text-xs text-muted-foreground">{r.date}</p>
+              </article>
+            ))}
+          </div>
+
+          <button className="mx-auto mt-3 block rounded-full border px-5 py-2 text-sm font-semibold">Ver mais</button>
         </div>
+
 
         {/* Loja */}
         <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
