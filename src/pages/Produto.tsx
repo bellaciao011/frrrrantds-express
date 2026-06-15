@@ -333,16 +333,8 @@ export default function ProductPage() {
             })}
           </div>
 
-          {/* Fotos de avaliações */}
-          <p className="mt-5 text-sm font-bold">Fotos de avaliações</p>
-          <div className="mt-2 -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-            {images.slice(0, 6).map((src, i) => (
-              <div key={i} className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
-                <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
-                <span className="absolute bottom-0.5 left-0.5 rounded-sm bg-yellow-400 px-1 text-[10px] font-bold text-yellow-900">★★★★★</span>
-              </div>
-            ))}
-          </div>
+
+
 
           {/* Tabs */}
           <div className="mt-4 flex gap-4 border-b text-sm">
@@ -384,21 +376,8 @@ export default function ProductPage() {
                 <p className="mt-2 text-sm leading-relaxed">
                   <span className="font-semibold">Forma e tamanho:</span> {r.forma} <span className="font-semibold">Aroma:</span> {r.aroma} <span className="font-semibold">Usabilidade:</span> {r.uso} <span className="font-semibold">Cor:</span> {r.cor}
                 </p>
-                {r.photos > 0 && (
-                  <div className="mt-2 flex gap-1.5">
-                    {images.slice(idx, idx + 2).map((src, i) => (
-                      <div key={i} className="h-14 w-14 overflow-hidden rounded-md bg-muted">
-                        <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
-                      </div>
-                    ))}
-                    {r.photos > 2 && (
-                      <div className="relative h-14 w-14 overflow-hidden rounded-md bg-muted">
-                        <img src={images[(idx + 2) % images.length]} alt="" className="h-full w-full object-cover opacity-60" loading="lazy" />
-                        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-foreground">+{r.photos - 2}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
+
+
                 <p className="mt-2 text-xs text-muted-foreground">Item: {r.item}</p>
                 <p className="text-xs text-muted-foreground">{r.date}</p>
               </article>
