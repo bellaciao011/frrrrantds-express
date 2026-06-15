@@ -93,7 +93,7 @@ export default function CarrinhoPage() {
   return (
     <div className="min-h-screen bg-[#f5f5f7] pb-32">
       <Helmet>
-        <title>Meu Carrinho — Olympikus</title>
+        <title>Meu Carrinho — Meijile</title>
       </Helmet>
 
       {/* Header gradient */}
