@@ -7,7 +7,7 @@ import { StoreInfo } from "@/components/store/StoreInfo";
 import { FreeShippingBar } from "@/components/store/FreeShippingBar";
 import { ProductCard } from "@/components/store/ProductCard";
 import { PromoPopup } from "@/components/store/PromoPopup";
-import { products } from "@/data/products";
+import { listingProducts as products } from "@/data/products";
 import { CATEGORIES, filterByCategory, productMatchesCategory, type CategoryId } from "@/lib/categories";
 
 type Tab = "inicio" | "produtos" | "categorias";
@@ -112,7 +112,7 @@ export default function IndexPage() {
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {top.map((p) => (
-              <ProductCard key={p.id} product={p} layout="grid" />
+              <ProductCard key={`${p.id}-${p.name}`} product={p} layout="grid" />
             ))}
           </div>
 
@@ -124,7 +124,7 @@ export default function IndexPage() {
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {recommended.map((p) => (
-              <ProductCard key={p.id} product={p} layout="grid" />
+              <ProductCard key={`${p.id}-${p.name}`} product={p} layout="grid" />
             ))}
           </div>
         </div>
@@ -198,13 +198,13 @@ export default function IndexPage() {
             ) : layout === "grid" ? (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
                 {filtered.map((p) => (
-                  <ProductCard key={p.id} product={p} layout="grid" />
+                  <ProductCard key={`${p.id}-${p.name}`} product={p} layout="grid" />
                 ))}
               </div>
             ) : (
               <div className="overflow-hidden rounded-xl bg-background">
                 {filtered.map((p) => (
-                  <ProductCard key={p.id} product={p} layout="list" />
+                  <ProductCard key={`${p.id}-${p.name}`} product={p} layout="list" />
                 ))}
               </div>
             )}

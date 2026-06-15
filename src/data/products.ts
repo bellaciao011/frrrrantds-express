@@ -71,3 +71,19 @@ export const products: Product[] = [
 export function formatBRL(value: number): string {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
+
+// Lista expandida: cada cor vira um "produto" na vitrine.
+// Mantém o mesmo id base para que a página /produto/:id continue funcionando.
+export const listingProducts: Product[] = products.flatMap((p) => {
+  const cores = p.variacoes.filter((v) => v.tipo === "cor");
+  const tamanhos = p.variacoes.filter((v) => v.tipo === "tamanho");
+  if (cores.length === 0) return [p];
+  return cores.map((c) => ({
+    ...p,
+    id: p.id,
+    name: `${p.name} - ${c.titulo}`,
+    image: c.imagem,
+    images: [c.imagem, ...p.images.filter((i) => i !== c.imagem)],
+    variacoes: tamanhos,
+  }));
+});
