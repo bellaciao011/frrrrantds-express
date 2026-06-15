@@ -61,6 +61,18 @@ import imgCorticaPreta2 from "@/assets/sandalia/4b4601a4-9909-42bb-88ee-15f8c1f7
 import imgCorticaPreta3 from "@/assets/sandalia/0153a52b-9455-43d0-8ff6-6fde9e248723.png.asset.json";
 import imgCorticaPrataPe from "@/assets/sandalia/50b14c36-b84b-4c50-88fe-cc7f6d1225c2.png.asset.json";
 
+// Nova: Birken Monograma Bordado - 3 cores
+import imgMonoNude1 from "@/assets/sandalia/b208702d-5e24-47b6-a6c7-37b6d9077b8a.png.asset.json";
+import imgMonoNude2 from "@/assets/sandalia/33aac2b3-1425-46db-b0f1-bfa4af759f73.png.asset.json";
+import imgMonoNudePe from "@/assets/sandalia/ade1c121-3627-4035-a742-44a91d6830df.png.asset.json";
+import imgMonoPreta1 from "@/assets/sandalia/6a514057-2770-4938-aefe-b1420541737e.png.asset.json";
+import imgMonoPreta2 from "@/assets/sandalia/6a26b6a8-0c59-4511-88fa-b3b398c82961.png.asset.json";
+import imgMonoPretaPe from "@/assets/sandalia/bd14ea7e-2ee2-4d37-80bc-285cf4811cb9.png.asset.json";
+import imgMonoBranca1 from "@/assets/sandalia/c802842f-89f4-436e-b2f1-b139c436b1af.png.asset.json";
+import imgMonoBranca2 from "@/assets/sandalia/c7791a94-8236-408c-aa2f-b9d45823f656.png.asset.json";
+import imgMonoBrancaPe from "@/assets/sandalia/dd114bd7-28a4-4f9f-9174-5ef350b73ca0.png.asset.json";
+
+
 
 export interface ProductVariation {
   titulo: string;
@@ -228,6 +240,33 @@ export const products: Product[] = [
       ...SIZES,
     ],
     sold: 521,
+  },
+  {
+    id: "sandalia-birken-monograma-bordado",
+    name: "Sandália Birken Monograma Bordado Duas Fivelas Verão 2026",
+    image: imgMonoNude1.url,
+    images: [
+      imgMonoNude1.url,
+      imgMonoPreta1.url,
+      imgMonoBranca1.url,
+      imgMonoNude2.url,
+      imgMonoPreta2.url,
+      imgMonoBranca2.url,
+      imgMonoNudePe.url,
+      imgMonoPretaPe.url,
+      imgMonoBrancaPe.url,
+    ],
+    price: 89.9,
+    originalPrice: 299.9,
+    discount: 70,
+    description: DESCRIPTION,
+    variacoes: [
+      { titulo: "Nude", imagem: imgMonoNude1.url, tipo: "cor" },
+      { titulo: "Preta", imagem: imgMonoPreta1.url, tipo: "cor" },
+      { titulo: "Branca", imagem: imgMonoBranca1.url, tipo: "cor" },
+      ...SIZES,
+    ],
+    sold: 487,
   },
 ];
 
