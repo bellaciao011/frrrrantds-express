@@ -50,6 +50,16 @@ import imgBohoPreta1 from "@/assets/sandalia/30dc158f-6801-405a-8216-ded4a8e5312
 import imgBohoPreta2 from "@/assets/sandalia/4e04c3f5-f80e-46d8-9172-b6ab89885cca.png.asset.json";
 import imgBohoPretaPe from "@/assets/sandalia/ebc59775-4b7e-4f80-967c-be70b6ce57fd.png.asset.json";
 
+// Nova: Birken Cortiça Pedras Coloridas - 3 cores
+import imgCorticaNude1 from "@/assets/sandalia/943029e3-0479-47c2-aa0c-aae89f4ea148.png.asset.json";
+import imgCorticaNude2 from "@/assets/sandalia/554bed34-8725-4dab-a1b5-738084d6c3c7.png.asset.json";
+import imgCorticaNude3 from "@/assets/sandalia/49d11304-3bac-4bf3-8d6f-281fb9007ddf.png.asset.json";
+import imgCorticaNudePe1 from "@/assets/sandalia/605d3b41-9409-438f-860f-1a697a691095.png.asset.json";
+import imgCorticaNudePe2 from "@/assets/sandalia/4488ec46-6df0-4c60-954c-8cf6304f210d.png.asset.json";
+import imgCorticaPreta1 from "@/assets/sandalia/837a5ec2-0b5b-4752-b232-8c508774d816.png.asset.json";
+import imgCorticaPreta2 from "@/assets/sandalia/4b4601a4-9909-42bb-88ee-15f8c1f7d548.png.asset.json";
+import imgCorticaPreta3 from "@/assets/sandalia/0153a52b-9455-43d0-8ff6-6fde9e248723.png.asset.json";
+import imgCorticaPrataPe from "@/assets/sandalia/50b14c36-b84b-4c50-88fe-cc7f6d1225c2.png.asset.json";
 
 
 export interface ProductVariation {
@@ -191,6 +201,33 @@ export const products: Product[] = [
       ...SIZES,
     ],
     sold: 658,
+  },
+  {
+    id: "sandalia-birken-cortica-pedras-coloridas",
+    name: "Sandália Birken Cortiça Pedras Naturais Coloridas Duas Fivelas",
+    image: imgCorticaNude1.url,
+    images: [
+      imgCorticaNude1.url,
+      imgCorticaPreta1.url,
+      imgCorticaPrataPe.url,
+      imgCorticaNude2.url,
+      imgCorticaNude3.url,
+      imgCorticaPreta2.url,
+      imgCorticaPreta3.url,
+      imgCorticaNudePe1.url,
+      imgCorticaNudePe2.url,
+    ],
+    price: 89.9,
+    originalPrice: 299.9,
+    discount: 70,
+    description: DESCRIPTION,
+    variacoes: [
+      { titulo: "Nude Multicolor", imagem: imgCorticaNude1.url, tipo: "cor" },
+      { titulo: "Preta Multicolor", imagem: imgCorticaPreta1.url, tipo: "cor" },
+      { titulo: "Prata Multicolor", imagem: imgCorticaPrataPe.url, tipo: "cor" },
+      ...SIZES,
+    ],
+    sold: 521,
   },
 ];
 
