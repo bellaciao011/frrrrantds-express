@@ -171,6 +171,7 @@ export default function CupomPage() {
         @keyframes twinkle { 0%,100% { opacity: .2;} 50% { opacity: .9;} }
         @keyframes float { 0%,100% { transform: translateY(0) rotate(-4deg);} 50% { transform: translateY(-8px) rotate(4deg);} }
         @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(250,204,21,.55);} 50% { box-shadow: 0 0 0 14px rgba(250,204,21,0);} }
+        @keyframes btnBounce { 0% { transform: scale(1);} 40% { transform: scale(1.1);} 100% { transform: scale(1);} }
       `}</style>
 
       <Stars />
