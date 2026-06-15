@@ -124,7 +124,7 @@ export function ProductCard({
           </div>
           <div className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground">
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-            <span>5 | 100 vendido(s)</span>
+            <span>5{product.sold ? ` | ${product.sold.toLocaleString("pt-BR")} vendido(s)` : ""}</span>
           </div>
           {cores.length > 0 && (
             <div className="mt-1.5 flex flex-wrap gap-1">
