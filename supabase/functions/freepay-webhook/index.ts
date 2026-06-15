@@ -2,6 +2,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { mapFreepayStatus } from "../_shared/freepay.ts";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
+import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -84,6 +85,12 @@ Deno.serve(async (req) => {
         });
       } catch (e) {
         console.error("[freepay-webhook] pushcut error", e);
+      }
+
+      try {
+        await trackPurchaseServerSide({ supa, externalId: order.external_id });
+      } catch (e) {
+        console.error("[freepay-webhook] tiktok purchase error", e);
       }
     }
 

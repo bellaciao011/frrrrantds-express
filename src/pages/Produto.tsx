@@ -45,7 +45,7 @@ function useCountdown(seconds: number) {
 export default function ProductPage() {
   const { id = "" } = useParams<{ id: string }>();
   const product = products.find((p) => p.id === id);
-  const { add } = useCart();
+  const { add, count: cartCount } = useCart();
   const navigate = useNavigate();
   const countdown = useCountdown(5 * 60 + 43);
   const [bookmarked, setBookmarked] = useState(false);
@@ -91,9 +91,9 @@ export default function ProductPage() {
     const cores = (product?.variacoes ?? []).filter((v) => v.tipo === "cor").map((v) => v.titulo);
     const corDefault = cores[0] ?? "Preta";
     return [
-      { initial: "h", name: "h**a", forma: "Normal, calço 37 e ficou certinho, gente ela é linda demais 😍", aroma: "Normal", uso: "Bem confortável e leve", cor: corDefault, item: `${corDefault}, 37`, date: "2026-05-11", photos: 5 },
-      { initial: "É", name: "É**a", forma: "Comprei tamanho 35", aroma: "Agradável", uso: "Macia desde o primeiro uso", cor: cores[1] ?? corDefault, item: `${cores[1] ?? corDefault}, 35`, date: "2026-05-11", photos: 5 },
-      { initial: "J", name: "J**3", forma: "Veio certinho no tamanho", aroma: "Sem cheiro forte", uso: "Muito lindas, compreem, ela é confortável vem bem embalada e parece ser bem resistente!!", cor: corDefault, item: `${corDefault}, 39`, date: "2026-04-28", photos: 3 },
+      { initial: "h", name: "h**a", forma: "Normal, calço 37 e ficou certinho, gente ela é linda demais 😍", uso: "Bem confortável e leve", cor: corDefault, item: `${corDefault}, 37`, date: "2026-05-11", photos: 5 },
+      { initial: "É", name: "É**a", forma: "Comprei tamanho 35", uso: "Macia desde o primeiro uso", cor: cores[1] ?? corDefault, item: `${cores[1] ?? corDefault}, 35`, date: "2026-05-11", photos: 5 },
+      { initial: "J", name: "J**3", forma: "Veio certinho no tamanho", uso: "Muito lindas, compreem, ela é confortável vem bem embalada e parece ser bem resistente!!", cor: corDefault, item: `${corDefault}, 39`, date: "2026-04-28", photos: 3 },
     ];
   }, [product?.id]);
 
@@ -112,9 +112,11 @@ export default function ProductPage() {
           </button>
           <Link to="/carrinho" className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
             <ShoppingCart className="h-5 w-5" strokeWidth={2.5} />
-            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-              0
-            </span>
+            {cartCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                {cartCount}
+              </span>
+            )}
           </Link>
           <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
             <MoreHorizontal className="h-5 w-5" strokeWidth={2.5} />
@@ -374,7 +376,7 @@ export default function ProductPage() {
                   ))}
                 </div>
                 <p className="mt-2 text-sm leading-relaxed">
-                  <span className="font-semibold">Forma e tamanho:</span> {r.forma} <span className="font-semibold">Aroma:</span> {r.aroma} <span className="font-semibold">Usabilidade:</span> {r.uso} <span className="font-semibold">Cor:</span> {r.cor}
+                  <span className="font-semibold">Forma e tamanho:</span> {r.forma} <span className="font-semibold">Usabilidade:</span> {r.uso} <span className="font-semibold">Cor:</span> {r.cor}
                 </p>
 
 

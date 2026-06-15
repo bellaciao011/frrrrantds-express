@@ -5,6 +5,7 @@ import { AlertTriangle, Loader2, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/data/products";
 import { getUrlWithUtm } from "@/utils/utm";
+import { getStoredTtclid } from "@/lib/tiktokPixel";
 
 interface OrderItem {
   id?: string;
@@ -126,6 +127,7 @@ export default function Up2Page() {
             },
           ],
           store_slug: "up2",
+          ttclid: getStoredTtclid(),
         },
       });
       if (error) throw error;

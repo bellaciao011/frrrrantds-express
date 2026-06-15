@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 declare global {
@@ -15,6 +16,8 @@ const STORE_SLUG = "berzerk";
  * Captura ttclid da URL e salva em sessionStorage.
  */
 export default function TikTokPixelLoader() {
+  const location = useLocation();
+
   useEffect(() => {
     // 1) Captura ttclid da URL e salva (persistente em localStorage + sessionStorage)
     try {
@@ -48,6 +51,17 @@ export default function TikTokPixelLoader() {
       cancelled = true;
     };
   }, []);
+
+  // Re-dispara pageview em cada troca de rota (SPA)
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.ttq) return;
+    try {
+      const ids = window.ttq._i ? Object.keys(window.ttq._i) : [];
+      for (const pid of ids) {
+        window.ttq.instance(pid).page();
+      }
+    } catch { /* ignore */ }
+  }, [location.pathname]);
 
   return null;
 }
