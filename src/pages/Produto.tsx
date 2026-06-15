@@ -374,7 +374,7 @@ export default function ProductPage() {
                   ))}
                 </div>
                 <p className="mt-2 text-sm leading-relaxed">
-                  <span className="font-semibold">Forma e tamanho:</span> {r.forma} <span className="font-semibold">Aroma:</span> {r.aroma} <span className="font-semibold">Usabilidade:</span> {r.uso} <span className="font-semibold">Cor:</span> {r.cor}
+                  <span className="font-semibold">Forma e tamanho:</span> {r.forma} <span className="font-semibold">Usabilidade:</span> {r.uso} <span className="font-semibold">Cor:</span> {r.cor}
                 </p>
 
 
