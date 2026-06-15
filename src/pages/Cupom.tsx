@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Flame, ShieldCheck, Ticket, Truck, Music2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import confetti from "canvas-confetti";
+import { toast } from "sonner";
 import { getUrlWithUtm } from "@/utils/utm";
 
 function useCountdown(seconds: number) {
