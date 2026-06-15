@@ -266,15 +266,11 @@ export default function CarrinhoPage() {
 
             {/* Seller footer */}
             <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
-              <p className="text-base font-bold">Olympikus</p>
-              <p className="mt-1 text-xs text-muted-foreground">CNPJ: 63.805.779/0001-32</p>
-              <p className="text-xs text-muted-foreground">Rua das Palmeiras, 482 - São Paulo/SP</p>
+              <p className="text-base font-bold">Meijile</p>
+              <p className="mt-1 text-xs text-muted-foreground">Loja Oficial</p>
               <div className="mt-3 flex items-center justify-center gap-4 text-xs">
                 <span className="flex items-center gap-1 text-muted-foreground">
-                  <Mail className="h-3.5 w-3.5" /> contato@olympikus.com.br
-                </span>
-                <span className="flex items-center gap-1 text-muted-foreground">
-                  <Phone className="h-3.5 w-3.5 text-rose-500" /> (11) 94837-2156
+                  <Mail className="h-3.5 w-3.5" /> contato@meijile.com.br
                 </span>
               </div>
             </div>
