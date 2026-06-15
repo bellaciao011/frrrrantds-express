@@ -8,6 +8,10 @@ import imgBronze1 from "@/assets/sandalia/a2a66000-44db-443d-aa32-f7142989cc78.p
 import imgBronze2 from "@/assets/sandalia/3ef89a03-5711-45f5-b015-7039392b7307.png.asset.json";
 import imgPreta1 from "@/assets/sandalia/96002507-8a94-4803-b036-ffd2d6049639.png.asset.json";
 import imgPreta2 from "@/assets/sandalia/84a49136-813e-4551-8ba2-9ada71ebdd0a.png.asset.json";
+import imgPretaB1 from "@/assets/sandalia/8607dc97-43df-4837-9637-d18b0eb38586.png.asset.json";
+import imgPretaB2 from "@/assets/sandalia/72cdeeaa-9647-4a83-b303-7145bf66eeb8.png.asset.json";
+import imgPretaB3 from "@/assets/sandalia/2d45db41-5854-4c4b-ae3a-ad9c54b28c43.png.asset.json";
+import imgPretaB4 from "@/assets/sandalia/67975ae3-fdc0-4d8b-88cf-b4876de11697.png.asset.json";
 
 export interface ProductVariation {
   titulo: string;
@@ -35,55 +39,42 @@ const SIZES: ProductVariation[] = [
 const DESCRIPTION =
   "Sandália Birken Papete Feminina Luxo com aplicação artesanal de strass e pérolas. Duas fivelas ajustáveis para encaixe perfeito, palmilha anatômica acolchoada e solado emborrachado antiderrapante. Conforto máximo o dia todo com um toque de brilho e elegância. Coleção Verão 2026.";
 
-const cor = (titulo: string, imagem: string): ProductVariation => ({ titulo, imagem, tipo: "cor" });
+const baseName = "Sandália Birken Papete Feminina Luxo Strass e Pérolas Duas Fivelas Verão 2026";
 
-const CORES: ProductVariation[] = [
-  cor("Rosa", imgRosa.url),
-  cor("Turquesa", imgTurquesa.url),
-  cor("Nude Pérolas", imgNude1.url),
-  cor("Bronze", imgBronze1.url),
-  cor("Preta", imgPreta1.url),
-];
-
-const GALERIA: string[] = [
-  imgRosa.url,
-  imgTurquesa.url,
-  imgNude1.url, imgNude2.url, imgNude3.url,
-  imgBronze1.url, imgBronze2.url,
-  imgPreta1.url, imgPreta2.url,
-];
+const make = (
+  slug: string,
+  cor: string,
+  imgs: string[],
+): Product => ({
+  id: `sandalia-birken-${slug}`,
+  name: `${baseName} - ${cor}`,
+  image: imgs[0],
+  images: imgs,
+  price: 89.9,
+  originalPrice: 299.9,
+  discount: 70,
+  description: DESCRIPTION,
+  variacoes: SIZES,
+  sold: 1248,
+});
 
 export const products: Product[] = [
-  {
-    id: "sandalia-birken-strass-perolas",
-    name: "Sandália Birken Papete Feminina Luxo Strass e Pérolas Duas Fivelas Verão 2026",
-    image: imgNude1.url,
-    images: GALERIA,
-    price: 89.90,
-    originalPrice: 299.90,
-    discount: 70,
-    description: DESCRIPTION,
-    variacoes: [...CORES, ...SIZES],
-    sold: 1248,
-  },
+  make("rosa", "Rosa", [imgRosa.url]),
+  make("turquesa", "Turquesa", [imgTurquesa.url]),
+  make("nude-perolas", "Nude Pérolas", [imgNude1.url, imgNude2.url, imgNude3.url]),
+  make("bronze", "Bronze", [imgBronze1.url, imgBronze2.url]),
+  make("preta", "Preta", [imgPreta1.url, imgPreta2.url]),
+  make("preta-estampa-2", "Preta Estampa Exclusiva", [
+    imgPretaB1.url,
+    imgPretaB2.url,
+    imgPretaB3.url,
+    imgPretaB4.url,
+  ]),
 ];
 
 export function formatBRL(value: number): string {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-// Lista expandida: cada cor vira um "produto" na vitrine.
-// Mantém o mesmo id base para que a página /produto/:id continue funcionando.
-export const listingProducts: Product[] = products.flatMap((p) => {
-  const cores = p.variacoes.filter((v) => v.tipo === "cor");
-  const tamanhos = p.variacoes.filter((v) => v.tipo === "tamanho");
-  if (cores.length === 0) return [p];
-  return cores.map((c) => ({
-    ...p,
-    id: p.id,
-    name: `${p.name} - ${c.titulo}`,
-    image: c.imagem,
-    images: [c.imagem, ...p.images.filter((i) => i !== c.imagem)],
-    variacoes: tamanhos,
-  }));
-});
+// Compat: vitrine usa a mesma lista (cada cor já é um produto único).
+export const listingProducts: Product[] = products;
