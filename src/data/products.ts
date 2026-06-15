@@ -14,6 +14,8 @@ import imgPretaB3 from "@/assets/sandalia/2d45db41-5854-4c4b-ae3a-ad9c54b28c43.p
 import imgPretaB4 from "@/assets/sandalia/67975ae3-fdc0-4d8b-88cf-b4876de11697.png.asset.json";
 import imgDourada1 from "@/assets/sandalia/b142f35d-5efb-4708-9826-ede2a8a40387.png.asset.json";
 import imgDourada2 from "@/assets/sandalia/58135f13-13ba-4835-ae7e-34bd0fe82be1.png.asset.json";
+import imgTurquesa2 from "@/assets/sandalia/87f998c6-c9c3-44e0-a2cf-fc09a6b12af9.png.asset.json";
+import imgRosa2 from "@/assets/sandalia/117c49d2-9610-49d1-a611-cf0eaa0c4ea9.png.asset.json";
 
 // Nova: Birken Glitter Strass com 4 cores
 import imgGlitterPreta from "@/assets/sandalia/3d845169-612d-4d6c-a915-3d7c035dfed6.png.asset.json";
