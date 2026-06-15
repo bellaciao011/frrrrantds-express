@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
-import logoBerzerk from "@/assets/logo-berzerk.png";
+import logoBerzerk from "@/assets/logo-meijile.png.asset.json";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
 import vid1 from "@/assets/videos/1a4e7724-d072-4f6d-8d21-47a6fef2a2aa.mp4.asset.json";
@@ -100,7 +100,7 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-muted/30 pb-24">
-      <Helmet><title>{product.name} — Berzerk</title><meta name="description" content={`${product.name} por ${formatBRL(product.price)}`} /></Helmet>
+      <Helmet><title>{product.name} — Meijile</title><meta name="description" content={`${product.name} por ${formatBRL(product.price)}`} /></Helmet>
       {/* Header */}
       <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b bg-background px-3">
         <button onClick={() => window.history.back()} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
@@ -413,10 +413,10 @@ export default function ProductPage() {
         <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-white overflow-hidden">
-              <img src={logoBerzerk} alt="Berzerk" className="h-12 w-12 object-contain" />
+              <img src={logoBerzerk.url} alt="Meijile" className="h-12 w-12 object-contain" />
             </div>
             <div>
-              <p className="font-bold">Berzerk</p>
+              <p className="font-bold">Meijile</p>
               <p className="text-sm text-muted-foreground">16300 vendido(s)</p>
             </div>
           </div>
@@ -522,7 +522,7 @@ export default function ProductPage() {
         {/* Breadcrumb */}
         <nav className="mt-2 bg-background px-4 py-3 text-xs text-muted-foreground">
           <ol className="flex flex-wrap items-center gap-x-1 gap-y-1">
-            <li>Berzerk Shop</li><li>›</li>
+            <li>Meijile Shop</li><li>›</li>
             <li>Sapatos</li><li>›</li>
             <li>Sapatos femininos</li><li>›</li>
             <li>Sandálias e chinelos</li>
@@ -534,7 +534,7 @@ export default function ProductPage() {
           {[
             { title: "Comprar", items: ["Como comprar", "Formas de pagamento", "Rastrear pedido", "Trocas e devoluções"] },
             { title: "Vender", items: ["Seja parceiro", "Programa de afiliados"] },
-            { title: "Sobre", items: ["Sobre a Berzerk", "Imprensa", "Carreiras"] },
+            { title: "Sobre", items: ["Sobre a Meijile", "Imprensa", "Carreiras"] },
             { title: "Suporte ao cliente", items: ["Central de ajuda", "Fale conosco", "WhatsApp"] },
             { title: "Jurídico", items: ["Termos de uso", "Política de Privacidade", "Política de Cookies"] },
           ].map((sec) => (
