@@ -1,7 +1,8 @@
-// Consulta o status de um pedido na Mangofy e atualiza o banco se mudou.
+// Consulta o status de um pedido na FreePay e atualiza o banco se mudou.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
+import { getTransaction, mapFreepayStatus } from "../_shared/freepay.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,14 +10,6 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-const MANGOFY_BASE = "http://18.231.128.145:3001";
-
-function normalizeStatus(s?: string): string {
-  if (!s) return "pending";
-  if (s === "approved" || s === "paid") return "paid";
-  if (s === "pending" || s === "waiting_payment") return "pending";
-  return s;
-}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
