@@ -39,6 +39,18 @@ import imgTribalPreta1 from "@/assets/sandalia/afc21fa5-71f3-4535-957f-16f2049ff
 import imgTribalPreta2 from "@/assets/sandalia/c10aaba8-0b56-47b7-92ff-bde2e277e021.png.asset.json";
 import imgTribalPretaPe from "@/assets/sandalia/aa4ebd58-a118-432d-806f-390e0d34b601.png.asset.json";
 
+// Nova: Birken Boho Conchas e Pedras - 3 cores
+import imgBohoNude1 from "@/assets/sandalia/d67bd2a0-7c7a-48e9-93f6-22a8c13d4204.png.asset.json";
+import imgBohoNude2 from "@/assets/sandalia/6d7f2c70-5b19-4018-b0e0-1824cc7cdf4b.png.asset.json";
+import imgBohoNudePe from "@/assets/sandalia/d97ebd98-0570-4be6-a276-cc6e45e57790.png.asset.json";
+import imgBohoBranca1 from "@/assets/sandalia/1c1a2954-e537-4342-a91e-8b2dd0b91c8b.png.asset.json";
+import imgBohoBranca2 from "@/assets/sandalia/8f35f8ae-9427-4b02-a9cf-b40a34aa8f47.png.asset.json";
+import imgBohoBrancaPe from "@/assets/sandalia/d13e56f9-5bb2-4fcd-8f22-cb2405b5b38d.png.asset.json";
+import imgBohoPreta1 from "@/assets/sandalia/30dc158f-6801-405a-8216-ded4a8e53121.png.asset.json";
+import imgBohoPreta2 from "@/assets/sandalia/4e04c3f5-f80e-46d8-9172-b6ab89885cca.png.asset.json";
+import imgBohoPretaPe from "@/assets/sandalia/ebc59775-4b7e-4f80-967c-be70b6ce57fd.png.asset.json";
+
+
 
 export interface ProductVariation {
   titulo: string;
@@ -152,6 +164,33 @@ export const products: Product[] = [
       ...SIZES,
     ],
     sold: 742,
+  },
+  {
+    id: "sandalia-birken-boho-conchas",
+    name: "Sandália Birken Boho Conchas e Pedras Naturais Duas Fivelas",
+    image: imgBohoNude1.url,
+    images: [
+      imgBohoNude1.url,
+      imgBohoBranca1.url,
+      imgBohoPreta1.url,
+      imgBohoNude2.url,
+      imgBohoBranca2.url,
+      imgBohoPreta2.url,
+      imgBohoNudePe.url,
+      imgBohoBrancaPe.url,
+      imgBohoPretaPe.url,
+    ],
+    price: 89.9,
+    originalPrice: 299.9,
+    discount: 70,
+    description: DESCRIPTION,
+    variacoes: [
+      { titulo: "Nude", imagem: imgBohoNude1.url, tipo: "cor" },
+      { titulo: "Branca Verde", imagem: imgBohoBranca1.url, tipo: "cor" },
+      { titulo: "Preta", imagem: imgBohoPreta1.url, tipo: "cor" },
+      ...SIZES,
+    ],
+    sold: 658,
   },
 ];
 
