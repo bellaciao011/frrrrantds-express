@@ -1,7 +1,8 @@
-// Consulta o status de um pedido na Mangofy e atualiza o banco se mudou.
+// Consulta o status de um pedido na FreePay e atualiza o banco se mudou.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
+import { getTransaction, mapFreepayStatus } from "../_shared/freepay.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,14 +10,6 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-const MANGOFY_BASE = "http://18.231.128.145:3001";
-
-function normalizeStatus(s?: string): string {
-  if (!s) return "pending";
-  if (s === "approved" || s === "paid") return "paid";
-  if (s === "pending" || s === "waiting_payment") return "pending";
-  return s;
-}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -34,9 +27,12 @@ Deno.serve(async (req) => {
       });
     }
 
-    const apiKey = Deno.env.get("MANGOFY_AUTHORIZATION")!;
-    const storeCode = Deno.env.get("MANGOFY_STORE_CODE")!;
-    const proxySecret = Deno.env.get("PROXY_SECRET") ?? "";
+    const apiKey = Deno.env.get("FREEPAY_PUBLIC_KEY");
+    if (!apiKey) {
+      return new Response(JSON.stringify({ error: "FreePay not configured" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -55,27 +51,17 @@ Deno.serve(async (req) => {
       });
     }
 
-    const resp = await fetch(`${MANGOFY_BASE}/payment/${existingOrder.transaction_id}`, {
-      headers: {
-        Authorization: apiKey,
-        "Store-Code": storeCode,
-        Accept: "application/json",
-        "x-proxy-secret": proxySecret,
-      },
-    });
+    const { ok, status: httpStatus, data } = await getTransaction(existingOrder.transaction_id);
 
-    const text = await resp.text();
-    let data: any;
-    try { data = JSON.parse(text); } catch { data = { raw: text }; }
-
-    if (!resp.ok) {
-      return new Response(JSON.stringify({ error: "Mangofy error", status: resp.status, details: data }), {
+    if (!ok) {
+      return new Response(JSON.stringify({ error: "FreePay error", status: httpStatus, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const t = data?.data ?? data;
-    const status = normalizeStatus(t?.payment_status ?? t?.status);
+    const t = Array.isArray(data?.data) ? data.data[0] : (data?.data ?? data);
+    const status = mapFreepayStatus(t?.status ?? t?.payment_status);
+
 
     const wasAlreadyPaid = existingOrder?.status === "paid" || !!existingOrder?.paid_at;
 
