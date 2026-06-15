@@ -112,9 +112,11 @@ export default function ProductPage() {
           </button>
           <Link to="/carrinho" className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
             <ShoppingCart className="h-5 w-5" strokeWidth={2.5} />
-            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-              0
-            </span>
+            {cartCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                {cartCount}
+              </span>
+            )}
           </Link>
           <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
             <MoreHorizontal className="h-5 w-5" strokeWidth={2.5} />
