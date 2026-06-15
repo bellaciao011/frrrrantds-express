@@ -202,6 +202,33 @@ export const products: Product[] = [
     ],
     sold: 658,
   },
+  {
+    id: "sandalia-birken-cortica-pedras-coloridas",
+    name: "Sandália Birken Cortiça Pedras Naturais Coloridas Duas Fivelas",
+    image: imgCorticaNude1.url,
+    images: [
+      imgCorticaNude1.url,
+      imgCorticaPreta1.url,
+      imgCorticaPrataPe.url,
+      imgCorticaNude2.url,
+      imgCorticaNude3.url,
+      imgCorticaPreta2.url,
+      imgCorticaPreta3.url,
+      imgCorticaNudePe1.url,
+      imgCorticaNudePe2.url,
+    ],
+    price: 89.9,
+    originalPrice: 299.9,
+    discount: 70,
+    description: DESCRIPTION,
+    variacoes: [
+      { titulo: "Nude Multicolor", imagem: imgCorticaNude1.url, tipo: "cor" },
+      { titulo: "Preta Multicolor", imagem: imgCorticaPreta1.url, tipo: "cor" },
+      { titulo: "Prata Multicolor", imagem: imgCorticaPrataPe.url, tipo: "cor" },
+      ...SIZES,
+    ],
+    sold: 521,
+  },
 ];
 
 export function formatBRL(value: number): string {
