@@ -1,15 +1,13 @@
-// Cria uma transação PIX na Mangofy e salva o pedido no banco
+// Cria uma transação PIX na FreePay Brasil e salva o pedido no banco
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
+import { createTransaction } from "../_shared/freepay.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-
-const MANGOFY_BASE = "http://18.231.128.145:3001";
-const DEFAULT_CUSTOMER_IP = "18.231.128.145";
 
 interface BuyerInput {
   name: string;
@@ -43,8 +41,8 @@ function onlyDigits(s: string | undefined): string | undefined {
 function normalizeBrazilianPhone(s: string | undefined): string | undefined {
   const d = onlyDigits(s);
   if (!d) return undefined;
-  if (d.length === 10 || d.length === 11) return d;
-  if (d.length >= 12) return d.slice(-11);
+  if (d.length === 10 || d.length === 11) return `+55${d}`;
+  if (d.length >= 12) return `+${d}`;
   return undefined;
 }
 
@@ -57,20 +55,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const apiKey = Deno.env.get("MANGOFY_AUTHORIZATION");
-    const storeCode = Deno.env.get("MANGOFY_STORE_CODE");
-    const proxySecret = Deno.env.get("PROXY_SECRET");
-    if (!apiKey || !storeCode) {
-      return new Response(JSON.stringify({ error: "Mangofy credentials not configured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     const body = (await req.json()) as Body;
 
     const fwd = req.headers.get("x-forwarded-for") ?? "";
     const buyerIp = fwd.split(",")[0]?.trim() || req.headers.get("cf-connecting-ip") || null;
-    const mangofyCustomerIp = Deno.env.get("MANGOFY_CUSTOMER_IP") ?? DEFAULT_CUSTOMER_IP;
     const buyerUserAgent = req.headers.get("user-agent") ?? null;
 
     if (!body.amount || body.amount < 500) {
@@ -91,83 +79,50 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 
     const PRODUCT_NAME = "Curso de como monetizar no tiktok Shop";
-    const items = (body.items?.length ? body.items : [{ id: "item-1", name: PRODUCT_NAME, price: body.amount / 100, quantity: 1 }]).map((it) => ({
-      code: String(it.id),
-      name: PRODUCT_NAME,
+    const srcItems = body.items?.length ? body.items : [{ id: "item-1", name: PRODUCT_NAME, price: body.amount / 100, quantity: 1 }];
+    const items = srcItems.map((it) => ({
+      title: PRODUCT_NAME,
+      unit_price: Math.round(Number(it.price) * 100),
       quantity: Number(it.quantity) || 1,
-      amount: Math.round(Number(it.price) * 100),
+      tangible: true,
     }));
 
-    const payload: Record<string, unknown> = {
-      external_code: external_id,
+    console.log("[create-pix] Calling FreePay", { external_id, amount: body.amount });
+
+    const { ok, status, data } = await createTransaction({
+      amount: body.amount,
       payment_method: "pix",
-      payment_format: "regular",
-      installments: 1,
-      payment_amount: body.amount,
-      postback_url: `${supabaseUrl}/functions/v1/mangofy-webhook`,
-      items,
+      postback_url: `${supabaseUrl}/functions/v1/freepay-webhook?external_id=${encodeURIComponent(external_id)}`,
+      metadata: JSON.stringify({
+        external_id,
+        store: body.store_slug ?? null,
+        ttclid: body.ttclid ?? null,
+        ...(body.tracking ?? {}),
+      }),
       customer: {
         name: body.buyer.name.trim().slice(0, 100),
         email: body.buyer.email.trim().slice(0, 100),
-        document: buyerDoc ?? "00000000000",
-        ip: mangofyCustomerIp,
+        document: { number: buyerDoc ?? "00000000000", type: "cpf" },
         ...(buyerPhone ? { phone: buyerPhone } : {}),
       },
+      items,
       pix: { expires_in_days: 1 },
-      extra: {
-        ...(buyerUserAgent ? { userAgent: buyerUserAgent } : {}),
-        metadata: {
-          ...(body.tracking ?? {}),
-          ...(body.ttclid ? { ttclid: body.ttclid } : {}),
-          store: body.store_slug ?? null,
-        },
-      },
-    };
-
-    console.log("[create-pix] Calling Mangofy", { external_id, amount: body.amount });
-
-    const resp = await fetch(`${MANGOFY_BASE}/payment`, {
-      method: "POST",
-      headers: {
-        Authorization: apiKey,
-        "Store-Code": storeCode,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "x-proxy-secret": proxySecret ?? "",
-      },
-      body: JSON.stringify(payload),
     });
 
-    const text = await resp.text();
-    let data: any;
-    try { data = JSON.parse(text); } catch { data = { raw: text }; }
-
-    if (!resp.ok) {
-      console.error("[create-pix] Mangofy error", resp.status, data);
-      return new Response(JSON.stringify({ error: "Mangofy error", status: resp.status, details: data }), {
+    if (!ok) {
+      console.error("[create-pix] FreePay error", status, data);
+      return new Response(JSON.stringify({ error: "FreePay error", status, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    console.log("[create-pix] Mangofy response", JSON.stringify(data).slice(0, 2000));
+    console.log("[create-pix] FreePay response", JSON.stringify(data).slice(0, 2000));
 
-    const t = data?.data ?? data;
-    const paymentCode = t?.payment_code ?? t?.code ?? null;
-    const pixObj = t?.pix ?? t?.payment?.pix ?? {};
-    const pixCode =
-      pixObj?.pix_qrcode_text ??
-      pixObj?.qrcode ??
-      pixObj?.qrcode_text ??
-      pixObj?.emv ??
-      pixObj?.payload ??
-      pixObj?.copy_paste ??
-      pixObj?.code ??
-      pixObj?.brcode ??
-      t?.qrcode ??
-      t?.qr_code ??
-      t?.pix_code ??
-      null;
-    const pixImage = pixObj?.qrcode_image ?? pixObj?.qrcode_base64 ?? pixObj?.image ?? t?.qrcode_image ?? null;
+    const t = Array.isArray(data?.data) ? data.data[0] : (data?.data ?? data);
+    const transactionId: string | null = t?.id ?? null;
+    const pixArr = Array.isArray(t?.pix) ? t.pix : (t?.pix ? [t.pix] : []);
+    const pixCode: string | null = pixArr[0]?.qr_code ?? pixArr[0]?.qrcode ?? null;
+    const pixUrl: string | null = pixArr[0]?.url ?? null;
 
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -176,12 +131,12 @@ Deno.serve(async (req) => {
 
     const { error: dbErr } = await supa.from("orders").insert({
       external_id,
-      transaction_id: paymentCode,
+      transaction_id: transactionId,
       status: "pending",
       payment_method: "pix",
       amount: body.amount,
       pix_code: pixCode,
-      pix_qrcode: pixImage,
+      pix_qrcode: pixUrl,
       buyer_name: body.buyer.name,
       buyer_email: body.buyer.email,
       buyer_document: buyerDoc ?? null,
@@ -210,9 +165,9 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         external_id,
-        transaction_id: paymentCode,
+        transaction_id: transactionId,
         pix_code: pixCode,
-        pix_qrcode: pixImage,
+        pix_qrcode: pixUrl,
         amount: body.amount,
         status: "pending",
       }),
