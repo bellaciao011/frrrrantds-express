@@ -165,6 +165,33 @@ export const products: Product[] = [
     ],
     sold: 742,
   },
+  {
+    id: "sandalia-birken-boho-conchas",
+    name: "Sandália Birken Boho Conchas e Pedras Naturais Duas Fivelas",
+    image: imgBohoNude1.url,
+    images: [
+      imgBohoNude1.url,
+      imgBohoBranca1.url,
+      imgBohoPreta1.url,
+      imgBohoNude2.url,
+      imgBohoBranca2.url,
+      imgBohoPreta2.url,
+      imgBohoNudePe.url,
+      imgBohoBrancaPe.url,
+      imgBohoPretaPe.url,
+    ],
+    price: 89.9,
+    originalPrice: 299.9,
+    discount: 70,
+    description: DESCRIPTION,
+    variacoes: [
+      { titulo: "Nude", imagem: imgBohoNude1.url, tipo: "cor" },
+      { titulo: "Branca Verde", imagem: imgBohoBranca1.url, tipo: "cor" },
+      { titulo: "Preta", imagem: imgBohoPreta1.url, tipo: "cor" },
+      ...SIZES,
+    ],
+    sold: 658,
+  },
 ];
 
 export function formatBRL(value: number): string {
