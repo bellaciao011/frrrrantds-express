@@ -1,13 +1,13 @@
 // Catálogo gerado automaticamente
-import imgBranca1 from "@/assets/sandalia/2be3cda8-e7c6-40cc-9cc3-653e1fff4773.png.asset.json";
-import imgBranca2 from "@/assets/sandalia/21944a7c-3c2f-497d-ad30-ec50b6d5e83f.png.asset.json";
-import imgBranca3 from "@/assets/sandalia/c0b1fa64-5fc1-46ee-8765-bfa1e7ad1d54.png.asset.json";
-import imgNude1 from "@/assets/sandalia/d20e367d-a7a6-49a2-ba37-36dd72cdb92f.png.asset.json";
-import imgNude2 from "@/assets/sandalia/be776e27-f32e-4b9b-a281-b34bf73509c7.png.asset.json";
-import imgNude3 from "@/assets/sandalia/c247a960-8aa0-40c0-8e0a-876f90815eed.png.asset.json";
-import imgPreta1 from "@/assets/sandalia/1be4610b-b56b-41a1-ab09-c3fd50fbd953.png.asset.json";
-import imgPreta2 from "@/assets/sandalia/44dc05e8-7433-4d18-9b33-212477bcd541.png.asset.json";
-import imgPreta3 from "@/assets/sandalia/95309f36-8a66-43e2-b264-9a77cea99b30.png.asset.json";
+import imgRosa from "@/assets/sandalia/257610f2-67af-4bd6-99f9-f2f22b706aae.png.asset.json";
+import imgTurquesa from "@/assets/sandalia/61e0f590-2b44-4eeb-bfce-9a82f59245d6.png.asset.json";
+import imgNude1 from "@/assets/sandalia/0dfcb5b9-e9bc-4fa2-8b40-7db5223aa2fb.png.asset.json";
+import imgNude2 from "@/assets/sandalia/75aa016f-465a-4a6a-bc9e-4209577b871d.png.asset.json";
+import imgNude3 from "@/assets/sandalia/24478317-e870-42ad-b335-664968e6c444.png.asset.json";
+import imgBronze1 from "@/assets/sandalia/a2a66000-44db-443d-aa32-f7142989cc78.png.asset.json";
+import imgBronze2 from "@/assets/sandalia/3ef89a03-5711-45f5-b015-7039392b7307.png.asset.json";
+import imgPreta1 from "@/assets/sandalia/96002507-8a94-4803-b036-ffd2d6049639.png.asset.json";
+import imgPreta2 from "@/assets/sandalia/84a49136-813e-4551-8ba2-9ada71ebdd0a.png.asset.json";
 
 export interface ProductVariation {
   titulo: string;
@@ -38,22 +38,26 @@ const DESCRIPTION =
 const cor = (titulo: string, imagem: string): ProductVariation => ({ titulo, imagem, tipo: "cor" });
 
 const CORES: ProductVariation[] = [
-  cor("Branca", imgBranca1.url),
-  cor("Nude", imgNude1.url),
+  cor("Rosa", imgRosa.url),
+  cor("Turquesa", imgTurquesa.url),
+  cor("Nude Pérolas", imgNude1.url),
+  cor("Bronze", imgBronze1.url),
   cor("Preta", imgPreta1.url),
 ];
 
 const GALERIA: string[] = [
-  imgBranca1.url, imgBranca2.url, imgBranca3.url,
+  imgRosa.url,
+  imgTurquesa.url,
   imgNude1.url, imgNude2.url, imgNude3.url,
-  imgPreta1.url, imgPreta2.url, imgPreta3.url,
+  imgBronze1.url, imgBronze2.url,
+  imgPreta1.url, imgPreta2.url,
 ];
 
 export const products: Product[] = [
   {
     id: "sandalia-birken-strass-perolas",
     name: "Sandália Birken Papete Feminina Luxo Strass e Pérolas Duas Fivelas Verão 2026",
-    image: imgBranca1.url,
+    image: imgNude1.url,
     images: GALERIA,
     price: 89.90,
     originalPrice: 299.90,
