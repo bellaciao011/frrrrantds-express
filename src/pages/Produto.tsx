@@ -91,9 +91,9 @@ export default function ProductPage() {
     const cores = (product?.variacoes ?? []).filter((v) => v.tipo === "cor").map((v) => v.titulo);
     const corDefault = cores[0] ?? "Preta";
     return [
-      { initial: "h", name: "h**a", forma: "Normal, calço 37 e ficou certinho, gente ela é linda demais 😍", aroma: "Normal", uso: "Bem confortável e leve", cor: corDefault, item: `${corDefault}, 37`, date: "2026-05-11", photos: 5 },
-      { initial: "É", name: "É**a", forma: "Comprei tamanho 35", aroma: "Agradável", uso: "Macia desde o primeiro uso", cor: cores[1] ?? corDefault, item: `${cores[1] ?? corDefault}, 35`, date: "2026-05-11", photos: 5 },
-      { initial: "J", name: "J**3", forma: "Veio certinho no tamanho", aroma: "Sem cheiro forte", uso: "Muito lindas, compreem, ela é confortável vem bem embalada e parece ser bem resistente!!", cor: corDefault, item: `${corDefault}, 39`, date: "2026-04-28", photos: 3 },
+      { initial: "h", name: "h**a", forma: "Normal, calço 37 e ficou certinho, gente ela é linda demais 😍", uso: "Bem confortável e leve", cor: corDefault, item: `${corDefault}, 37`, date: "2026-05-11", photos: 5 },
+      { initial: "É", name: "É**a", forma: "Comprei tamanho 35", uso: "Macia desde o primeiro uso", cor: cores[1] ?? corDefault, item: `${cores[1] ?? corDefault}, 35`, date: "2026-05-11", photos: 5 },
+      { initial: "J", name: "J**3", forma: "Veio certinho no tamanho", uso: "Muito lindas, compreem, ela é confortável vem bem embalada e parece ser bem resistente!!", cor: corDefault, item: `${corDefault}, 39`, date: "2026-04-28", photos: 3 },
     ];
   }, [product?.id]);
 
