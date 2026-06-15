@@ -92,6 +92,71 @@ function FireBg() {
 
 export default function CupomPage() {
   const countdown = useCountdown(9 * 60 + 59);
+  const navigate = useNavigate();
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+  const [claiming, setClaiming] = useState(false);
+
+  const fireJuninaConfetti = () => {
+    const flagColors = ["#ef4444", "#facc15", "#22c55e", "#3b82f6", "#ffffff", "#f97316"];
+    const end = Date.now() + 900;
+    const burst = () => {
+      confetti({
+        particleCount: 8,
+        angle: 60,
+        spread: 65,
+        startVelocity: 55,
+        origin: { x: 0, y: 0.7 },
+        colors: flagColors,
+        shapes: ["square"],
+        scalar: 0.9,
+        gravity: 1.1,
+        ticks: 180,
+      });
+      confetti({
+        particleCount: 8,
+        angle: 120,
+        spread: 65,
+        startVelocity: 55,
+        origin: { x: 1, y: 0.7 },
+        colors: flagColors,
+        shapes: ["square"],
+        scalar: 0.9,
+        gravity: 1.1,
+        ticks: 180,
+      });
+      if (Date.now() < end) requestAnimationFrame(burst);
+    };
+    burst();
+
+    // emojis 🔥 🌽 🎏 como shapes
+    try {
+      const fire = (confetti as any).shapeFromText({ text: "🔥", scalar: 2 });
+      const milho = (confetti as any).shapeFromText({ text: "🌽", scalar: 2 });
+      const flag = (confetti as any).shapeFromText({ text: "🎏", scalar: 2 });
+      confetti({
+        particleCount: 24,
+        spread: 100,
+        startVelocity: 45,
+        origin: { y: 0.6 },
+        shapes: [fire, milho, flag],
+        scalar: 2,
+        gravity: 1,
+        ticks: 220,
+      });
+    } catch { /* shapeFromText pode não existir em versões antigas */ }
+  };
+
+  const handleClaim = () => {
+    if (claiming) return;
+    setClaiming(true);
+    fireJuninaConfetti();
+    toast.success("🎉 Cupom aplicado com sucesso!", { duration: 1200 });
+    window.setTimeout(() => {
+      navigate(getUrlWithUtm("/"));
+    }, 1300);
+  };
+
+
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#0b1437] via-[#1a0b3a] to-[#3b0a2e] px-4 pb-10 pt-10">
