@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Flame, ShieldCheck, Ticket, Truck, Music2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import confetti from "canvas-confetti";
+import { toast } from "sonner";
 import { getUrlWithUtm } from "@/utils/utm";
 
 function useCountdown(seconds: number) {
@@ -90,6 +92,71 @@ function FireBg() {
 
 export default function CupomPage() {
   const countdown = useCountdown(9 * 60 + 59);
+  const navigate = useNavigate();
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+  const [claiming, setClaiming] = useState(false);
+
+  const fireJuninaConfetti = () => {
+    const flagColors = ["#ef4444", "#facc15", "#22c55e", "#3b82f6", "#ffffff", "#f97316"];
+    const end = Date.now() + 900;
+    const burst = () => {
+      confetti({
+        particleCount: 8,
+        angle: 60,
+        spread: 65,
+        startVelocity: 55,
+        origin: { x: 0, y: 0.7 },
+        colors: flagColors,
+        shapes: ["square"],
+        scalar: 0.9,
+        gravity: 1.1,
+        ticks: 180,
+      });
+      confetti({
+        particleCount: 8,
+        angle: 120,
+        spread: 65,
+        startVelocity: 55,
+        origin: { x: 1, y: 0.7 },
+        colors: flagColors,
+        shapes: ["square"],
+        scalar: 0.9,
+        gravity: 1.1,
+        ticks: 180,
+      });
+      if (Date.now() < end) requestAnimationFrame(burst);
+    };
+    burst();
+
+    // emojis 🔥 🌽 🎏 como shapes
+    try {
+      const fire = (confetti as any).shapeFromText({ text: "🔥", scalar: 2 });
+      const milho = (confetti as any).shapeFromText({ text: "🌽", scalar: 2 });
+      const flag = (confetti as any).shapeFromText({ text: "🎏", scalar: 2 });
+      confetti({
+        particleCount: 24,
+        spread: 100,
+        startVelocity: 45,
+        origin: { y: 0.6 },
+        shapes: [fire, milho, flag],
+        scalar: 2,
+        gravity: 1,
+        ticks: 220,
+      });
+    } catch { /* shapeFromText pode não existir em versões antigas */ }
+  };
+
+  const handleClaim = () => {
+    if (claiming) return;
+    setClaiming(true);
+    fireJuninaConfetti();
+    toast.success("🎉 Cupom aplicado com sucesso!", { duration: 1200 });
+    window.setTimeout(() => {
+      navigate(getUrlWithUtm("/"));
+    }, 1300);
+  };
+
+
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#0b1437] via-[#1a0b3a] to-[#3b0a2e] px-4 pb-10 pt-10">
@@ -104,6 +171,7 @@ export default function CupomPage() {
         @keyframes twinkle { 0%,100% { opacity: .2;} 50% { opacity: .9;} }
         @keyframes float { 0%,100% { transform: translateY(0) rotate(-4deg);} 50% { transform: translateY(-8px) rotate(4deg);} }
         @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(250,204,21,.55);} 50% { box-shadow: 0 0 0 14px rgba(250,204,21,0);} }
+        @keyframes btnBounce { 0% { transform: scale(1);} 40% { transform: scale(1.1);} 100% { transform: scale(1);} }
       `}</style>
 
       <Stars />
@@ -164,16 +232,20 @@ export default function CupomPage() {
               <span>Expira em {countdown}</span>
             </div>
 
-            <Link
-              to={getUrlWithUtm("/")}
-              className="mt-5 block w-full rounded-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 py-4 text-base font-extrabold uppercase tracking-wide text-white shadow-lg active:scale-[0.98]"
-              style={{ animation: "glowPulse 2s ease-in-out infinite" }}
+            <button
+              type="button"
+              onClick={handleClaim}
+              disabled={claiming}
+              ref={btnRef}
+              className="mt-5 block w-full rounded-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 py-4 text-base font-extrabold uppercase tracking-wide text-white shadow-lg transition-transform active:scale-[0.98] disabled:opacity-90"
+              style={{ animation: claiming ? "btnBounce .5s ease-out" : "glowPulse 2s ease-in-out infinite" }}
             >
               <span className="inline-flex items-center justify-center gap-2">
                 <Flame className="h-5 w-5 fill-yellow-200" /> Garantir Cupom
                 <Ticket className="h-5 w-5" />
               </span>
-            </Link>
+            </button>
+
 
             <p className="mt-3 text-[11px] text-muted-foreground">
               *Desconto aplicado automaticamente no carrinho
