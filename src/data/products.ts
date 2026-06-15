@@ -15,6 +15,18 @@ import imgPretaB4 from "@/assets/sandalia/67975ae3-fdc0-4d8b-88cf-b4876de11697.p
 import imgDourada1 from "@/assets/sandalia/b142f35d-5efb-4708-9826-ede2a8a40387.png.asset.json";
 import imgDourada2 from "@/assets/sandalia/58135f13-13ba-4835-ae7e-34bd0fe82be1.png.asset.json";
 
+// Nova: Birken Glitter Strass com 4 cores
+import imgGlitterPreta from "@/assets/sandalia/3d845169-612d-4d6c-a915-3d7c035dfed6.png.asset.json";
+import imgGlitterDourada from "@/assets/sandalia/eb309f75-5b19-4ca7-9754-cd78e3e2144e.png.asset.json";
+import imgGlitterTurquesa from "@/assets/sandalia/5b58730d-3b1f-457d-bc82-17bf6fd4395b.png.asset.json";
+import imgGlitterRosa from "@/assets/sandalia/1264f4bb-32d7-4207-9a37-a0f64d69ee60.png.asset.json";
+import imgGlitterLifestyle from "@/assets/sandalia/1d9e5f7c-4001-4bed-946f-b5f5b1c442f0.png.asset.json";
+import imgGlitterPretaPe from "@/assets/sandalia/3dfa742d-b7e9-499c-9450-6fa68960fe38.png.asset.json";
+import imgGlitterDouradaPe from "@/assets/sandalia/8a8c1654-5c09-446f-8c41-25b8428096d0.png.asset.json";
+import imgGlitterTurquesaPe from "@/assets/sandalia/aac0b9af-5a7f-4ccf-9024-441d5851d7fa.png.asset.json";
+import imgGlitterRosaPe from "@/assets/sandalia/cfc2f81c-86cf-464c-b79e-bf8b2e1bb50e.png.asset.json";
+
+
 export interface ProductVariation {
   titulo: string;
   imagem: string;
