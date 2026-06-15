@@ -59,9 +59,8 @@ export function BuyDrawer({ product, open, mode, initialSize, onClose, onConfirm
     onClose();
     if (mode === "buy") {
       fly.trigger();
-    } else {
-      onConfirm?.();
     }
+    onConfirm?.();
   };
 
   return (
