@@ -52,7 +52,7 @@ export async function createTransaction(input: CreateTransactionInput) {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ metadata: "{}", ...input }),
+    body: JSON.stringify({ request: { metadata: {}, ...input } }),
   });
   const text = await resp.text();
   let data: any;
