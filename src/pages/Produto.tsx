@@ -11,6 +11,11 @@ import { BuyDrawer } from "@/components/store/BuyDrawer";
 import logoBerzerk from "@/assets/logo-berzerk.png";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
+import vid1 from "@/assets/videos/1a4e7724-d072-4f6d-8d21-47a6fef2a2aa.mp4.asset.json";
+import vid2 from "@/assets/videos/e54aedee-628c-4dc2-a0d8-1f1117b249a2.mp4.asset.json";
+import vid3 from "@/assets/videos/c724b2e0-4ce4-4dac-aa63-5931b423ca45.mp4.asset.json";
+import vid4 from "@/assets/videos/7fda6f58-9fb4-4c2c-a35f-5b8847b4e648.mp4.asset.json";
+const creatorVideos: string[] = [vid1.url, vid2.url, vid3.url, vid4.url];
 
 
 const REVIEWS_TOTAL = 521;
