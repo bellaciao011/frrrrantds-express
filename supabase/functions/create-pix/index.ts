@@ -93,12 +93,12 @@ Deno.serve(async (req) => {
       amount: body.amount,
       payment_method: "pix",
       postback_url: `${supabaseUrl}/functions/v1/freepay-webhook?external_id=${encodeURIComponent(external_id)}`,
-      metadata: JSON.stringify({
+      metadata: {
         external_id,
         store: body.store_slug ?? null,
         ttclid: body.ttclid ?? null,
         ...(body.tracking ?? {}),
-      }),
+      },
       customer: {
         name: body.buyer.name.trim().slice(0, 100),
         email: body.buyer.email.trim().slice(0, 100),
