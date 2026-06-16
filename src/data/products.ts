@@ -106,6 +106,7 @@ const make = (
   slug: string,
   cor: string,
   imgs: string[],
+  sold: number,
 ): Product => ({
   id: `sandalia-birken-${slug}`,
   name: `${baseName} - ${cor}`,
@@ -116,22 +117,22 @@ const make = (
   discount: 90,
   description: DESCRIPTION,
   variacoes: SIZES,
-  sold: 1248,
+  sold,
 });
 
 export const products: Product[] = [
-  make("rosa", "Rosa", [imgRosa.url, imgRosa2.url]),
-  make("turquesa", "Turquesa", [imgTurquesa.url, imgTurquesa2.url]),
-  make("nude-perolas", "Nude Pérolas", [imgNude1.url, imgNude2.url, imgNude3.url]),
-  make("bronze", "Bronze", [imgBronze1.url, imgBronze2.url]),
-  make("preta", "Preta", [imgPreta1.url, imgPreta2.url]),
+  make("preta", "Preta", [imgPreta1.url, imgPreta2.url], 2143),
+  make("bronze", "Bronze", [imgBronze1.url, imgBronze2.url], 1876),
+  make("nude-perolas", "Nude Pérolas", [imgNude1.url, imgNude2.url, imgNude3.url], 1654),
+  make("rosa", "Rosa", [imgRosa.url, imgRosa2.url], 932),
+  make("turquesa", "Turquesa", [imgTurquesa.url, imgTurquesa2.url], 1087),
   make("preta-estampa-2", "Preta Estampa Exclusiva", [
     imgPretaB1.url,
     imgPretaB2.url,
     imgPretaB3.url,
     imgPretaB4.url,
-  ]),
-  make("dourada-flores", "Dourada Flores Pérolas", [imgDourada1.url, imgDourada2.url]),
+  ], 1421),
+  make("dourada-flores", "Dourada Flores Pérolas", [imgDourada1.url, imgDourada2.url], 815),
   {
     id: "sandalia-birken-glitter-strass",
     name: "Sandália Birken Glitter Strass Brilho Duas Fivelas",
