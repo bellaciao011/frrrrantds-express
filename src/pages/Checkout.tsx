@@ -178,6 +178,7 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       const ttclid = getStoredTtclid();
+      const tracking = getUtmifyTracking();
       const { data, error } = await supabase.functions.invoke("create-pix", {
         body: {
           amount: amountCents,
@@ -189,6 +190,7 @@ export default function CheckoutPage() {
             quantity: i.quantity,
           })),
           ttclid,
+          tracking,
           store_slug: "berzerk",
         },
       });
