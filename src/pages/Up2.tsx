@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { AlertTriangle, Loader2, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/data/products";
-import { getUrlWithUtm } from "@/utils/utm";
+import { getUrlWithUtm, getUtmifyTracking } from "@/utils/utm";
 import { getStoredTtclid } from "@/lib/tiktokPixel";
 
 interface OrderItem {
