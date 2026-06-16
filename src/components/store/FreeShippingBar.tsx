@@ -66,14 +66,23 @@ export function FreeShippingBar() {
             )}
           </div>
           <div className="rounded-xl border border-discount-fg/20 bg-discount-bg/40 p-3">
-            <p className="text-sm font-bold text-discount-fg">Até 85% OFF</p>
+            <p className="text-sm font-bold text-discount-fg">Até 90% OFF</p>
             <p className="text-xs text-discount-fg/80">Em produtos selecionados</p>
-            <button
-              onClick={fireConfetti}
-              className="mt-2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground"
-            >
-              Resgatar
-            </button>
+            {claimed ? (
+              <button
+                disabled
+                className="mt-2 inline-flex items-center gap-1 rounded-full bg-discount-fg px-4 py-1 text-xs font-semibold text-background"
+              >
+                Resgatado ✓
+              </button>
+            ) : (
+              <button
+                onClick={handleClaim}
+                className="mt-2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground"
+              >
+                Resgatar
+              </button>
+            )}
           </div>
         </div>
       </div>
