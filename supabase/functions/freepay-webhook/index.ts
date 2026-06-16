@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
     );
 
     // Localiza o pedido por external_id (querystring), depois por transaction_id
-    let orderQuery = supa.from("orders").select("id, external_id, status, amount, store_slug, buyer_name");
+    let orderQuery = supa.from("orders").select("id, external_id, status, amount, store_slug, buyer_name, buyer_email, buyer_phone, buyer_document, buyer_ip, items, tracking, created_at, payment_method");
     if (externalQS) orderQuery = orderQuery.eq("external_id", externalQS);
     else if (transactionId) orderQuery = orderQuery.eq("transaction_id", transactionId);
     else {
