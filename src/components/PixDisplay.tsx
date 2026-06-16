@@ -88,11 +88,19 @@ export default function PixDisplay({ externalId }: { externalId: string }) {
   }, [order, externalId]);
 
   useEffect(() => {
-    if (!order?.pix_code || order.pix_qrcode) return;
+    if (!order?.pix_code) return;
+    setQrFromCode(null);
     QRCode.toDataURL(order.pix_code, { width: 320, margin: 1 })
       .then(setQrFromCode)
-      .catch(console.error);
-  }, [order?.pix_code, order?.pix_qrcode]);
+      .catch((e) => {
+        console.error("[PixDisplay] qrcode lib failed, using fallback", e);
+        setQrFromCode(
+          `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=4&data=${encodeURIComponent(
+            order.pix_code ?? "",
+          )}`,
+        );
+      });
+  }, [order?.pix_code]);
 
   useEffect(() => {
     if (!order || order.status === "paid") return;
