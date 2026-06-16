@@ -159,14 +159,19 @@ export default function PixPage() {
   const qrSrc = useMemo(() => {
     const v = order?.pix_qrcode;
     if (v) {
-      if (v.startsWith("data:")) return v;
-      // só trata como base64 se realmente parecer base64 (não é EMV/copia-e-cola)
+      if (v.startsWith("data:") || v.startsWith("http")) return v;
       if (/^[A-Za-z0-9+/=\s]+$/.test(v) && !v.startsWith("00020")) {
         return `data:image/png;base64,${v}`;
       }
     }
-    return qrFromCode;
-  }, [order?.pix_qrcode, qrFromCode]);
+    if (qrFromCode) return qrFromCode;
+    if (order?.pix_code) {
+      return `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=4&data=${encodeURIComponent(
+        order.pix_code,
+      )}`;
+    }
+    return null;
+  }, [order?.pix_qrcode, order?.pix_code, qrFromCode]);
 
   const copy = async () => {
     if (!order?.pix_code) return;
