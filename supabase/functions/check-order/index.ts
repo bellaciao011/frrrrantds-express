@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
 import { getTransaction, mapFreepayStatus } from "../_shared/freepay.ts";
+import { reportOrderToUtmify, extractTrackingFromOrder, type UtmifyStatus } from "../_shared/utmify.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -41,7 +42,7 @@ Deno.serve(async (req) => {
 
     const { data: existingOrder } = await supa
       .from("orders")
-      .select("status, amount, store_slug, buyer_name, paid_at, transaction_id")
+      .select("status, amount, store_slug, buyer_name, buyer_email, buyer_phone, buyer_document, buyer_ip, items, tracking, created_at, payment_method, paid_at, transaction_id, external_id")
       .eq("external_id", externalId)
       .maybeSingle();
 
@@ -85,6 +86,39 @@ Deno.serve(async (req) => {
         } catch (e) {
           console.error("[check-order] pushcut error", e);
         }
+      }
+    }
+
+    // Utmify: notifica mudança de status
+    const utmifyStatusMap: Record<string, UtmifyStatus> = {
+      paid: "paid",
+      refused: "refused",
+      refunded: "refunded",
+      chargedback: "chargedback",
+    };
+    const utmifyStatus = utmifyStatusMap[status];
+    if (utmifyStatus && existingOrder && existingOrder.status !== status) {
+      try {
+        await reportOrderToUtmify({
+          orderId: externalId,
+          paymentMethod: (existingOrder.payment_method as any) ?? "pix",
+          status: utmifyStatus,
+          createdAt: existingOrder.created_at ?? new Date().toISOString(),
+          approvedAt: utmifyStatus === "paid" ? new Date().toISOString() : null,
+          refundedAt: utmifyStatus === "refunded" ? new Date().toISOString() : null,
+          amountCents: existingOrder.amount ?? 0,
+          customer: {
+            name: existingOrder.buyer_name,
+            email: (existingOrder as any).buyer_email,
+            phone: (existingOrder as any).buyer_phone,
+            document: (existingOrder as any).buyer_document,
+            ip: (existingOrder as any).buyer_ip,
+          },
+          items: ((existingOrder as any).items as any[]) ?? [],
+          tracking: extractTrackingFromOrder(existingOrder as any),
+        });
+      } catch (e) {
+        console.error("[check-order] utmify error", e);
       }
     }
 

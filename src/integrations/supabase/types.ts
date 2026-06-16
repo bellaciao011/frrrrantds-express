@@ -34,6 +34,7 @@ export type Database = {
           purchase_tracked_at: string | null
           status: string
           store_slug: string
+          tracking: Json
           transaction_id: string | null
           ttclid: string | null
           updated_at: string
@@ -57,6 +58,7 @@ export type Database = {
           purchase_tracked_at?: string | null
           status?: string
           store_slug?: string
+          tracking?: Json
           transaction_id?: string | null
           ttclid?: string | null
           updated_at?: string
@@ -80,6 +82,7 @@ export type Database = {
           purchase_tracked_at?: string | null
           status?: string
           store_slug?: string
+          tracking?: Json
           transaction_id?: string | null
           ttclid?: string | null
           updated_at?: string

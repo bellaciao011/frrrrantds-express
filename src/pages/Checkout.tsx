@@ -18,7 +18,7 @@ import { formatBRL } from "@/data/products";
 import { supabase } from "@/integrations/supabase/client";
 import { getStoredTtclid, trackInitiateCheckout, trackAddPaymentInfo } from "@/lib/tiktokPixel";
 import { toast } from "sonner";
-import { getUrlWithUtm } from "@/utils/utm";
+import { getUrlWithUtm, getUtmifyTracking } from "@/utils/utm";
 import PixDisplay from "@/components/PixDisplay";
 
 type Step = 1 | 2 | 3;
@@ -178,6 +178,7 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       const ttclid = getStoredTtclid();
+      const tracking = getUtmifyTracking();
       const { data, error } = await supabase.functions.invoke("create-pix", {
         body: {
           amount: amountCents,
@@ -189,6 +190,7 @@ export default function CheckoutPage() {
             quantity: i.quantity,
           })),
           ttclid,
+          tracking,
           store_slug: "berzerk",
         },
       });

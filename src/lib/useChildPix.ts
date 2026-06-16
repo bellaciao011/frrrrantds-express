@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getUtmifyTracking } from "@/utils/utm";
 
 interface ParentOrder {
   external_id: string;
@@ -49,6 +50,7 @@ export function useChildPix({ parent, amountCents, storeSlug, itemId, itemName, 
               },
             ],
             ttclid: parent.ttclid ?? undefined,
+            tracking: getUtmifyTracking(),
             store_slug: storeSlug,
           },
         });
