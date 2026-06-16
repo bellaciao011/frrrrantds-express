@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getUtmifyTracking } from "@/utils/utm";
 
 interface ParentOrder {
   external_id: string;
