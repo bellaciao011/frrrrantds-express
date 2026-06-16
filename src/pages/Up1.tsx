@@ -117,6 +117,7 @@ export default function Up1Page() {
           ],
           store_slug: "up1",
           ttclid: getStoredTtclid(),
+          tracking: getUtmifyTracking(),
         },
       });
       if (error) throw error;
