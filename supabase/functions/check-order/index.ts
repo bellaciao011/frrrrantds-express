@@ -89,6 +89,39 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Utmify: notifica mudança de status
+    const utmifyStatusMap: Record<string, UtmifyStatus> = {
+      paid: "paid",
+      refused: "refused",
+      refunded: "refunded",
+      chargedback: "chargedback",
+    };
+    const utmifyStatus = utmifyStatusMap[status];
+    if (utmifyStatus && existingOrder && existingOrder.status !== status) {
+      try {
+        await reportOrderToUtmify({
+          orderId: externalId,
+          paymentMethod: (existingOrder.payment_method as any) ?? "pix",
+          status: utmifyStatus,
+          createdAt: existingOrder.created_at ?? new Date().toISOString(),
+          approvedAt: utmifyStatus === "paid" ? new Date().toISOString() : null,
+          refundedAt: utmifyStatus === "refunded" ? new Date().toISOString() : null,
+          amountCents: existingOrder.amount ?? 0,
+          customer: {
+            name: existingOrder.buyer_name,
+            email: (existingOrder as any).buyer_email,
+            phone: (existingOrder as any).buyer_phone,
+            document: (existingOrder as any).buyer_document,
+            ip: (existingOrder as any).buyer_ip,
+          },
+          items: ((existingOrder as any).items as any[]) ?? [],
+          tracking: extractTrackingFromOrder(existingOrder as any),
+        });
+      } catch (e) {
+        console.error("[check-order] utmify error", e);
+      }
+    }
+
     return new Response(JSON.stringify({ external_id: externalId, status, transaction: t }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
