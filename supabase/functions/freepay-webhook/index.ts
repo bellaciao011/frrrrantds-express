@@ -95,6 +95,39 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Utmify: notifica mudança de status (paid, refused, refunded, chargedback)
+    const utmifyStatusMap: Record<string, UtmifyStatus> = {
+      paid: "paid",
+      refused: "refused",
+      refunded: "refunded",
+      chargedback: "chargedback",
+    };
+    const utmifyStatus = utmifyStatusMap[status];
+    if (utmifyStatus && order.status !== status) {
+      try {
+        await reportOrderToUtmify({
+          orderId: order.external_id,
+          paymentMethod: (order.payment_method as any) ?? "pix",
+          status: utmifyStatus,
+          createdAt: order.created_at ?? new Date().toISOString(),
+          approvedAt: utmifyStatus === "paid" ? (paidAt ?? new Date().toISOString()) : null,
+          refundedAt: utmifyStatus === "refunded" ? new Date().toISOString() : null,
+          amountCents: amountCents ?? order.amount ?? 0,
+          customer: {
+            name: order.buyer_name,
+            email: order.buyer_email,
+            phone: order.buyer_phone,
+            document: order.buyer_document,
+            ip: order.buyer_ip,
+          },
+          items: (order.items as any[]) ?? [],
+          tracking: extractTrackingFromOrder(order as any),
+        });
+      } catch (e) {
+        console.error("[freepay-webhook] utmify error", e);
+      }
+    }
+
     return new Response(JSON.stringify({ ok: true, status }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
