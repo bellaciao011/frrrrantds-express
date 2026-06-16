@@ -147,9 +147,32 @@ Deno.serve(async (req) => {
       store_slug: body.store_slug ?? "berzerk",
       buyer_ip: buyerIp,
       buyer_user_agent: buyerUserAgent,
+      tracking: body.tracking ?? {},
     });
 
     if (dbErr) console.error("[create-pix] DB insert error", dbErr);
+
+    // Utmify: reporta pedido criado (waiting_payment)
+    try {
+      await reportOrderToUtmify({
+        orderId: external_id,
+        paymentMethod: "pix",
+        status: "waiting_payment",
+        createdAt: new Date().toISOString(),
+        amountCents: body.amount,
+        customer: {
+          name: body.buyer.name,
+          email: body.buyer.email,
+          phone: buyerPhone ?? null,
+          document: buyerDoc ?? null,
+          ip: buyerIp,
+        },
+        items: body.items ?? [],
+        tracking: (body.tracking as any) ?? null,
+      });
+    } catch (e) {
+      console.error("[create-pix] utmify error", e);
+    }
 
     try {
       await sendPushcutOrderNotification({
