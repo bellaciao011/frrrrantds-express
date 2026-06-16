@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
 
     const { data: existingOrder } = await supa
       .from("orders")
-      .select("status, amount, store_slug, buyer_name, paid_at, transaction_id")
+      .select("status, amount, store_slug, buyer_name, buyer_email, buyer_phone, buyer_document, buyer_ip, items, tracking, created_at, payment_method, paid_at, transaction_id, external_id")
       .eq("external_id", externalId)
       .maybeSingle();
 
