@@ -128,6 +128,7 @@ export default function Up2Page() {
           ],
           store_slug: "up2",
           ttclid: getStoredTtclid(),
+          tracking: getUtmifyTracking(),
         },
       });
       if (error) throw error;
