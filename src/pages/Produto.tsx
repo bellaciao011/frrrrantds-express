@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
-import logoBerzerk from "@/assets/logo-meijile.png.asset.json";
+import logoBerzerk from "@/assets/logo-meijile.png";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
 import vid1 from "@/assets/videos/creator1.mp4.asset.json";
@@ -16,10 +16,10 @@ import vid2 from "@/assets/videos/creator2.mp4.asset.json";
 import vid3 from "@/assets/videos/creator3.mp4.asset.json";
 import vid4 from "@/assets/videos/creator4.mp4.asset.json";
 const creatorVideos: string[] = [vid1.url, vid2.url, vid3.url, vid4.url];
-import reviewPhoto1 from "@/assets/reviews/r1.png.asset.json";
-import reviewPhoto2 from "@/assets/reviews/r2.png.asset.json";
-import reviewPhoto3 from "@/assets/reviews/r3.png.asset.json";
-const reviewPhotos: string[][] = [[reviewPhoto1.url], [reviewPhoto2.url], [reviewPhoto3.url]];
+import reviewPhoto1 from "@/assets/reviews/r1.png";
+import reviewPhoto2 from "@/assets/reviews/r2.png";
+import reviewPhoto3 from "@/assets/reviews/r3.png";
+const reviewPhotos: string[][] = [[reviewPhoto1], [reviewPhoto2], [reviewPhoto3]];
 
 
 const REVIEWS_TOTAL = 521;
@@ -405,7 +405,7 @@ export default function ProductPage() {
         <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-white overflow-hidden">
-              <img src={logoBerzerk.url} alt="Meijile" className="h-12 w-12 object-contain" />
+              <img src={logoBerzerk} alt="Meijile" className="h-12 w-12 object-contain" />
             </div>
             <div>
               <p className="font-bold">Meijile</p>

@@ -21,7 +21,7 @@ import { useCart } from "@/lib/cart";
 import { formatBRL, products } from "@/data/products";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackAddToCart, trackInitiateCheckout } from "@/lib/tiktokPixel";
-import logoMeijile from "@/assets/logo-meijile.png.asset.json";
+import logoMeijile from "@/assets/logo-meijile.png";
 
 function useRandomProducts(count: number, excludeIds: string[]) {
   return useMemo(() => {
@@ -149,7 +149,7 @@ export default function CarrinhoPage() {
             <div className="flex items-center gap-2 px-1">
               <div className="flex h-9 w-9 items-center justify-center rounded-full border bg-white overflow-hidden">
                 <img
-                  src={logoMeijile.url}
+                  src={logoMeijile}
                   alt="Meijile"
                   className="h-7 w-7 object-contain"
                   onError={(e) => ((e.currentTarget.style.display = "none"))}
