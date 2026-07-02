@@ -7,7 +7,7 @@ export function StoreInfo() {
         <div className="flex items-center gap-3">
           <div className="flex h-16 w-16 items-center justify-center rounded-full border bg-white overflow-hidden">
             <img
-              src={logoMeijile.url}
+              src={logoMeijile}
               alt="Meijile"
               className="h-14 w-14 object-contain"
             />
