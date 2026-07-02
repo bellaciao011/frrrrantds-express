@@ -55,6 +55,16 @@ Deno.serve(async (req) => {
     const { ok, status: httpStatus, data } = await getTransaction(existingOrder.transaction_id);
 
     if (!ok) {
+      // Rate limited pela FreePay: retorna status atual do banco sem erro pro cliente
+      if (httpStatus === 429) {
+        return new Response(JSON.stringify({
+          external_id: externalId,
+          status: existingOrder.status ?? "pending",
+          rate_limited: true,
+        }), {
+          status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       return new Response(JSON.stringify({ error: "FreePay error", status: httpStatus, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
