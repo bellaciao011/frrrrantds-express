@@ -29,15 +29,15 @@ export interface Product {
 }
 
 const IMAGES = [
-  img1.url,
-  img2.url,
-  img3.url,
-  img4.url,
-  img5.url,
-  img6.url,
-  img7.url,
-  img8.url,
-  img9.url,
+  img1,
+  img2,
+  img3,
+  img4,
+  img5,
+  img6,
+  img7,
+  img8,
+  img9,
 ];
 
 const DESCRIPTION =
