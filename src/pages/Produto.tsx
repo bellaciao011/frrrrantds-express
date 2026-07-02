@@ -383,6 +383,13 @@ export default function ProductPage() {
                   <span className="font-semibold">Forma e tamanho:</span> {r.forma} <span className="font-semibold">Usabilidade:</span> {r.uso} <span className="font-semibold">Cor:</span> {r.cor}
                 </p>
 
+                {reviewPhotos[idx] && (
+                  <div className="mt-2 flex gap-2">
+                    {reviewPhotos[idx].map((src, i) => (
+                      <img key={i} src={src} alt={`Foto avaliação ${idx + 1}`} className="h-24 w-24 rounded-lg object-cover border" loading="lazy" />
+                    ))}
+                  </div>
+                )}
 
                 <p className="mt-2 text-xs text-muted-foreground">Item: {r.item}</p>
                 <p className="text-xs text-muted-foreground">{r.date}</p>
