@@ -8,7 +8,7 @@ import { FreeShippingBar } from "@/components/store/FreeShippingBar";
 import { ProductCard } from "@/components/store/ProductCard";
 
 import { listingProducts as products } from "@/data/products";
-import { CATEGORIES, filterByCategory, productMatchesCategory, type CategoryId } from "@/lib/categories";
+import { CATEGORIES, filterByCategory, type CategoryId } from "@/lib/categories";
 
 type Tab = "inicio" | "produtos" | "categorias";
 type Sort = "recomendado" | "vendidos" | "lancamentos" | "preco-asc" | "preco-desc";
