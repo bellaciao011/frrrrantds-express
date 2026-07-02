@@ -16,6 +16,10 @@ import vid2 from "@/assets/videos/e54aedee-628c-4dc2-a0d8-1f1117b249a2.mp4.asset
 import vid3 from "@/assets/videos/c724b2e0-4ce4-4dac-aa63-5931b423ca45.mp4.asset.json";
 import vid4 from "@/assets/videos/7fda6f58-9fb4-4c2c-a35f-5b8847b4e648.mp4.asset.json";
 const creatorVideos: string[] = [vid1.url, vid2.url, vid3.url, vid4.url];
+import reviewPhoto1 from "@/assets/reviews/r1.png.asset.json";
+import reviewPhoto2 from "@/assets/reviews/r2.png.asset.json";
+import reviewPhoto3 from "@/assets/reviews/r3.png.asset.json";
+const reviewPhotos: string[][] = [[reviewPhoto1.url], [reviewPhoto2.url], [reviewPhoto3.url]];
 
 
 const REVIEWS_TOTAL = 521;
@@ -379,6 +383,13 @@ export default function ProductPage() {
                   <span className="font-semibold">Forma e tamanho:</span> {r.forma} <span className="font-semibold">Usabilidade:</span> {r.uso} <span className="font-semibold">Cor:</span> {r.cor}
                 </p>
 
+                {reviewPhotos[idx] && (
+                  <div className="mt-2 flex gap-2">
+                    {reviewPhotos[idx].map((src, i) => (
+                      <img key={i} src={src} alt={`Foto avaliação ${idx + 1}`} className="h-24 w-24 rounded-lg object-cover border" loading="lazy" />
+                    ))}
+                  </div>
+                )}
 
                 <p className="mt-2 text-xs text-muted-foreground">Item: {r.item}</p>
                 <p className="text-xs text-muted-foreground">{r.date}</p>
