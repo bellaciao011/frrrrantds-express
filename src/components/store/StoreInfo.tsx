@@ -1,4 +1,4 @@
-import logoMeijile from "@/assets/logo-meijile.png.asset.json";
+import logoMeijile from "@/assets/logo-meijile.png";
 
 export function StoreInfo() {
   return (
