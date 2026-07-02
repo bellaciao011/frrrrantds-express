@@ -515,9 +515,9 @@ export default function ProductPage() {
         <nav className="mt-2 bg-background px-4 py-3 text-xs text-muted-foreground">
           <ol className="flex flex-wrap items-center gap-x-1 gap-y-1">
             <li>Meijile Shop</li><li>›</li>
-            <li>Sapatos</li><li>›</li>
-            <li>Sapatos femininos</li><li>›</li>
-            <li>Sandálias e chinelos</li>
+            <li>Casa e Cozinha</li><li>›</li>
+            <li>Eletrodomésticos</li><li>›</li>
+            <li>Robôs Aspiradores</li>
           </ol>
         </nav>
 
