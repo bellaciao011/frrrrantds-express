@@ -49,8 +49,8 @@ export const products: Product[] = [
     name: "Robô Aspirador e Mopa 19.000Pa, Caixa Autoesvaziável, Mopa com Lavagem 75°C, Amigo dos Pets",
     image: IMAGES[0],
     images: IMAGES,
-    price: 49.9,
-    originalPrice: 499.0,
+    price: 79.9,
+    originalPrice: 1490.90,
     discount: 90,
     description: DESCRIPTION,
     variacoes: [
