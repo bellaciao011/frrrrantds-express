@@ -1,4 +1,4 @@
-import logoMeijile from "@/assets/logo-meijile.png";
+import logoDreame from "@/assets/logo-dreame.png";
 
 export function StoreInfo() {
   return (
@@ -7,13 +7,13 @@ export function StoreInfo() {
         <div className="flex items-center gap-3">
           <div className="flex h-16 w-16 items-center justify-center rounded-full border bg-white overflow-hidden">
             <img
-              src={logoMeijile}
-              alt="Meijile"
+              src={logoDreame}
+              alt="Dreame"
               className="h-14 w-14 object-contain"
             />
           </div>
           <div>
-            <h1 className="text-lg font-bold leading-tight">Meijile</h1>
+            <h1 className="text-lg font-bold leading-tight">Dreame</h1>
             <p className="text-xs text-muted-foreground">99.176 vendido(s)</p>
           </div>
         </div>

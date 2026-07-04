@@ -67,8 +67,8 @@ export default function IndexPage() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Meijile — Robô Aspirador em Promoção</title>
-        <meta name="description" content="Robô Aspirador e Mopa Meijile com até 90% OFF e frete grátis." />
+        <title>Dreame — Robô Aspirador em Promoção</title>
+        <meta name="description" content="Robô Aspirador e Mopa Dreame com até 90% OFF e frete grátis." />
       </Helmet>
       
       <Header />
