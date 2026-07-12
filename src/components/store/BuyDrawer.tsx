@@ -4,6 +4,7 @@ import { type Product, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { useCartFly } from "@/lib/cart-fly";
 import { trackAddToCart } from "@/lib/tiktokPixel";
+import { getUrlWithUtm } from "@/utils/utm";
 
 interface Props {
   product: Product;
@@ -56,7 +57,7 @@ export function BuyDrawer({ product, open, mode, initialSize, onClose, onConfirm
       price: product.price,
       quantity: qty,
     });
-    window.location.href = "https://pay.pagamentosegurottkshop.com/nWrxGWvENzXZ654";
+    window.location.href = getUrlWithUtm("https://pay.pagamentosegurottkshop.com/nWrxGWvENzXZ654");
   };
 
   return (
