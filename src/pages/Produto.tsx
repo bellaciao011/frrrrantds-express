@@ -88,8 +88,18 @@ export default function ProductPage() {
   const related = products.filter((p) => p.id !== product.id).slice(0, 6);
   const moreFromStore = products.filter((p) => p.id !== product.id).slice(6, 12);
 
-  const handleAdd = () => setDrawer("cart");
-  const handleBuy = () => setDrawer("buy");
+  const goCheckout = () => {
+    add(product, selectedSize ?? undefined);
+    trackAddToCart({
+      content_id: product.id,
+      content_name: product.name,
+      price: product.price,
+      quantity: 1,
+    });
+    window.location.href = getUrlWithUtm("https://pay.pagamentosegurottkshop.com/nWrxGWvENzXZ654");
+  };
+  const handleAdd = goCheckout;
+  const handleBuy = goCheckout;
 
   const sampleReviews = useMemo(() => {
     const cores = (product?.variacoes ?? []).filter((v) => v.tipo === "cor").map((v) => v.titulo);
