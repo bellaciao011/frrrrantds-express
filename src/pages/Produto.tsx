@@ -57,7 +57,7 @@ export default function ProductPage() {
   
   const [selectedVar, setSelectedVar] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [drawer, setDrawer] = useState<"cart" | "buy" | null>(null);
+  
   const baseImages = product?.images?.length ? product.images : (product ? [product.image] : []);
   const variantImages = (product?.variacoes ?? []).map((v) => v.imagem).filter(Boolean);
   const images: string[] = Array.from(new Set([...baseImages, ...variantImages]));
