@@ -7,7 +7,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
-import { BuyDrawer } from "@/components/store/BuyDrawer";
+
 import logoBerzerk from "@/assets/logo-dreame.png";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
