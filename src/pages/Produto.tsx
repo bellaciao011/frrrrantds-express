@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 
-import logoBerzerk from "@/assets/logo-dreame.png";
+import logoBerzerk from "@/assets/dreame-logo.png.asset.json";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
 import vid1 from "@/assets/videos/creator1.mp4.asset.json";
@@ -413,7 +413,7 @@ export default function ProductPage() {
         <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-white overflow-hidden">
-              <img src={logoBerzerk} alt="Dreame" className="h-12 w-12 object-contain" />
+              <img src={logoBerzerk.url} alt="Dreame" className="h-12 w-12 object-contain" />
             </div>
             <div>
               <p className="font-bold">Dreame</p>
