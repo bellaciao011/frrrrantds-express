@@ -413,7 +413,7 @@ export default function ProductPage() {
         <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-white overflow-hidden">
-              <img src={logoBerzerk} alt="Dreame" className="h-12 w-12 object-contain" />
+              <img src={logoBerzerk.url} alt="Dreame" className="h-12 w-12 object-contain" />
             </div>
             <div>
               <p className="font-bold">Dreame</p>
