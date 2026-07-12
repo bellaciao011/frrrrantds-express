@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teste de Eventos TikTok - Versão Aprimorada</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Reset básico ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: #fff;
+      transition: background 0.4s ease;
+    }
+    /* Tema claro */
+    body.light-mode {
+      background: linear-gradient(135deg, #ffffff, #dddddd);
+      color: #333;
+    }
+    /* ===== Bolas animadas de fundo (opcionais) ===== */
+    .circle-1, .circle-2, .circle-3 {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.8;
+      z-index: 1;
+      animation: bounce 4s linear infinite;
+    }
+    .circle-1 { top: 10%; left: 20%; width: 300px; height: 300px; background: #4776E6; }
+    .circle-2 { bottom: 5%; right: 15%; width: 350px; height: 350px; background: #bc4e9c; }
+    .circle-3 { top: 30%; right: 40%; width: 200px; height: 200px; background: #ff9966; }
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      25% { transform: translateY(10px); }
+      50% { transform: translateY(0); }
+      75% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    /* ===== Container principal (Glassmorphism) ===== */
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      padding: 20px 30px 30px;
+      text-align: center;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+    body.light-mode .container {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
+    /* ===== Cabeçalho com botões de tema e idioma ===== */
+    .header-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .header-buttons button {
+      border: none;
+      background: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    /* ===== Título e GIF ===== */
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .title-container img { max-width: 80px; display: block; }
+    .title-container h1 { font-size: 1.5rem; }
+    /* ===== Instruções (colapsável) ===== */
+    .instructions-toggle {
+      margin-bottom: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1rem;
+    }
+    .instructions-content {
+      display: none;
+      text-align: left;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .instructions-content.show { display: block; }
+    /* ===== Input do Pixel ID ===== */
+    #pixel-id {
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 5px;
+      font-size: 16px;
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      backdrop-filter: blur(5px);
+      outline: none;
+      transition: background 0.4s ease, color 0.4s ease, border 0.4s ease;
+    }
+    body.light-mode #pixel-id {
+      background: rgba(0,0,0,0.05);
+      color: #333;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+    /* Borda vermelha padrão */
+    #pixel-id { border: 2px solid #FF3131; }
+    /* Borda verde quando o Pixel estiver carregado */
+    #pixel-id.pixel-loaded { border: 2px solid #39FF14; }
+    /* Borda vermelha para o botão quando inativo */
+    #load-pixel-btn { border: 2px solid #FF3131; }
+    /* Borda verde para o botão quando o Pixel estiver carregado */
+    #load-pixel-btn.pixel-loaded { border: 2px solid #39FF14; }
+    /* Status do Pixel */
+    #pixel-status {
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    /* ===== Botões gerais ===== */
+    .main-buttons, .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 8px 14px;
+      border: 1px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+      min-width: 140px;
+      position: relative;
+    }
+    button:hover {
+      background: rgba(255,255,255,0.4);
+      transform: scale(1.05);
+    }
+    body.light-mode button {
+      border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(255,255,255,0.7);
+      color: #333;
+    }
+    /* Destaque de botão no modo automático */
+    .btn-firing { box-shadow: 0 0 8px 2px #ffeb3b; }
+    /* ===== Modo Automático ===== */
+    .auto-mode {
+      background-color: #FF3131 !important;
+      color: #fff;
+    }
+    .btn-active { background-color: #39FF14 !important; color: #000 !important; }
+    .btn-inactive { background-color: #FF3131 !important; color: #fff !important; }
+    /* ===== Tooltip simples (CSS) ===== */
+    button[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+      font-size: 0.8rem;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.2s ease;
+    }
+    body.light-mode button[data-tooltip]:hover::after { background: rgba(0,0,0,0.8); }
+    /* ===== Popup de sucesso (com animação) ===== */
+    .popup {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      padding: 15px 20px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      color: #fff;
+      display: none;
+      z-index: 9999;
+      align-items: center;
+      gap: 10px;
+      animation: fadeIn 0.5s forwards;
+    }
+    .popup span { font-size: 16px; }
+    .popup.show { display: flex; }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    /* ===== Log de eventos ===== */
+    #event-log {
+      text-align: left;
+      margin: 10px auto;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+      width: 90%;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    body.light-mode #event-log {
+      background: rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.1);
+      color: #333;
+    }
+    /* Botão para limpar o log */
+    #clear-log-btn {
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      margin-top: 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      background: #d9534f;
+      color: #fff;
+      transition: background 0.3s ease;
+    }
+    #clear-log-btn:hover { background: #c9302c; }
+    /* ===== Responsividade para mobile ===== */
+    @media (max-width: 500px) {
+      .title-container img { max-width: 60px; }
+      .title-container h1 { font-size: 1.2rem; }
+      button { min-width: 120px; font-size: 13px; }
+    }
+  </style>
+
+  <script>
+    /***********************
+     * Variáveis e Internacionalização
+     ***********************/
+    let currentLang = 'pt'; // Idioma padrão
+    let pixelLoaded = false; // Indica se o Pixel foi carregado
+    const translations = {
+      pt: {
+        title: "Teste de Eventos TikTok",
+        loadPixelBtn: "Carregar Pixel",
+        changePixelBtn: "Mudar Pixel",
+        autoModeActive: "MODO AUTOMATIVO ATIVO 🟢",
+        autoModeInactive: "MODO AUTOMATICO DESATIVADO 🔴",
+        instructionsToggle: "Instruções de Uso",
+        instructionsContent: `<p><strong>1.</strong> Insira seu ID do Pixel no campo abaixo.</p>
+                              <p><strong>2.</strong> Clique em <em>Carregar Pixel</em> para ativar o rastreamento.</p>
+                              <p><strong>3.</strong> Depois, utilize os botões de evento para enviar as ações simuladas ao TikTok.</p>
+                              <p><strong>4.</strong> (Opcional) Ative o modo automático para disparar todos os eventos em loop.</p>
+                              <p><strong>5.</strong> Confira no log abaixo o histórico dos eventos disparados.</p>`,
+        themeToggle: "Trocar Tema",
+        langToggle: "Mudar Idioma",
+        pixelStatusSuccess: "✅ Pixel carregado com sucesso! ✅",
+        pixelStatusError: "🚨 Insira seu ID pixel 🚨",
+        clearLog: "Limpar Log",
+        eventTooltips: {
+          "AddToCart": "Usuário adicionou algo ao carrinho",
+          "InitiateCheckout": "Usuário iniciou o checkout",
+          "StartCheckout": "Usuário prosseguiu no checkout",
+          "Purchase": "Usuário concluiu a compra",
+          "ViewContent": "Usuário visualizou o conteúdo",
+          "AddPaymentInfo": "Usuário adicionou informação de pagamento",
+          "AddToWishlist": "Usuário adicionou item à lista de desejos",
+          "CompleteRegistration": "Usuário completou um registro"
+        },
+        eventButtons: {
+          "AddToCart": "Abrir Carrinho",
+          "InitiateCheckout": "Visualizar Checkout",
+          "StartCheckout": "Iniciar Checkout",
+          "Purchase": "Finalizar Compra",
+          "ViewContent": "Visualizar Conteúdo",
+          "AddPaymentInfo": "Adicionar Informações de Pagamento",
+          "AddToWishlist": "Adicionar à Lista de Desejos",
+          "CompleteRegistration": "Completar Registro"
+        }
+      },
+      en: {
+        title: "TikTok Events Test",
+        loadPixelBtn: "Load Pixel",
+        changePixelBtn: "Change Pixel",
+        autoModeActive: "AUTOMATIC MODE ACTIVE 🟢",
+        autoModeInactive: "AUTOMATIC MODE INACTIVE 🔴",
+        instructionsToggle: "Usage Instructions",
+        instructionsContent: `<p><strong>1.</strong> Enter your TikTok Pixel ID below.</p>
+                              <p><strong>2.</strong> Click <em>Load Pixel</em> to activate tracking.</p>
+                              <p><strong>3.</strong> Then use the event buttons to simulate actions sent to TikTok.</p>
+                              <p><strong>4.</strong> (Optional) Enable automatic mode to loop all events.</p>
+                              <p><strong>5.</strong> Check the log below for event history.</p>`,
+        themeToggle: "Toggle Theme",
+        langToggle: "Change Language",
+        pixelStatusSuccess: "✅ Pixel loaded successfully! ✅",
+        pixelStatusError: "🚨 Please enter your Pixel ID 🚨",
+        clearLog: "Clear Log",
+        eventTooltips: {
+          "AddToCart": "User added an item to the cart",
+          "InitiateCheckout": "User initiated checkout",
+          "StartCheckout": "User continued checkout",
+          "Purchase": "User completed the purchase",
+          "ViewContent": "User viewed content",
+          "AddPaymentInfo": "User added payment info",
+          "AddToWishlist": "User added item to wishlist",
+          "CompleteRegistration": "User completed registration"
+        },
+        eventButtons: {
+          "AddToCart": "Add to Cart",
+          "InitiateCheckout": "View Checkout",
+          "StartCheckout": "Start Checkout",
+          "Purchase": "Complete Purchase",
+          "ViewContent": "View Content",
+          "AddPaymentInfo": "Add Payment Info",
+          "AddToWishlist": "Add to Wishlist",
+          "CompleteRegistration": "Complete Registration"
+        }
+      }
+    };
+
+    function updateLanguage() {
+      const t = translations[currentLang];
+      document.querySelector('.title-container h1').innerText = t.title;
+      document.getElementById("load-pixel-btn").innerText = pixelLoaded ? t.changePixelBtn : t.loadPixelBtn;
+      document.getElementById("toggle-auto-mode").textContent = autoMode ? t.autoModeActive : t.autoModeInactive;
+      document.querySelector('.instructions-toggle').innerText = t.instructionsToggle;
+      document.querySelector('.instructions-content').innerHTML = t.instructionsContent;
+      document.getElementById("theme-toggle-btn").setAttribute("title", t.themeToggle);
+      document.getElementById("lang-toggle-btn").setAttribute("title", t.langToggle);
+      document.getElementById("clear-log-btn").innerText = t.clearLog;
+      
+      // Atualiza tooltips e textos dos botões de evento
+      eventsList.forEach(evt => {
+        const btn = document.getElementById(evt.id);
+        if (btn) {
+          btn.setAttribute('data-tooltip', t.eventTooltips[evt.name]);
+          btn.innerText = t.eventButtons[evt.name];
+        }
+      });
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'pt' ? 'en' : 'pt';
+      updateLanguage();
+    }
+
+    /***********************
+     * Lógica do Pixel TikTok
+     ***********************/
+    function loadSavedPixelId() {
+      const savedPixelId = localStorage.getItem("pixelId") || "";
+      if (savedPixelId) { document.getElementById("pixel-id").value = savedPixelId; }
+    }
+    function setPixelIdValue(pixelId) {
+      localStorage.setItem("pixelId", pixelId);
+      const url = new URL(window.location.href);
+      url.searchParams.set('pixel_id', pixelId);
+      window.history.pushState({}, '', url);
+      return pixelId;
+    }
+    function getPixelIdFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('pixel_id') || '';
+    }
+    function loadPixel() {
+      const pixelIdField = document.getElementById("pixel-id");
+      const pixelId = pixelIdField.value.trim() || getPixelIdFromUrl();
+      const statusEl = document.getElementById("pixel-status");
+      if (!pixelId) { 
+        statusEl.innerText = translations[currentLang].pixelStatusError;
+        pixelLoaded = false;
+        // Remove bordas verdes
+        pixelIdField.classList.remove("pixel-loaded");
+        document.getElementById("load-pixel-btn").classList.remove("pixel-loaded");
+        return; 
+      }
+      try {
+        !function (w, d, t) {
+          w.TiktokAnalyticsObject = t; 
+          var ttq = w[t] = w[t] || [];
+          ttq.methods = ["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],
+          ttq.setAndDefer = function(t,e){ t[e] = function(){ t.push([e].concat(Array.prototype.slice.call(arguments,0))); } };
+          for(var i=0;i<ttq.methods.length;i++) ttq.setAndDefer(ttq,ttq.methods[i]);
+          ttq.load = function(e){
+            var n = document.createElement("script");
+            n.type = "text/javascript"; n.async = true; 
+            n.src = "https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=" + e + "&lib=" + t;
+            var r = document.getElementsByTagName("script")[0];
+            r.parentNode.insertBefore(n, r);
+          };
+          ttq.load(pixelId);
+          ttq.page();
+        }(window, document, 'ttq');
+        statusEl.innerText = translations[currentLang].pixelStatusSuccess;
+        pixelLoaded = true;
+        // Adiciona borda verde ao campo e ao botão
+        pixelIdField.classList.add("pixel-loaded");
+        document.getElementById("load-pixel-btn").classList.add("pixel-loaded");
+        // Atualiza o texto do botão para "Mudar Pixel"
+        document.getElementById("load-pixel-btn").innerText = translations[currentLang].changePixelBtn;
+      } catch (error) {
+        statusEl.innerText = translations[currentLang].pixelStatusError;
+        pixelLoaded = false;
+        pixelIdField.classList.remove("pixel-loaded");
+        document.getElementById("load-pixel-btn").classList.remove("pixel-loaded");
+      }
+    }
+
+    /***********************
+     * Popup e Log de Eventos
+     ***********************/
+    function showPopup(message) {
+      const popup = document.getElementById('popup');
+      popup.querySelector('span').innerText = message;
+      popup.classList.add('show');
+      setTimeout(() => { popup.classList.remove('show'); }, 2500);
+    }
+    function appendLog(message) {
+      const logContainer = document.getElementById("event-log");
+      const now = new Date().toLocaleTimeString();
+      logContainer.innerHTML += `<p>[${now}] - ${message}</p>`;
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
+    function clearLog() { document.getElementById("event-log").innerHTML = ""; }
+    function trackEvent(eventName, value = 0, currency = "BRL", btn) {
+      if (!pixelLoaded) {
+        showPopup("🚨 Por favor, insira o Pixel e clique em Carregar Pixel primeiro.");
+        return;
+      }
+      if (btn) { 
+        btn.classList.add("btn-firing"); 
+        setTimeout(() => btn.classList.remove("btn-firing"), 700); 
+      }
+      if (typeof ttq !== 'undefined') { 
+        ttq.track(eventName, { value: value, currency: currency }); 
+      }
+      showPopup(`Evento "${eventName}" disparado com sucesso! ✅`);
+      appendLog(`Evento "${eventName}" (R$${value}) disparado.`);
+    }
+
+    /***********************
+     * Tema Claro/Escuro
+     ***********************/
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+      const themeBtn = document.getElementById("theme-toggle-btn");
+      themeBtn.innerHTML = document.body.classList.contains('light-mode') ? "🌞" : "🌜";
+    }
+
+    /***********************
+     * Instruções (colapsável)
+     ***********************/
+    function toggleInstructions() {
+      const instructions = document.querySelector('.instructions-content');
+      instructions.classList.toggle('show');
+    }
+
+    /***********************
+     * Modo Automático
+     ***********************/
+    let autoMode = false;
+    let autoInterval;
+    const eventsList = [
+      { id: "open-cart",            name: "AddToCart",            value: 50 },
+      { id: "view-checkout",        name: "InitiateCheckout",     value: 100 },
+      { id: "start-checkout",       name: "StartCheckout",        value: 120 },
+      { id: "purchase",             name: "Purchase",             value: 200 },
+      { id: "view-content",         name: "ViewContent",          value: 30 },
+      { id: "add-payment-info",     name: "AddPaymentInfo",       value: 0 },
+      { id: "add-to-wishlist",      name: "AddToWishlist",        value: 70 },
+      { id: "complete-registration",name: "CompleteRegistration", value: 0 }
+    ];
+    function toggleAutoMode(button) {
+      if (!pixelLoaded) {
+        showPopup("🚨 Por favor, insira o Pixel e clique em Carregar Pixel primeiro.");
+        return;
+      }
+      if (!autoMode) {
+        autoMode = true;
+        button.textContent = translations[currentLang].autoModeActive;
+        button.classList.remove("btn-inactive");
+        button.classList.add("btn-active");
+        autoInterval = setInterval(() => {
+          eventsList.forEach((evt, index) => {
+            setTimeout(() => {
+              const btnElement = document.getElementById(evt.id);
+              trackEvent(evt.name, evt.value, "BRL", btnElement);
+            }, index * 800);
+          });
+        }, 5000);
+      } else {
+        autoMode = false;
+        button.textContent = translations[currentLang].autoModeInactive;
+        button.classList.remove("btn-active");
+        button.classList.add("btn-inactive");
+        clearInterval(autoInterval);
+      }
+    }
+
+    /***********************
+     * Inicialização
+     ***********************/
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedPixelId();
+      updateLanguage();
+
+      // Adiciona listener aos botões de evento para cliques manuais
+      eventsList.forEach(evt => {
+        const btn = document.getElementById(evt.id);
+        if (btn) {
+          btn.setAttribute('data-tooltip', translations[currentLang].eventTooltips[evt.name]);
+          btn.innerText = translations[currentLang].eventButtons[evt.name];
+          btn.addEventListener('click', () => trackEvent(evt.name, evt.value, "BRL", btn));
+        }
+      });
+
+      // Botão Carregar/Mudar Pixel
+      document.getElementById("load-pixel-btn").addEventListener("click", () => {
+        const pixelIdInput = document.getElementById("pixel-id");
+        if (pixelLoaded) {
+          // Se já estiver carregado, o clique em "Mudar Pixel" limpa o campo e reseta o estado.
+          pixelIdInput.value = "";
+          pixelIdInput.classList.remove("pixel-loaded");
+          document.getElementById("load-pixel-btn").classList.remove("pixel-loaded");
+          document.getElementById("load-pixel-btn").innerText = translations[currentLang].loadPixelBtn;
+          document.getElementById("pixel-status").innerText = translations[currentLang].pixelStatusError;
+          pixelLoaded = false;
+        } else {
+          if (pixelIdInput.value.trim() === "") {
+            showPopup(translations[currentLang].pixelStatusError);
+            appendLog(translations[currentLang].pixelStatusError);
+            pixelIdInput.classList.remove("pixel-loaded");
+            document.getElementById("load-pixel-btn").classList.remove("pixel-loaded");
+            return;
+          }
+          setPixelIdValue(pixelIdInput.value);
+          loadPixel();
+          if (pixelLoaded) {
+            showPopup(translations[currentLang].pixelStatusSuccess);
+            appendLog("Pixel carregado. ID: " + pixelIdInput.value);
+          }
+        }
+      });
+
+      let autoModeBtn = document.getElementById("toggle-auto-mode");
+      autoModeBtn.classList.add("btn-inactive");
+      autoModeBtn.textContent = translations[currentLang].autoModeInactive;
+      autoModeBtn.addEventListener("click", () => toggleAutoMode(autoModeBtn));
+
+      document.getElementById("theme-toggle-btn").addEventListener("click", toggleTheme);
+      document.getElementById("lang-toggle-btn").addEventListener("click", toggleLanguage);
+      document.querySelector(".instructions-toggle").addEventListener("click", toggleInstructions);
+      document.getElementById("clear-log-btn").addEventListener("click", clearLog);
+
+      // Ao focar no campo, se o Pixel estiver carregado, reseta o estado para permitir edição
+      document.getElementById("pixel-id").addEventListener("focus", () => {
+        if (pixelLoaded) {
+          pixelLoaded = false;
+          document.getElementById("pixel-id").classList.remove("pixel-loaded");
+          document.getElementById("load-pixel-btn").classList.remove("pixel-loaded");
+          document.getElementById("load-pixel-btn").innerText = translations[currentLang].loadPixelBtn;
+          document.getElementById("pixel-status").innerText = translations[currentLang].pixelStatusError;
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <!-- Bolas animadas (fundo) -->
+  <div class="circle-1"></div>
+  <div class="circle-2"></div>
+  <div class="circle-3"></div>
+
+  <!-- Popup de sucesso/aviso -->
+  <div id="popup" class="popup">
+    <span></span>
+  </div>
+
+  <!-- Container principal -->
+  <div class="container">
+    <!-- Cabeçalho: Botões de Tema e Idioma -->
+    <div class="header-buttons">
+      <button id="theme-toggle-btn" title="Trocar Tema">🌜</button>
+      <button id="lang-toggle-btn" title="Mudar Idioma">🌐</button>
+    </div>
+
+    <!-- Título e GIF -->
+    <div class="title-container">
+      <img src="https://i.pinimg.com/originals/77/97/19/7797190f0f3efd9d5b0b96963d97ed5a.gif" alt="Gif animado" />
+      <h1>Teste de Eventos TikTok</h1>
+    </div>
+
+    <!-- Instruções (colapsáveis) -->
+    <button class="instructions-toggle">Instruções de Uso</button>
+    <div class="instructions-content"></div>
+
+    <!-- Campo do Pixel ID e status -->
+    <input type="text" id="pixel-id" placeholder="Digite o ID do Pixel" />
+    <div id="pixel-status"></div>
+
+    <!-- Botões principais -->
+    <div class="main-buttons">
+      <button id="load-pixel-btn">Carregar Pixel</button>
+      <button id="toggle-auto-mode" class="auto-mode"></button>
+    </div>
+
+    <!-- Botões de evento -->
+    <div class="button-row">
+      <button id="open-cart"></button>
+      <button id="view-checkout"></button>
+      <button id="start-checkout"></button>
+      <button id="purchase"></button>
+      <button id="view-content"></button>
+      <button id="add-payment-info"></button>
+      <button id="add-to-wishlist"></button>
+      <button id="complete-registration"></button>
+    </div>
+
+    <!-- Log de eventos e botão para limpar -->
+    <div id="event-log"></div>
+    <button id="clear-log-btn"></button>
+  </div>
+</body>
+</html>
