@@ -85,8 +85,6 @@ export default function ProductPage() {
   }
 
   const off = Math.round(100 - (product.price / product.originalPrice) * 100);
-  const related = products.filter((p) => p.id !== product.id).slice(0, 6);
-  const moreFromStore = products.filter((p) => p.id !== product.id).slice(6, 12);
 
   const goCheckout = () => {
     add(product, selectedSize ?? undefined);
