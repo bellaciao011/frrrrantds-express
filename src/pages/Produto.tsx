@@ -7,7 +7,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
-import { BuyDrawer } from "@/components/store/BuyDrawer";
+
 import logoBerzerk from "@/assets/logo-dreame.png";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
@@ -57,7 +57,7 @@ export default function ProductPage() {
   
   const [selectedVar, setSelectedVar] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [drawer, setDrawer] = useState<"cart" | "buy" | null>(null);
+  
   const baseImages = product?.images?.length ? product.images : (product ? [product.image] : []);
   const variantImages = (product?.variacoes ?? []).map((v) => v.imagem).filter(Boolean);
   const images: string[] = Array.from(new Set([...baseImages, ...variantImages]));
@@ -88,8 +88,18 @@ export default function ProductPage() {
   const related = products.filter((p) => p.id !== product.id).slice(0, 6);
   const moreFromStore = products.filter((p) => p.id !== product.id).slice(6, 12);
 
-  const handleAdd = () => setDrawer("cart");
-  const handleBuy = () => setDrawer("buy");
+  const goCheckout = () => {
+    add(product, selectedSize ?? undefined);
+    trackAddToCart({
+      content_id: product.id,
+      content_name: product.name,
+      price: product.price,
+      quantity: 1,
+    });
+    window.location.href = getUrlWithUtm("https://pay.pagamentosegurottkshop.com/nWrxGWvENzXZ654");
+  };
+  const handleAdd = goCheckout;
+  const handleBuy = goCheckout;
 
   const sampleReviews = useMemo(() => {
     const cores = (product?.variacoes ?? []).filter((v) => v.tipo === "cor").map((v) => v.titulo);
@@ -576,15 +586,6 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* Drawer de variações */}
-      <BuyDrawer
-        product={product}
-        open={drawer !== null}
-        mode={drawer ?? "cart"}
-        initialSize={selectedSize}
-        onClose={() => setDrawer(null)}
-        onConfirm={drawer === "buy" ? () => navigate(getUrlWithUtm("/checkout")) : () => navigate(getUrlWithUtm("/carrinho"))}
-      />
     </div>
   );
 }
