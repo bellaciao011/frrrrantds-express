@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 
-import logoBerzerk from "@/assets/logo-dreame.png";
+import logoBerzerk from "@/assets/dreame-logo.png.asset.json";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
 import vid1 from "@/assets/videos/creator1.mp4.asset.json";
