@@ -56,11 +56,7 @@ export function BuyDrawer({ product, open, mode, initialSize, onClose, onConfirm
       price: product.price,
       quantity: qty,
     });
-    onClose();
-    if (mode === "buy") {
-      fly.trigger();
-    }
-    onConfirm?.();
+    window.location.href = "https://pay.pagamentosegurottkshop.com/nWrxGWvENzXZ654";
   };
 
   return (
