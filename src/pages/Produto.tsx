@@ -94,7 +94,7 @@ export default function ProductPage() {
       price: product.price,
       quantity: 1,
     });
-    window.location.href = getUrlWithUtm("https://pay.pagamentosegurottkshop.com/nWrxGWvENzXZ654");
+    window.location.href = getUrlWithUtm("https://checkout.mercadospagos.click/VCCL1O8SD682");
   };
   const handleAdd = goCheckout;
   const handleBuy = goCheckout;
