@@ -1,13 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ShieldCheck, Check, Loader2 } from "lucide-react";
+import { captureTrackingParams, getStoredParams } from "@/utils/utm";
 
 const PRODUCT_PATH = "/produto/robo-aspirador-mopa-19000pa";
+const PRE_UTM_SOURCE = "testediferente";
+const PRE_UTM_CAMPAIGN = "testediferente";
 
 export default function Pre() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
+
+  useEffect(() => {
+    // Captura UTMs existentes da URL primeiro
+    captureTrackingParams();
+    const stored = getStoredParams();
+    const url = new URLSearchParams(window.location.search);
+    const hasSource = url.get("utm_source") || stored.get("utm_source");
+    const hasCampaign = url.get("utm_campaign") || stored.get("utm_campaign");
+
+    // Se não tem utm_source/utm_campaign, injeta as default do /pre
+    if (!hasSource || !hasCampaign) {
+      const params = new URLSearchParams(window.location.search);
+      if (!hasSource) params.set("utm_source", PRE_UTM_SOURCE);
+      if (!hasCampaign) params.set("utm_campaign", PRE_UTM_CAMPAIGN);
+      const newUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
+      window.history.replaceState({}, "", newUrl);
+      captureTrackingParams();
+    }
+  }, []);
 
   const handleVerify = () => {
     if (status !== "idle") return;
