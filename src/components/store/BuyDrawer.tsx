@@ -4,7 +4,6 @@ import { type Product, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { useCartFly } from "@/lib/cart-fly";
 import { trackAddToCart } from "@/lib/tiktokPixel";
-import { getUrlWithUtm } from "@/utils/utm";
 
 interface Props {
   product: Product;
@@ -57,7 +56,11 @@ export function BuyDrawer({ product, open, mode, initialSize, onClose, onConfirm
       price: product.price,
       quantity: qty,
     });
-    window.location.href = getUrlWithUtm("https://checkout.mercadospagos.click/VCCL1O8SD682");
+    onClose();
+    if (mode === "buy") {
+      fly.trigger();
+    }
+    onConfirm?.();
   };
 
   return (

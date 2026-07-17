@@ -1,18 +1,40 @@
-import { useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
+import IndexPage from "@/pages/Index";
+import CarrinhoPage from "@/pages/Carrinho";
+import CheckoutPage from "@/pages/Checkout";
 import ProdutoPage from "@/pages/Produto";
-import Pre from "@/pages/Pre";
+import PixPage from "@/pages/Pix";
+import Up1Page from "@/pages/Up1";
+import Up2Page from "@/pages/Up2";
+import FretePage from "@/pages/Frete";
+import NotaFiscalPage from "@/pages/NotaFiscal";
+import PendenciaTributariaPage from "@/pages/PendenciaTributaria";
+import ObrigadoPage from "@/pages/Obrigado";
+import AdminPixelsPage from "@/pages/AdminPixels";
+import PreviewFretePage from "@/pages/PreviewFrete";
+import PreviewNotaFiscalPage from "@/pages/PreviewNotaFiscal";
+import CupomPage from "@/pages/Cupom";
 import TikTokPixelLoader from "@/components/TikTokPixelLoader";
 import ScrollToTop from "@/components/ScrollToTop";
 import UtmPersistence from "@/components/UtmPersistence";
 
-const PRODUCT_PATH = "/produto/robo-aspirador-mopa-19000pa";
-
-function PixelRedirect() {
-  useEffect(() => {
-    window.location.replace("/pixel.html" + window.location.search);
-  }, []);
-  return null;
+function NotFound() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-7xl font-bold text-foreground">404</h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Página não encontrada</h2>
+        <div className="mt-6">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            Ir para a loja
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function App() {
@@ -22,10 +44,22 @@ export default function App() {
       <ScrollToTop />
       <UtmPersistence />
       <Routes>
+        <Route path="/" element={<IndexPage />} />
+        <Route path="/carrinho" element={<CarrinhoPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/produto/:id" element={<ProdutoPage />} />
-        <Route path="/pre" element={<Pre />} />
-        <Route path="/pixel" element={<PixelRedirect />} />
-        <Route path="*" element={<Navigate to={PRODUCT_PATH} replace />} />
+        <Route path="/pix/:externalId" element={<PixPage />} />
+        <Route path="/up1/:externalId" element={<Up1Page />} />
+        <Route path="/up2/:externalId" element={<Up2Page />} />
+        <Route path="/frete/:externalId" element={<FretePage />} />
+        <Route path="/nota-fiscal/:externalId" element={<NotaFiscalPage />} />
+        <Route path="/pendencia-tributaria/:externalId" element={<PendenciaTributariaPage />} />
+        <Route path="/obrigado" element={<ObrigadoPage />} />
+        <Route path="/preview/frete" element={<PreviewFretePage />} />
+        <Route path="/preview/nota-fiscal" element={<PreviewNotaFiscalPage />} />
+        <Route path="/admin/pixels" element={<AdminPixelsPage />} />
+        <Route path="/cupom" element={<CupomPage />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

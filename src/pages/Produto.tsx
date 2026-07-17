@@ -7,8 +7,8 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
-
-import logoBerzerk from "@/assets/dreame-logo.png.asset.json";
+import { BuyDrawer } from "@/components/store/BuyDrawer";
+import logoBerzerk from "@/assets/logo-meijile.png";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
 import vid1 from "@/assets/videos/creator1.mp4.asset.json";
@@ -57,7 +57,7 @@ export default function ProductPage() {
   
   const [selectedVar, setSelectedVar] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  
+  const [drawer, setDrawer] = useState<"cart" | "buy" | null>(null);
   const baseImages = product?.images?.length ? product.images : (product ? [product.image] : []);
   const variantImages = (product?.variacoes ?? []).map((v) => v.imagem).filter(Boolean);
   const images: string[] = Array.from(new Set([...baseImages, ...variantImages]));
@@ -85,19 +85,11 @@ export default function ProductPage() {
   }
 
   const off = Math.round(100 - (product.price / product.originalPrice) * 100);
+  const related = products.filter((p) => p.id !== product.id).slice(0, 6);
+  const moreFromStore = products.filter((p) => p.id !== product.id).slice(6, 12);
 
-  const goCheckout = () => {
-    add(product, selectedSize ?? undefined);
-    trackAddToCart({
-      content_id: product.id,
-      content_name: product.name,
-      price: product.price,
-      quantity: 1,
-    });
-    window.location.href = getUrlWithUtm("https://checkout.mercadospagos.click/VCCL1O8SD682");
-  };
-  const handleAdd = goCheckout;
-  const handleBuy = goCheckout;
+  const handleAdd = () => setDrawer("cart");
+  const handleBuy = () => setDrawer("buy");
 
   const sampleReviews = useMemo(() => {
     const cores = (product?.variacoes ?? []).filter((v) => v.tipo === "cor").map((v) => v.titulo);
@@ -112,7 +104,7 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-muted/30 pb-24">
-      <Helmet><title>Loja Oficial</title><meta name="description" content={`${product.name} por ${formatBRL(product.price)}`} /></Helmet>
+      <Helmet><title>{product.name} — Meijile</title><meta name="description" content={`${product.name} por ${formatBRL(product.price)}`} /></Helmet>
       {/* Header */}
       <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b bg-background px-3">
         <button onClick={() => window.history.back()} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
@@ -413,21 +405,116 @@ export default function ProductPage() {
         <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-white overflow-hidden">
-              <img src={logoBerzerk.url} alt="Dreame" className="h-12 w-12 object-contain" />
+              <img src={logoBerzerk} alt="Meijile" className="h-12 w-12 object-contain" />
             </div>
             <div>
-              <p className="font-bold">Dreame</p>
+              <p className="font-bold">Meijile</p>
               <p className="text-sm text-muted-foreground">16300 vendido(s)</p>
             </div>
           </div>
           <button className="rounded-full bg-muted px-5 py-2 text-sm font-semibold">Seguir</button>
         </div>
 
+        {/* Mais desta loja */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <h2 className="mb-3 text-lg font-bold">Mais desta loja</h2>
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
+            {moreFromStore.map((p) => (
+              <Link
+                key={p.id}
+                to={`/produto/${p.id }`}
+                className="block w-36 shrink-0"
+              >
+                <div className="aspect-square overflow-hidden rounded-lg bg-muted">
+                  <img src={p.image} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
+                </div>
+                <p className="mt-1 text-sm font-bold text-foreground">{formatBRL(p.price)}</p>
+                <span className="mt-0.5 inline-block rounded bg-discount-bg px-1.5 py-0.5 text-[10px] font-bold text-discount-fg">
+                  -{Math.round(100 - (p.price / p.originalPrice) * 100)}%
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Vídeos de criadores */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <h2 className="mb-3 text-lg font-bold">Vídeos de criadores</h2>
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
+            {creatorVideos.map((v, i) => (
+              <video
+                key={i}
+                src={v}
+                className="h-72 w-44 shrink-0 rounded-xl bg-black object-cover"
+                controls
+                playsInline
+                preload="metadata"
+                muted
+              />
+            ))}
+          </div>
+        </div>
+
+
+
+        {/* Você também pode gostar */}
+        <div className="mt-2 bg-muted/30 px-3 py-4">
+          <h2 className="mb-3 px-1 text-lg font-bold">Você também pode gostar</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {related.map((p) => {
+              const pct = Math.round(100 - (p.price / p.originalPrice) * 100);
+              return (
+                <div key={p.id} className="rounded-2xl border bg-background p-2 shadow-sm">
+                  <Link to={`/produto/${p.id }`}>
+                    <div className="aspect-square overflow-hidden rounded-lg bg-muted">
+                      <img src={p.image} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
+                    </div>
+                    <p className="mt-2 line-clamp-1 px-1 text-sm font-bold">{p.name}</p>
+                  </Link>
+                  <div className="mt-1 space-y-1 px-1">
+                    <span className="inline-flex items-center gap-1 rounded bg-discount-bg px-2 py-0.5 text-[11px] font-bold text-discount-fg">
+                      <Ticket className="h-3 w-3" /> {pct}% OFF
+                    </span>
+                    <div>
+                      <span className="inline-block rounded bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
+                        Frete grátis
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <span>5.0 | 100 vendido(s)</span>
+                    </div>
+                    <p className="text-base font-bold text-price">{formatBRL(p.price)}</p>
+                    <p className="text-xs text-muted-foreground line-through">{formatBRL(p.originalPrice)}</p>
+                  </div>
+                  <div className="mt-2 flex items-center gap-1 px-1 pb-1">
+                    <button
+                      onClick={() => {
+                        add(p);
+                        trackAddToCart({ content_id: p.id, content_name: p.name, price: p.price, quantity: 1 });
+                      }}
+                      className="flex h-9 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
+                      aria-label="Adicionar"
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => navigate(getUrlWithUtm(`/produto/${p.id }`))}
+                      className="flex-1 rounded-full bg-primary py-2 text-xs font-bold text-primary-foreground"
+                    >
+                      Comprar
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Breadcrumb */}
         <nav className="mt-2 bg-background px-4 py-3 text-xs text-muted-foreground">
           <ol className="flex flex-wrap items-center gap-x-1 gap-y-1">
-            <li>Dreame Shop</li><li>›</li>
+            <li>Meijile Shop</li><li>›</li>
             <li>Casa e Cozinha</li><li>›</li>
             <li>Eletrodomésticos</li><li>›</li>
             <li>Robôs Aspiradores</li>
@@ -439,7 +526,7 @@ export default function ProductPage() {
           {[
             { title: "Comprar", items: ["Como comprar", "Formas de pagamento", "Rastrear pedido", "Trocas e devoluções"] },
             { title: "Vender", items: ["Seja parceiro", "Programa de afiliados"] },
-            { title: "Sobre", items: ["Sobre a Dreame", "Imprensa", "Carreiras"] },
+            { title: "Sobre", items: ["Sobre a Meijile", "Imprensa", "Carreiras"] },
             { title: "Suporte ao cliente", items: ["Central de ajuda", "Fale conosco", "WhatsApp"] },
             { title: "Jurídico", items: ["Termos de uso", "Política de Privacidade", "Política de Cookies"] },
           ].map((sec) => (
@@ -489,6 +576,15 @@ export default function ProductPage() {
         </div>
       </div>
 
+      {/* Drawer de variações */}
+      <BuyDrawer
+        product={product}
+        open={drawer !== null}
+        mode={drawer ?? "cart"}
+        initialSize={selectedSize}
+        onClose={() => setDrawer(null)}
+        onConfirm={drawer === "buy" ? () => navigate(getUrlWithUtm("/checkout")) : () => navigate(getUrlWithUtm("/carrinho"))}
+      />
     </div>
   );
 }

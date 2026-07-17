@@ -21,7 +21,7 @@ import { useCart } from "@/lib/cart";
 import { formatBRL, products } from "@/data/products";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackAddToCart, trackInitiateCheckout } from "@/lib/tiktokPixel";
-import logoDreame from "@/assets/logo-dreame.png";
+import logoMeijile from "@/assets/logo-meijile.png";
 
 function useRandomProducts(count: number, excludeIds: string[]) {
   return useMemo(() => {
@@ -94,7 +94,7 @@ export default function CarrinhoPage() {
   return (
     <div className="min-h-screen bg-[#f5f5f7] pb-32">
       <Helmet>
-        <title>Meu Carrinho — Dreame</title>
+        <title>Meu Carrinho — Meijile</title>
       </Helmet>
 
       {/* Header gradient */}
@@ -149,14 +149,14 @@ export default function CarrinhoPage() {
             <div className="flex items-center gap-2 px-1">
               <div className="flex h-9 w-9 items-center justify-center rounded-full border bg-white overflow-hidden">
                 <img
-                  src={logoDreame}
-                  alt="Dreame"
+                  src={logoMeijile}
+                  alt="Meijile"
                   className="h-7 w-7 object-contain"
                   onError={(e) => ((e.currentTarget.style.display = "none"))}
                 />
               </div>
               <div>
-                <p className="text-sm font-bold leading-tight">Dreame</p>
+                <p className="text-sm font-bold leading-tight">Meijile</p>
                 <p className="flex items-center gap-1 text-[11px] text-sky-600">
                   <BadgeCheck className="h-3 w-3" /> Loja Verificada
                 </p>
@@ -266,11 +266,11 @@ export default function CarrinhoPage() {
 
             {/* Seller footer */}
             <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
-              <p className="text-base font-bold">Dreame</p>
+              <p className="text-base font-bold">Meijile</p>
               <p className="mt-1 text-xs text-muted-foreground">Loja Oficial</p>
               <div className="mt-3 flex items-center justify-center gap-4 text-xs">
                 <span className="flex items-center gap-1 text-muted-foreground">
-                  <Mail className="h-3.5 w-3.5" /> contato@dreame.com.br
+                  <Mail className="h-3.5 w-3.5" /> contato@meijile.com.br
                 </span>
               </div>
             </div>
