@@ -1,7 +1,7 @@
 // Cria uma transação PIX na FreePay Brasil e salva o pedido no banco
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
-import { createTransaction } from "../_shared/freepay.ts";
+import { createTransaction } from "../_shared/paradisepags.ts";
 import { reportOrderToUtmify } from "../_shared/utmify.ts";
 
 const corsHeaders = {
