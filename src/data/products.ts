@@ -26,6 +26,13 @@ import ae8b from "@/assets/ebike-ae8/ae8-89.png.asset.json";
 import ae8c from "@/assets/ebike-ae8/ae8-90.png.asset.json";
 import ae8d from "@/assets/ebike-ae8/ae8-91.png.asset.json";
 import ae8e from "@/assets/ebike-ae8/ae8-92.png.asset.json";
+import zs1 from "@/assets/spinning-zs290/zs290-93.png.asset.json";
+import zs2 from "@/assets/spinning-zs290/zs290-94.png.asset.json";
+import zs3 from "@/assets/spinning-zs290/zs290-95.png.asset.json";
+import zs4 from "@/assets/spinning-zs290/zs290-96.png.asset.json";
+import zs5 from "@/assets/spinning-zs290/zs290-97.png.asset.json";
+import zs6 from "@/assets/spinning-zs290/zs290-98.png.asset.json";
+import zs7 from "@/assets/spinning-zs290/zs290-99.png.asset.json";
 
 export interface ProductVariation {
   titulo: string;
