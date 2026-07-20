@@ -1,13 +1,7 @@
 // Catálogo
-import img1 from "@/assets/robo/d0d1a5e8-1e4e-4fd1-a7a6-db8687974aab.png";
-import img2 from "@/assets/robo/f4d31a50-d6cb-4429-a04c-07c46ad9f2e4.png";
-import img3 from "@/assets/robo/ed78a73a-7631-4837-aafa-0ddbec6ff7b8.png";
-import img4 from "@/assets/robo/3ffee8b6-985d-4f56-b61a-1477bd0b547d.png";
-import img5 from "@/assets/robo/a1109d89-9a34-4069-97a9-1a1931c0c396.png";
-import img6 from "@/assets/robo/d31fb2b3-e2b2-4212-9b85-6f22bf03ab3b.png";
-import img7 from "@/assets/robo/508654e2-a322-4a95-9145-3429070a302b.png";
-import img8 from "@/assets/robo/be37070e-f0e2-4d26-815a-734a97c606b0.png";
-import img9 from "@/assets/robo/4a8aa78b-ff2c-40da-8f57-4770645360f6.png";
+import img1 from "@/assets/triciclo/triciclo-1.png.asset.json";
+import img2 from "@/assets/triciclo/triciclo-2.png.asset.json";
+import img3 from "@/assets/triciclo/triciclo-3.png.asset.json";
 
 export interface ProductVariation {
   titulo: string;
@@ -28,25 +22,15 @@ export interface Product {
   sold?: number;
 }
 
-const IMAGES = [
-  img1,
-  img2,
-  img3,
-  img4,
-  img5,
-  img6,
-  img7,
-  img8,
-  img9,
-];
+const IMAGES = [img1.url, img2.url, img3.url];
 
 const DESCRIPTION =
-  "Robô Aspirador e Mopa Inteligente com sucção potente de 19.000Pa, caixa de poeira autoesvaziável, mopa flexível com lavagem automática a 75°C, mapeamento a laser, controle por aplicativo e voz. Silencioso, seguro para pets e crianças, ideal para pisos, tapetes e todos os cantos da casa. Coleção 2026.";
+  "Triciclo elétrico adulto T3 com excelente estabilidade e conforto. Ideal para mobilidade urbana, conta com freio hidráulico, amortecedor reforçado, antena potente e amplo espaço para transportes generosos.\n\nMobilidade urbana segura e estável: três rodas com pneus sem câmara garantem mais equilíbrio e confiança para o dia a dia, ideal para iniciantes e idosos.\n\nBateria removível e recarga fácil: bateria de lítio 60V 20Ah pode ser retirada para recarregar em casa ou no trabalho, sem complicações.\n\nConforto em ruas irregulares graças ao amortecedor reforçado.\n\nLEGISLAÇÃO SOBRE O PRODUTO:\n• Produto autopropelido, sem necessidade de CNH;\n• Sem exigência de homologação ou emplacamento;\n• Recomendação: Resolução 996/23 do CONTRAN;\n• Respeite as normas de trânsito (use capacete, limite de velocidade e legislação vigente).";
 
 export const products: Product[] = [
   {
-    id: "robo-aspirador-mopa-19000pa",
-    name: "Robô Aspirador e Mopa 19.000Pa, Caixa Autoesvaziável, Mopa com Lavagem 75°C, Amigo dos Pets",
+    id: "triciclo-eletrico-t3",
+    name: "T3 Triciclo Elétrico Para Mobilidade Urbana — Bateria 60V 20Ah, Freio Hidráulico, Sem CNH",
     image: IMAGES[0],
     images: IMAGES,
     price: 49.9,
@@ -54,7 +38,7 @@ export const products: Product[] = [
     discount: 90,
     description: DESCRIPTION,
     variacoes: [
-      { titulo: "Branco", imagem: IMAGES[1], tipo: "cor" },
+      { titulo: "Branco", imagem: IMAGES[0], tipo: "cor" },
     ],
     sold: 2143,
   },

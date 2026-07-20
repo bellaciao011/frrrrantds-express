@@ -1,6 +1,6 @@
 import type { Product } from "@/data/products";
 
-export type CategoryId = "robos-aspiradores";
+export type CategoryId = "triciclos-eletricos";
 
 export interface Category {
   id: CategoryId;
@@ -9,11 +9,11 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: "robos-aspiradores", label: "Robôs Aspiradores", emoji: "🤖" },
+  { id: "triciclos-eletricos", label: "Triciclos Elétricos", emoji: "🛺" },
 ];
 
 export function productMatchesCategory(_product: Product, category: CategoryId): boolean {
-  return category === "robos-aspiradores";
+  return category === "triciclos-eletricos";
 }
 
 export function filterByCategory(products: Product[], category: CategoryId | null): Product[] {
