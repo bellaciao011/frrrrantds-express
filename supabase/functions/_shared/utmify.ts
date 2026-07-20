@@ -80,7 +80,7 @@ export async function reportOrderToUtmify(input: UtmifyOrderInput): Promise<{ ok
   // Sem gateway fee conhecido aqui — manda 0 e comissão = total
   const body = {
     orderId: input.orderId,
-    platform: input.platform ?? "Meijile",
+    platform: input.platform ?? "Achadinhos do Momento",
     paymentMethod: input.paymentMethod ?? "pix",
     status: input.status,
     createdAt: toUtcDateTime(input.createdAt) ?? toUtcDateTime(new Date())!,

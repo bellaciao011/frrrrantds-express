@@ -161,7 +161,7 @@ export default function CupomPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#0b1437] via-[#1a0b3a] to-[#3b0a2e] px-4 pb-10 pt-10">
       <Helmet>
-        <title>Cupom de São João — até 90% OFF | Meijile</title>
+        <title>Cupom de São João — até 90% OFF | Achadinhos do Momento</title>
         <meta name="description" content="Você foi selecionado para receber o Cupom de São João com até 90% de desconto." />
       </Helmet>
 
@@ -275,7 +275,7 @@ export default function CupomPage() {
         </ul>
 
         <p className="mt-6 text-center text-[11px] text-amber-100/70">
-          © Meijile — Arraiá de ofertas por tempo limitado
+          © Achadinhos do Momento — Arraiá de ofertas por tempo limitado
         </p>
       </div>
     </div>
