@@ -270,7 +270,7 @@ export default function CarrinhoPage() {
               <p className="mt-1 text-xs text-muted-foreground">Loja Oficial</p>
               <div className="mt-3 flex items-center justify-center gap-4 text-xs">
                 <span className="flex items-center gap-1 text-muted-foreground">
-                  <Mail className="h-3.5 w-3.5" /> contato@meijile.com.br
+                  <Mail className="h-3.5 w-3.5" /> contato@achadinhosdomomento.com.br
                 </span>
               </div>
             </div>

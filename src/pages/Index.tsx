@@ -67,8 +67,8 @@ export default function IndexPage() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Meijile — Triciclo Elétrico em Promoção</title>
-        <meta name="description" content="Triciclo Elétrico T3 Meijile com até 90% OFF e frete grátis." />
+        <title>Achadinhos do Momento — Triciclo Elétrico em Promoção</title>
+        <meta name="description" content="Triciclo Elétrico T3 Achadinhos do Momento com até 90% OFF e frete grátis." />
       </Helmet>
       
       <Header />
