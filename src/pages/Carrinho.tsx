@@ -149,7 +149,7 @@ export default function CarrinhoPage() {
             <div className="flex items-center gap-2 px-1">
               <div className="flex h-9 w-9 items-center justify-center rounded-full border bg-white overflow-hidden">
                 <img
-                  src={logoAchadinhos.url}
+                  src={logoAchadinhos}
                   alt="Achadinhos do Momento"
                   className="h-7 w-7 object-contain"
                   onError={(e) => ((e.currentTarget.style.display = "none"))}
