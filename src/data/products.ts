@@ -21,6 +21,11 @@ import c3pb from "@/assets/scooter-c3pro/c3pro-84.png.asset.json";
 import c3pc from "@/assets/scooter-c3pro/c3pro-85.png.asset.json";
 import c3pd from "@/assets/scooter-c3pro/c3pro-86.png.asset.json";
 import c3pe from "@/assets/scooter-c3pro/c3pro-87.png.asset.json";
+import ae8a from "@/assets/ebike-ae8/ae8-88.png.asset.json";
+import ae8b from "@/assets/ebike-ae8/ae8-89.png.asset.json";
+import ae8c from "@/assets/ebike-ae8/ae8-90.png.asset.json";
+import ae8d from "@/assets/ebike-ae8/ae8-91.png.asset.json";
+import ae8e from "@/assets/ebike-ae8/ae8-92.png.asset.json";
 
 export interface ProductVariation {
   titulo: string;
@@ -96,6 +101,21 @@ export const products: Product[] = [
       { titulo: "Preto", imagem: c3pa.url, tipo: "cor" },
     ],
     sold: 2410,
+  },
+  {
+    id: "ebike-ae8",
+    name: "AE8 Bicicleta Elétrica 1000W Para Mobilidade Urbana — Autonomia 80km, Freios Hidráulicos, Sem CNH",
+    image: ae8a.url,
+    images: [ae8a.url, ae8b.url, ae8c.url, ae8d.url, ae8e.url],
+    price: 124.9,
+    originalPrice: 1249.9,
+    discount: 90,
+    description:
+      "E-bike Cavalletta AE8 para deslocamento diário, dispensa CNH e emplacamento. Potência máxima 1000W, autonomia 80km, freios hidráulicos, suspensão dupla e sistema antifurto completo com alarme remoto, ideal para cidade e passeios curtos.\n\nMotor 1000W, bicicleta elétrica sem CNH e sem placa: motor potente de 1000W, velocidade 32km/h, sobe ladeiras de 20° e suporta até 150kg. Segue regulamentação CONTRAN, sem burocracia para deslocamento urbano.\n\nBateria lítio removível 48V15Ah, autonomia de 80km: bateria portátil para recarga em casa/escritório, tempo de carga 7-8h. Autonomia ampla para trajetos diários, elimina ansiedade de bateria baixa.\n\nFreios hidráulicos + sistema de segurança com alarme por controle remoto: freios a disco hidráulicos com frenagem estável mesmo em dias chuvosos, conta com destravamento NFC, alarme via controle remoto e disco antifurto integrado para proteção total.\n\nSuspensão hidráulica + mola regulável e pneu largo 4.0-20” para muito conforto: amortecedor hidráulico na frente e suspensão com mola ajustável na roda traseira, somado ao pneu largo 4.0-20\" anti-derrapante, conforto em qualquer tipo de pista urbana.\n\nDesign esportivo aerodinâmico, diversas opções de cores exclusivas: e-bike urbana com linhas modernas, visual diferenciado dos modelos convencionais.\n\nESPECIFICAÇÕES TÉCNICAS:\n• Modelo: AE8\n• Potência do motor: 1000 W\n• Velocidade máxima: 32 km/h\n• Autonomia máxima: 80 km\n• Capacidade de carga: 150 kg\n• Bateria: lítio 48V/15AH\n• Capacidade de subida: 20°\n• Pneu: 4.0-20''\n• Dimensões: 1750*700*1120mm\n• Peso: 45.5 kg\n• Freios: a disco hidráulicos\n• Suspensão: dianteira hidráulica / traseira mola ajustável\n• Tempo de carregamento: ≈7-8 horas\n• Suporte NFC: Sim\n• Garantia: 6 meses\n\nLEGISLAÇÃO SOBRE O PRODUTO:\n• Produto autopropelido, sem necessidade de CNH;\n• Sem exigência de homologação ou emplacamento;\n• Recomendação: Resolução 996/23 do CONTRAN;\n• Respeite as normas de trânsito (use capacete, limite de velocidade e legislação vigente).",
+    variacoes: [
+      { titulo: "Preto", imagem: ae8a.url, tipo: "cor" },
+    ],
+    sold: 1875,
   },
 ];
 
