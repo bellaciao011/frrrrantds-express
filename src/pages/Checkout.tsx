@@ -181,6 +181,27 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-white pb-36">
       <Helmet><title>Resumo do Pedido — Achadinhos do Momento</title></Helmet>
 
+      {pixExternalId && (
+        <div className="fixed inset-0 z-[70] overflow-y-auto bg-white">
+          <header className="sticky top-0 z-10 border-b bg-white">
+            <div className="relative mx-auto flex h-14 max-w-md items-center justify-center px-3">
+              <button
+                onClick={() => setPixExternalId(null)}
+                className="absolute left-2 flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"
+                aria-label="Voltar"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <h1 className="text-base font-bold">Código do pagamento</h1>
+            </div>
+          </header>
+          <main className="mx-auto max-w-md px-4 py-4">
+            <PixDisplay externalId={pixExternalId} />
+          </main>
+        </div>
+      )}
+
+
       {/* HEADER */}
       <header className="sticky top-0 z-40 border-b bg-white">
         <div className="relative mx-auto flex h-14 max-w-md items-center justify-center px-3">
