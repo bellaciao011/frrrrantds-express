@@ -1,4 +1,4 @@
-import logoAchadinhos from "@/assets/logo-achadinhos.png.asset.json";
+import logoAchadinhos from "@/assets/logo-achadinhos.png";
 
 export function StoreInfo() {
   return (
@@ -7,7 +7,7 @@ export function StoreInfo() {
         <div className="flex items-center gap-3">
           <div className="flex h-16 w-16 items-center justify-center rounded-full border bg-white overflow-hidden">
             <img
-              src={logoAchadinhos.url}
+              src={logoAchadinhos}
               alt="Achadinhos do Momento"
               className="h-14 w-14 object-contain"
             />

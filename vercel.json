@@ -3,7 +3,6 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
-    { "source": "/__l5e/:path*", "destination": "https://mejilestoreshop.lovable.app/__l5e/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

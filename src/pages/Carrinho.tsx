@@ -21,7 +21,7 @@ import { useCart } from "@/lib/cart";
 import { formatBRL, products } from "@/data/products";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackAddToCart, trackInitiateCheckout } from "@/lib/tiktokPixel";
-import logoAchadinhos from "@/assets/logo-achadinhos.png.asset.json";
+import logoAchadinhos from "@/assets/logo-achadinhos.png";
 
 function useRandomProducts(count: number, excludeIds: string[]) {
   return useMemo(() => {
@@ -149,7 +149,7 @@ export default function CarrinhoPage() {
             <div className="flex items-center gap-2 px-1">
               <div className="flex h-9 w-9 items-center justify-center rounded-full border bg-white overflow-hidden">
                 <img
-                  src={logoAchadinhos.url}
+                  src={logoAchadinhos}
                   alt="Achadinhos do Momento"
                   className="h-7 w-7 object-contain"
                   onError={(e) => ((e.currentTarget.style.display = "none"))}

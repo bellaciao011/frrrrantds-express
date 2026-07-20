@@ -8,74 +8,74 @@ import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
-import logoAchadinhos from "@/assets/logo-achadinhos.png.asset.json";
+import logoAchadinhos from "@/assets/logo-achadinhos.png";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
-import vid1 from "@/assets/videos/scooter1.mp4.asset.json";
-import vid2 from "@/assets/videos/scooter2.mp4.asset.json";
-import vid3 from "@/assets/videos/scooter3.mp4.asset.json";
-import vid4 from "@/assets/videos/scooter4.mp4.asset.json";
-const creatorVideos: string[] = [vid1.url, vid2.url, vid3.url, vid4.url];
-import rev68 from "@/assets/triciclo/review-68.png.asset.json";
-import rev69 from "@/assets/triciclo/review-69.png.asset.json";
-import rev70 from "@/assets/triciclo/review-70.png.asset.json";
-import rev71 from "@/assets/triciclo/review-71.png.asset.json";
-import rev72 from "@/assets/triciclo/review-72.png.asset.json";
-import rev73 from "@/assets/triciclo/review-73.png.asset.json";
-import rev74 from "@/assets/triciclo/review-74.png.asset.json";
+import vid1 from "@/assets/videos/scooter1.mp4";
+import vid2 from "@/assets/videos/scooter2.mp4";
+import vid3 from "@/assets/videos/scooter3.mp4";
+import vid4 from "@/assets/videos/scooter4.mp4";
+const creatorVideos: string[] = [vid1, vid2, vid3, vid4];
+import rev68 from "@/assets/triciclo/review-68.png";
+import rev69 from "@/assets/triciclo/review-69.png";
+import rev70 from "@/assets/triciclo/review-70.png";
+import rev71 from "@/assets/triciclo/review-71.png";
+import rev72 from "@/assets/triciclo/review-72.png";
+import rev73 from "@/assets/triciclo/review-73.png";
+import rev74 from "@/assets/triciclo/review-74.png";
 const reviewPhotos: string[][] = [
-  [rev68.url, rev74.url],
-  [rev71.url, rev69.url],
-  [rev72.url, rev73.url, rev70.url],
+  [rev68, rev74],
+  [rev71, rev69],
+  [rev72, rev73, rev70],
 ];
 
-import feat60 from "@/assets/triciclo/triciclo-feat-60.png.asset.json";
-import feat61 from "@/assets/triciclo/triciclo-feat-61.png.asset.json";
-import feat62 from "@/assets/triciclo/triciclo-feat-62.png.asset.json";
-import feat63 from "@/assets/triciclo/triciclo-feat-63.png.asset.json";
-import feat64 from "@/assets/triciclo/triciclo-feat-64.png.asset.json";
-import feat65 from "@/assets/triciclo/triciclo-feat-65.png.asset.json";
-import feat66 from "@/assets/triciclo/triciclo-feat-66.png.asset.json";
-import feat67 from "@/assets/triciclo/triciclo-feat-67.png.asset.json";
+import feat60 from "@/assets/triciclo/triciclo-feat-60.png";
+import feat61 from "@/assets/triciclo/triciclo-feat-61.png";
+import feat62 from "@/assets/triciclo/triciclo-feat-62.png";
+import feat63 from "@/assets/triciclo/triciclo-feat-63.png";
+import feat64 from "@/assets/triciclo/triciclo-feat-64.png";
+import feat65 from "@/assets/triciclo/triciclo-feat-65.png";
+import feat66 from "@/assets/triciclo/triciclo-feat-66.png";
+import feat67 from "@/assets/triciclo/triciclo-feat-67.png";
 
 const PRODUCT_FEATURES: { img: string; title: string; text: string }[] = [
   {
-    img: feat60.url,
+    img: feat60,
     title: "Conforto, Segurança e Praticidade Urbana",
     text: "O T3 oferece mobilidade urbana estável com três rodas, bateria removível 60V, suspensão dupla e motor potente, garantindo conforto, segurança e praticidade para o dia a dia.",
   },
   {
-    img: feat61.url,
+    img: feat61,
     title: "Estabilidade com 3 Rodas",
     text: "Estrutura de três rodas que proporciona maior equilíbrio e controle. Ideal para iniciantes, oferecendo mais segurança e confiança ao dirigir.",
   },
   {
-    img: feat62.url,
+    img: feat62,
     title: "Suspensão Suave e Estável",
     text: "Sistema com três amortecedores e pneus maiores que absorvem impactos com eficiência. Garante uma condução mais suave, estável e confortável, mesmo em ruas irregulares.",
   },
   {
-    img: feat63.url,
+    img: feat63,
     title: "Grande Capacidade Inteligente",
     text: "Espaço inteligente com múltiplos compartimentos para organizar seus pertences com facilidade. Estrutura resistente com capacidade de até 150kg, ideal para compras, entregas e uso diário sem preocupações.",
   },
   {
-    img: feat64.url,
+    img: feat64,
     title: "Alarme Antifurto Potente",
     text: "Sistema de segurança com alarme de alto volume que protege contra roubos. Mais tranquilidade ao estacionar em qualquer ambiente.",
   },
   {
-    img: feat65.url,
+    img: feat65,
     title: "Bateria Removível Prática",
     text: "Bateria de lítio 60V/20Ah totalmente removível, permitindo recarga fácil em casa ou no trabalho. Mais autonomia e liberdade para sua rotina.",
   },
   {
-    img: feat66.url,
+    img: feat66,
     title: "Iluminação Completa LED",
     text: "Sistema de iluminação com farol alto e baixo, setas e luz traseira. Garante excelente visibilidade e mais segurança em uso noturno.",
   },
   {
-    img: feat67.url,
+    img: feat67,
     title: "Design Estável e Equilibrado",
     text: "Dimensões ideais para uso urbano, combinando conforto e estabilidade. Proporciona uma condução suave e segura em diferentes situações.",
   },
@@ -594,7 +594,7 @@ export default function ProductPage() {
         <div className="mt-2 flex items-center justify-between bg-background px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center rounded-full border bg-white overflow-hidden">
-              <img src={logoAchadinhos.url} alt="Achadinhos do Momento" className="h-12 w-12 object-contain" />
+              <img src={logoAchadinhos} alt="Achadinhos do Momento" className="h-12 w-12 object-contain" />
             </div>
             <div>
               <p className="font-bold">Achadinhos do Momento</p>
