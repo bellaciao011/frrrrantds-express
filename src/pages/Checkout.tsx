@@ -20,44 +20,9 @@ import { getStoredTtclid, trackInitiateCheckout, trackAddPaymentInfo } from "@/l
 import { toast } from "sonner";
 import { getUrlWithUtm, getUtmifyTracking } from "@/utils/utm";
 import PixDisplay from "@/components/PixDisplay";
+import AddressSheet, { loadSavedAddress, type SavedAddress } from "@/components/store/AddressSheet";
 
-type Step = 1 | 2 | 3;
-type Shipping = { id: string; name: string; price: number; eta: string };
-
-const SHIPPINGS: Shipping[] = [
-  { id: "correio", name: "Correio", price: 0, eta: "Receba em até 7 dias úteis" },
-];
-
-const FREE_SHIPPING_MIN_QTY = 2;
-
-// ========== formatadores ==========
-function maskPhone(v: string) {
-  const d = v.replace(/\D/g, "").slice(0, 11);
-  if (d.length <= 2) return d.length ? `(${d}` : "";
-  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
-  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
-}
-function maskCpf(v: string) {
-  const d = v.replace(/\D/g, "").slice(0, 11);
-  return d
-    .replace(/(\d{3})(\d)/, "$1.$2")
-    .replace(/(\d{3})(\d)/, "$1.$2")
-    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-}
-function maskCep(v: string) {
-  const d = v.replace(/\D/g, "").slice(0, 8);
-  return d.replace(/(\d{5})(\d)/, "$1-$2");
-}
-function onlyDigits(v: string) {
-  return v.replace(/\D/g, "");
-}
-function hasValidBrazilianPhone(v: string) {
-  const d = onlyDigits(v);
-  return d.length === 10 || d.length === 11;
-}
-
-// ========== contagem regressiva do cupom ==========
+// contagem regressiva do cupom
 function useCountdown(seconds: number) {
   const [s, setS] = useState(seconds);
   useEffect(() => {
@@ -70,15 +35,32 @@ function useCountdown(seconds: number) {
   return `${mm}:${min}:${ss}`;
 }
 
+function onlyDigits(v: string) {
+  return v.replace(/\D/g, "");
+}
+function hasValidBrazilianPhone(v: string) {
+  const d = onlyDigits(v);
+  return d.length === 10 || d.length === 11;
+}
+
 export default function CheckoutPage() {
-  const { items, total: subtotal, count, setQty, remove } = useCart();
+  const { items, total: subtotal, setQty, remove } = useCart();
   const navigate = useNavigate();
   const countdown = useCountdown(5 * 3600);
 
-  const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
   const [pixExternalId, setPixExternalId] = useState<string | null>(null);
   const pixAreaRef = useRef<HTMLDivElement>(null);
+
+  // Endereço (via AddressSheet)
+  const [addressOpen, setAddressOpen] = useState(false);
+  const [addr, setAddr] = useState<SavedAddress | null>(null);
+
+  useEffect(() => {
+    const a = loadSavedAddress();
+    if (a) setAddr(a);
+    else setAddressOpen(true);
+  }, []);
 
   useEffect(() => {
     if (pixExternalId && pixAreaRef.current) {
@@ -88,32 +70,7 @@ export default function CheckoutPage() {
     }
   }, [pixExternalId]);
 
-  // Identificação
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [name, setName] = useState("");
-  const [doc, setDoc] = useState("");
-
-  // Entrega
-  const [cep, setCep] = useState("");
-  const [address, setAddress] = useState("");
-  const [number, setNumber] = useState("");
-  const [district, setDistrict] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [complement, setComplement] = useState("");
-  const [shippingId, setShippingId] = useState<string>("correio");
-
-  const shipping = useMemo(
-    () => SHIPPINGS.find((s) => s.id === shippingId) ?? SHIPPINGS[0],
-    [shippingId],
-  );
-
-  const cepDigits = cep.replace(/\D/g, "");
-  const cepFilled = cepDigits.length === 8;
-
-
-  // Desconto: diferença entre preço "de" (originalPrice) e preço "por"
+  // Desconto: diferença entre "de" (originalPrice) e "por"
   const discountTotal = useMemo(
     () =>
       items.reduce((s, i) => {
@@ -123,8 +80,7 @@ export default function CheckoutPage() {
     [items],
   );
 
-  const shippingApplied = cepFilled ? shipping.price : 0;
-  const grandTotal = subtotal + shippingApplied;
+  const grandTotal = subtotal;
 
   // TikTok InitiateCheckout ao entrar no checkout
   useEffect(() => {
@@ -142,36 +98,18 @@ export default function CheckoutPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-  // ========== handlers ==========
-  const goNext = (target: Step) => {
-    if (target === 2) {
-      if (!email || !phone || !name || !doc) {
-        toast.error("Preencha todos os campos.");
-        return;
-      }
-      if (!hasValidBrazilianPhone(phone)) {
-        toast.error("Informe um telefone válido com DDD.");
-        return;
-      }
-    }
-    if (target === 3) {
-      if (!cep || !address || !number || !district || !city || !state) {
-        toast.error("Preencha o endereço completo.");
-        return;
-      }
-    }
-    setStep(target);
-  };
-
   const finalize = async () => {
     if (loading) return;
+    if (!addr) {
+      setAddressOpen(true);
+      return;
+    }
     const amountCents = Math.round(grandTotal * 100);
     if (amountCents < 600) {
       toast.error("Valor mínimo R$ 6,00.");
       return;
     }
-    if (!hasValidBrazilianPhone(phone)) {
+    if (!hasValidBrazilianPhone(addr.phone)) {
       toast.error("Informe um telefone válido com DDD.");
       return;
     }
@@ -182,7 +120,12 @@ export default function CheckoutPage() {
       const { data, error } = await supabase.functions.invoke("create-pix", {
         body: {
           amount: amountCents,
-          buyer: { name, email, document: doc, phone },
+          buyer: {
+            name: addr.name,
+            email: addr.email,
+            document: addr.doc,
+            phone: addr.phone,
+          },
           items: items.map((i) => ({
             id: i.id,
             name: i.name,
@@ -206,10 +149,9 @@ export default function CheckoutPage() {
           price: i.price,
         })),
         order_id: data.external_id,
-        identify: { email, phone },
+        identify: { email: addr.email, phone: addr.phone },
       });
       setPixExternalId(data.external_id);
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     } catch (e: any) {
       console.error(e);
       toast.error(e?.message ?? "Não foi possível gerar o Pix.");
@@ -218,7 +160,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // ========== empty state ==========
   if (items.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-muted/30">
@@ -236,15 +177,26 @@ export default function CheckoutPage() {
     );
   }
 
+  const locked = !!pixExternalId;
+
   return (
     <div className="min-h-screen bg-white pb-36">
-      <Helmet><title>Resumo do Pedido — Berzerk</title></Helmet>
+      <Helmet><title>Resumo do Pedido — Achadinhos do Momento</title></Helmet>
+
       {/* HEADER */}
       <header className="sticky top-0 z-40 border-b bg-white">
         <div className="relative mx-auto flex h-14 max-w-md items-center justify-center px-3">
           <button
-            onClick={() => (step > 1 ? setStep((step - 1) as Step) : window.history.back())}
+            onClick={() => {
+              if (addressOpen) {
+                setAddressOpen(false);
+                navigate("/carrinho");
+                return;
+              }
+              navigate("/carrinho");
+            }}
             className="absolute left-2 flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"
+            aria-label="Voltar"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
@@ -255,19 +207,49 @@ export default function CheckoutPage() {
             </p>
           </div>
         </div>
-        {/* faixa decorativa rosa/azul */}
         <div className="h-1.5 w-full bg-[repeating-linear-gradient(90deg,#ec4899_0_18px,transparent_18px_24px,#06b6d4_24px_42px,transparent_42px_48px)]" />
       </header>
 
       <main className="mx-auto max-w-md space-y-3 px-3 py-3">
-        {/* RESUMO DO CARRINHO */}
+        {/* Resumo cliente + endereço */}
+        {addr && (
+          <section className="rounded-lg border bg-white p-4">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500/10">
+                <span className="text-rose-500">📍</span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold">
+                  {addr.name}{addr.phone ? `, ${addr.phone}` : ""}
+                </p>
+                <p className="text-xs leading-snug text-muted-foreground">
+                  {addr.address}{addr.number ? `, ${addr.number}` : ""}
+                  {addr.district ? `, ${addr.district}` : ""}
+                  {addr.city ? `, ${addr.city}` : ""}
+                  {addr.state ? ` - ${addr.state}` : ""}
+                  {addr.cep ? `, ${addr.cep}` : ""}
+                </p>
+                {!locked && (
+                  <button
+                    onClick={() => setAddressOpen(true)}
+                    className="mt-1 text-[11px] font-semibold text-rose-500"
+                  >
+                    Editar
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="mt-3 h-px w-full bg-[repeating-linear-gradient(90deg,#f43f5e_0_8px,transparent_8px_16px,#0ea5e9_16px_24px,transparent_24px_32px)]" />
+          </section>
+        )}
+
         <p className="text-xs text-muted-foreground">
           Loja ({items.length} {items.length === 1 ? "item" : "itens"})
         </p>
 
         <div className="flex items-center gap-2 rounded-md border border-sky-200 bg-sky-50 px-3 py-2.5 text-sm font-semibold text-sky-700">
-            <Truck className="h-4 w-4" /> Frete grátis disponível!
-          </div>
+          <Truck className="h-4 w-4" /> Frete grátis disponível!
+        </div>
 
         <section className="rounded-lg border bg-white">
           <div className="border-b px-4 py-2.5">
@@ -279,7 +261,6 @@ export default function CheckoutPage() {
             {items.map((i) => {
               const original = i.originalPrice ?? i.price;
               const off = original > i.price ? Math.round((1 - i.price / original) * 100) : 0;
-              const locked = !!pixExternalId;
               return (
                 <div key={i.id + (i.size ?? "")} className="flex gap-3 p-3">
                   <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
@@ -300,9 +281,7 @@ export default function CheckoutPage() {
                         </button>
                       )}
                     </div>
-                    {i.size && (
-                      <p className="text-xs text-muted-foreground">{i.size}</p>
-                    )}
+                    {i.size && <p className="text-xs text-muted-foreground">{i.size}</p>}
                     <div className="mt-1 flex items-center gap-1.5">
                       {off > 0 && (
                         <span className="rounded-md bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-600">
@@ -352,7 +331,6 @@ export default function CheckoutPage() {
           </div>
         </section>
 
-        {/* DESCONTOS APLICADOS */}
         {discountTotal > 0 && (
           <section className="rounded-lg border bg-white">
             <div className="flex items-center justify-between px-4 py-3">
@@ -367,63 +345,42 @@ export default function CheckoutPage() {
           </section>
         )}
 
+        {/* Pagamento */}
+        <section ref={pixAreaRef} className="rounded-lg border bg-white p-4">
+          <h3 className="mb-3 text-sm font-bold">Forma de pagamento</h3>
 
+          {pixExternalId ? (
+            <PixDisplay externalId={pixExternalId} />
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between rounded-md border-2 border-sky-500 bg-sky-50/40 px-3 py-3">
+                <div className="flex items-center gap-2.5">
+                  <PixIcon />
+                  <span className="text-sm font-semibold">PIX à vista</span>
+                </div>
+                <span className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-sky-500">
+                  <span className="h-2.5 w-2.5 rounded-full bg-sky-500" />
+                </span>
+              </div>
 
+              <button
+                onClick={finalize}
+                disabled={loading}
+                className="flex w-full items-center justify-center gap-2 rounded-md bg-[#FF3366] py-3.5 text-sm font-bold uppercase tracking-wide text-white shadow-md disabled:opacity-60"
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                {loading ? "Gerando Pix..." : "Finalizar Compra"}
+              </button>
 
-        {/* STEPS */}
-        <section className="rounded-lg border bg-white p-4">
-          <Stepper step={step} />
-
-          {step === 1 && (
-            <Step1
-              email={email}
-              setEmail={setEmail}
-              phone={phone}
-              setPhone={(v) => setPhone(maskPhone(v))}
-              name={name}
-              setName={setName}
-              doc={doc}
-              setDoc={(v) => setDoc(maskCpf(v))}
-              onNext={() => goNext(2)}
-            />
-          )}
-
-          {step === 2 && (
-            <Step2
-              cep={cep}
-              setCep={(v) => setCep(maskCep(v))}
-              address={address}
-              setAddress={setAddress}
-              number={number}
-              setNumber={setNumber}
-              district={district}
-              setDistrict={setDistrict}
-              city={city}
-              setCity={setCity}
-              state={state}
-              setState={setState}
-              complement={complement}
-              setComplement={setComplement}
-              shippingId={shippingId}
-              setShippingId={setShippingId}
-              count={count}
-              onNext={() => goNext(3)}
-            />
-          )}
-
-          {step === 3 && (
-            <div ref={pixAreaRef}>
-              <Step3
-                loading={loading}
-                onPay={finalize}
-                pixExternalId={pixExternalId}
-              />
+              <p className="flex items-center justify-center gap-1 text-center text-xs text-emerald-700">
+                <ShieldCheck className="h-3.5 w-3.5" /> Pagamento 100% seguro
+              </p>
             </div>
           )}
         </section>
       </main>
 
-      {/* BARRA FIXA INFERIOR */}
+      {/* Barra fixa */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-white">
         <div className="mx-auto max-w-md">
           {discountTotal > 0 && (
@@ -443,313 +400,16 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
 
-// ========== Stepper ==========
-function Stepper({ step }: { step: Step }) {
-  const items: { n: Step; label: string }[] = [
-    { n: 1, label: "Identificação" },
-    { n: 2, label: "Entrega" },
-    { n: 3, label: "Pagamento" },
-  ];
-  return (
-    <div className="mb-5 flex items-center justify-between">
-      {items.map((it, idx) => {
-        const done = step > it.n;
-        const active = step === it.n;
-        return (
-          <div key={it.n} className="flex flex-1 items-center">
-            <div className="flex flex-col items-center">
-              <div
-                className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
-                  done
-                    ? "bg-emerald-500 text-white"
-                    : active
-                      ? "bg-slate-900 text-white"
-                      : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {it.n}
-              </div>
-              <span
-                className={`mt-1 text-xs ${
-                  active ? "font-bold text-foreground" : "text-muted-foreground"
-                }`}
-              >
-                {it.label}
-              </span>
-            </div>
-            {idx < items.length - 1 && (
-              <div className="mx-2 h-px flex-1 -translate-y-3 border-t border-dashed" />
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ========== Step 1: Identificação ==========
-function Step1(p: {
-  email: string; setEmail: (v: string) => void;
-  phone: string; setPhone: (v: string) => void;
-  name: string; setName: (v: string) => void;
-  doc: string; setDoc: (v: string) => void;
-  onNext: () => void;
-}) {
-  return (
-    <div className="space-y-3">
-      <Field label="E-mail">
-        <input
-          type="email"
-          placeholder="Digite seu e-mail"
-          value={p.email}
-          onChange={(e) => p.setEmail(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-      <Field label="Telefone">
-        <input
-          inputMode="tel"
-          placeholder="Digite seu telefone"
-          value={p.phone}
-          onChange={(e) => p.setPhone(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-      <Field label="Nome completo">
-        <input
-          placeholder="Digite seu nome completo"
-          value={p.name}
-          onChange={(e) => p.setName(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-      <Field label="CPF/CNPJ">
-        <input
-          inputMode="numeric"
-          placeholder="Digite seu CPF/CNPJ"
-          value={p.doc}
-          onChange={(e) => p.setDoc(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-
-      <div className="rounded-md border border-dashed p-3 text-xs text-muted-foreground">
-        <p className="mb-1 font-semibold">Por que precisamos desses dados?</p>
-        <ul className="ml-4 list-disc space-y-0.5">
-          <li>Enviar o comprovante de compra;</li>
-          <li>Garantir a devolução caso necessário;</li>
-          <li>Acompanhar o andamento do pedido.</li>
-        </ul>
-      </div>
-
-      <button
-        onClick={p.onNext}
-        className="w-full rounded-md bg-[#FF3366] py-3 text-sm font-bold text-white shadow-md"
-      >
-        Ir para entrega
-      </button>
-    </div>
-  );
-}
-
-// ========== Step 2: Entrega ==========
-function Step2(p: {
-  cep: string; setCep: (v: string) => void;
-  address: string; setAddress: (v: string) => void;
-  number: string; setNumber: (v: string) => void;
-  district: string; setDistrict: (v: string) => void;
-  city: string; setCity: (v: string) => void;
-  state: string; setState: (v: string) => void;
-  complement: string; setComplement: (v: string) => void;
-  shippingId: string; setShippingId: (v: string) => void;
-  count: number;
-  onNext: () => void;
-}) {
-  const freeShippingUnlocked = p.count >= 3;
-  // ViaCEP autopreencher
-  useEffect(() => {
-    const raw = p.cep.replace(/\D/g, "");
-    if (raw.length !== 8) return;
-    let alive = true;
-    fetch(`https://viacep.com.br/ws/${raw}/json/`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (!alive || d?.erro) return;
-        if (!p.address && d.logradouro) p.setAddress(d.logradouro);
-        if (!p.district && d.bairro) p.setDistrict(d.bairro);
-        if (!p.city && d.localidade) p.setCity(d.localidade);
-        if (!p.state && d.uf) p.setState(d.uf);
-      })
-      .catch(() => {});
-    return () => { alive = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [p.cep]);
-
-  return (
-    <div className="space-y-3">
-      <Field label="CEP">
-        <input
-          inputMode="numeric"
-          placeholder="00000-000"
-          value={p.cep}
-          onChange={(e) => p.setCep(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-      <Field label="Endereço">
-        <input
-          placeholder="Rua / Avenida"
-          value={p.address}
-          onChange={(e) => p.setAddress(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-      <Field label="Número">
-        <input
-          value={p.number}
-          onChange={(e) => p.setNumber(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-      <Field label="Bairro">
-        <input
-          value={p.district}
-          onChange={(e) => p.setDistrict(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-      <Field label="Cidade">
-        <input
-          value={p.city}
-          onChange={(e) => p.setCity(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-      <Field label="Estado">
-        <input
-          value={p.state}
-          onChange={(e) => p.setState(e.target.value.toUpperCase().slice(0, 2))}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-      <Field label="Complemento">
-        <input
-          placeholder="Apartamento, bloco, referência (opcional)"
-          value={p.complement}
-          onChange={(e) => p.setComplement(e.target.value)}
-          className="w-full rounded-md border px-3 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-rose-200"
-        />
-      </Field>
-
-      <div className="space-y-2 pt-1">
-        {SHIPPINGS.map((s) => {
-          const isFree = s.id === "correio";
-          const sel = p.shippingId === s.id;
-          return (
-            <button
-              type="button"
-              key={s.id}
-              onClick={() => p.setShippingId(s.id)}
-              className={`flex w-full items-center gap-3 rounded-md border px-3 py-3 text-left transition-colors ${
-                sel
-                  ? "border-sky-500 ring-2 ring-sky-100"
-                  : "border-border hover:bg-muted/20"
-              }`}
-            >
-              <span
-                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                  sel
-                    ? "border-sky-500"
-                    : "border-muted-foreground/40"
-                }`}
-              >
-                {sel && <span className="h-2.5 w-2.5 rounded-full bg-sky-500" />}
-              </span>
-              <div className="flex-1">
-                <p className="text-sm font-semibold">{s.name}</p>
-                <p className="text-xs text-muted-foreground">{s.eta}</p>
-              </div>
-              <span className={`text-sm font-semibold ${isFree ? "text-emerald-600" : ""}`}>
-                {s.price === 0 ? "Frete grátis" : formatBRL(s.price)}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      <p className="text-xs text-muted-foreground">
-        Frete selecionado:{" "}
-        {SHIPPINGS.find((s) => s.id === p.shippingId)?.name} (
-        {SHIPPINGS.find((s) => s.id === p.shippingId)?.price === 0
-          ? "Grátis"
-          : formatBRL(SHIPPINGS.find((s) => s.id === p.shippingId)!.price)}
-        )
-      </p>
-
-      <button
-        onClick={p.onNext}
-        className="w-full rounded-md bg-[#FF3366] py-3 text-sm font-bold text-white shadow-md"
-      >
-        Ir para pagamento
-      </button>
-    </div>
-  );
-}
-
-// ========== Step 3: Pagamento ==========
-function Step3({
-  loading,
-  onPay,
-  pixExternalId,
-}: {
-  loading: boolean;
-  onPay: () => void;
-  pixExternalId: string | null;
-}) {
-  if (pixExternalId) {
-    return <PixDisplay externalId={pixExternalId} />;
-  }
-  return (
-    <div className="space-y-3">
-      <div className="rounded-md border bg-white p-3">
-        <p className="mb-2 text-sm font-semibold">Forma de pagamento</p>
-        <div className="flex items-center justify-between rounded-md border-2 border-sky-500 bg-sky-50/40 px-3 py-3">
-          <div className="flex items-center gap-2.5">
-            <PixIcon />
-            <span className="text-sm font-semibold">PIX à vista</span>
-          </div>
-          <span className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-sky-500">
-            <span className="h-2.5 w-2.5 rounded-full bg-sky-500" />
-          </span>
-        </div>
-      </div>
-
-      <button
-        onClick={onPay}
-        disabled={loading}
-        className="flex w-full items-center justify-center gap-2 rounded-md bg-[#FF3366] py-3.5 text-sm font-bold uppercase tracking-wide text-white shadow-md disabled:opacity-60"
-      >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-        {loading ? "Gerando Pix..." : "Finalizar Compra"}
-      </button>
-
-      <p className="flex items-center justify-center gap-1 text-center text-xs text-emerald-700">
-        <ShieldCheck className="h-3.5 w-3.5" /> Pagamento 100% seguro
-      </p>
-    </div>
-  );
-}
-
-// ========== Helpers ==========
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <label className="mb-1 block text-sm font-semibold">{label}</label>
-      {children}
+      <AddressSheet
+        open={addressOpen}
+        onClose={() => setAddressOpen(false)}
+        onBack={() => navigate("/carrinho")}
+        onSaved={(a) => {
+          setAddr(a);
+          setAddressOpen(false);
+        }}
+      />
     </div>
   );
 }
@@ -766,4 +426,3 @@ function PixIcon() {
     </svg>
   );
 }
-
