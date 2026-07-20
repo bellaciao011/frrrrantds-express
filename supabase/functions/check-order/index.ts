@@ -2,7 +2,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
-import { getTransaction, mapFreepayStatus } from "../_shared/freepay.ts";
+import { getTransaction, mapParadiseStatus } from "../_shared/paradisepags.ts";
 import { reportOrderToUtmify, extractTrackingFromOrder, type UtmifyStatus } from "../_shared/utmify.ts";
 
 const corsHeaders = {
@@ -28,9 +28,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    const apiKey = Deno.env.get("FREEPAY_PUBLIC_KEY");
+    const apiKey = Deno.env.get("PARADISEPAGS_SECRET_KEY");
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: "FreePay not configured" }), {
+      return new Response(JSON.stringify({ error: "ParadisePags not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -55,7 +55,6 @@ Deno.serve(async (req) => {
     const { ok, status: httpStatus, data } = await getTransaction(existingOrder.transaction_id);
 
     if (!ok) {
-      // Rate limited pela FreePay: retorna status atual do banco sem erro pro cliente
       if (httpStatus === 429) {
         return new Response(JSON.stringify({
           external_id: externalId,
@@ -65,13 +64,13 @@ Deno.serve(async (req) => {
           status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      return new Response(JSON.stringify({ error: "FreePay error", status: httpStatus, details: data }), {
+      return new Response(JSON.stringify({ error: "ParadisePags error", status: httpStatus, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const t = Array.isArray(data?.data) ? data.data[0] : (data?.data ?? data);
-    const status = mapFreepayStatus(t?.status ?? t?.payment_status);
+    const t = data?.transaction ?? data?.data ?? data;
+    const status = mapParadiseStatus(t?.status ?? t?.raw_status);
 
 
     const wasAlreadyPaid = existingOrder?.status === "paid" || !!existingOrder?.paid_at;
