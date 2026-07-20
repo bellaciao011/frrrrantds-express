@@ -12,6 +12,10 @@ import caqui2 from "@/assets/triciclo/triciclo-caqui-56.png.asset.json";
 import caqui3 from "@/assets/triciclo/triciclo-caqui-57.png.asset.json";
 import caqui4 from "@/assets/triciclo/triciclo-caqui-58.png.asset.json";
 import caqui5 from "@/assets/triciclo/triciclo-caqui-59.png.asset.json";
+import c3a from "@/assets/scooter-c3/c3-79.png.asset.json";
+import c3b from "@/assets/scooter-c3/c3-80.png.asset.json";
+import c3c from "@/assets/scooter-c3/c3-81.png.asset.json";
+import c3d from "@/assets/scooter-c3/c3-82.png.asset.json";
 
 export interface ProductVariation {
   titulo: string;
