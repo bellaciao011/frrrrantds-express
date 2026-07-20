@@ -368,10 +368,9 @@ export default function CheckoutPage() {
         <section ref={pixAreaRef} className="rounded-lg border bg-white p-4">
           <h3 className="mb-3 text-sm font-bold">Forma de pagamento</h3>
 
-          {pixExternalId ? (
-            <PixDisplay externalId={pixExternalId} />
-          ) : (
+          {pixExternalId ? null : (
             <div className="space-y-3">
+
               <div className="flex items-center justify-between rounded-md border-2 border-sky-500 bg-sky-50/40 px-3 py-3">
                 <div className="flex items-center gap-2.5">
                   <PixIcon />
