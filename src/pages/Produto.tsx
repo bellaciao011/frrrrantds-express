@@ -387,9 +387,92 @@ export default function ProductPage() {
         </div>
 
 
+        {/* Vídeos do produto */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-lg font-bold">
+              <span className="text-price">▶</span> Vídeos do produto
+            </h2>
+            <span className="text-xs text-muted-foreground">Arraste para o lado ›</span>
+          </div>
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 snap-x">
+            {creatorVideos.slice(0, 4).map((v, i) => (
+              <div key={i} className="relative shrink-0 snap-start">
+                <video
+                  src={v}
+                  className="h-64 w-56 rounded-xl bg-black object-cover"
+                  controls
+                  playsInline
+                  preload="metadata"
+                  muted
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Descrição */}
         <div className="mt-2 bg-background px-4 py-4">
           <h2 className="mb-3 text-lg font-bold">Descrição</h2>
+
+          {/* Comparativo de preço */}
+          {(() => {
+            const ml = 494.9, amz = 504.9, mag = 514.9;
+            const maxSave = Math.max(ml, amz, mag) - product.price;
+            const fmt = (v: number) => `+ ${formatBRL(v)}`;
+            return (
+              <div className="mb-5 space-y-2">
+                <div className="rounded-2xl bg-price px-4 py-3 text-white">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-[11px] font-bold tracking-wider opacity-90">ECONOMIA</p>
+                      <p className="mt-1 text-lg font-extrabold leading-tight">
+                        Economize até {formatBRL(maxSave)}
+                      </p>
+                    </div>
+                    <span className="shrink-0 text-[11px] font-bold underline">Só aqui<br/>APROVEITE</span>
+                  </div>
+                </div>
+
+                {[
+                  { name: "Mercado Livre", sub: "vendedor terceiro", price: ml, logo: "https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/6.6.101/mercadolibre/logo__large_plus.png" },
+                  { name: "Amazon", sub: "frete separado", price: amz, logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" },
+                  { name: "Magalu", sub: "entrega em 15 dias", price: mag, logo: "https://logospng.org/download/magazine-luiza/logo-magazine-luiza-icon-1024.png" },
+                ].map((c) => (
+                  <div key={c.name} className="flex items-center gap-3 rounded-2xl border bg-background px-3 py-2.5">
+                    <img src={c.logo} alt={c.name} className="h-9 w-9 rounded-full object-contain bg-white border" />
+                    <div className="flex-1">
+                      <p className="text-sm font-bold leading-tight">{c.name}</p>
+                      <p className="text-[11px] text-muted-foreground">{c.sub}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground line-through">{formatBRL(c.price)}</p>
+                      <p className="text-xs font-bold text-price">{fmt(c.price - product.price)}</p>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="rounded-2xl border-2 border-price bg-price/5 px-3 py-2.5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-price/10 text-price">🛍️</div>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold leading-tight">Meijile</p>
+                      <p className="text-[10px] font-bold text-price">MENOR PREÇO · FRETE GRÁTIS + GARANTIA</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-base font-extrabold text-emerald-600">{formatBRL(product.price)}</p>
+                      <p className="text-[10px] text-muted-foreground">Em estoque</p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="pt-1 text-center text-xs italic text-muted-foreground">
+                  Mesma qualidade, fração do preço
+                </p>
+              </div>
+            );
+          })()}
+
           <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/80">
             {product.description || `${product.name} — produto em promoção. Aproveite o preço especial enquanto durar a oferta.`}
           </p>
