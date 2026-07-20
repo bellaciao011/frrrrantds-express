@@ -41,46 +41,20 @@ const DESCRIPTION =
 
 export const products: Product[] = [
   {
-    id: "triciclo-eletrico-t3-azul-marinho",
-    name: "T3 Triciclo Elétrico Para Mobilidade Urbana — Azul-Marinho, Bateria 60V 20Ah, Freio Hidráulico, Sem CNH",
+    id: "triciclo-eletrico-t3",
+    name: "T3 Triciclo Elétrico Para Mobilidade Urbana — Bateria 60V 20Ah, Freio Hidráulico, Sem CNH",
     image: IMAGES[0],
-    images: IMAGES,
+    images: [...IMAGES, ...RED_IMAGES, ...CAQUI_IMAGES],
     price: 112.9,
     originalPrice: 1129.9,
     discount: 90,
     description: DESCRIPTION,
     variacoes: [
       { titulo: "Azul-Marinho", imagem: IMAGES[0], tipo: "cor" },
-    ],
-    sold: 2143,
-  },
-  {
-    id: "triciclo-eletrico-t3-red",
-    name: "T3 Triciclo Elétrico Para Mobilidade Urbana — Red, Bateria 60V 20Ah, Freio Hidráulico, Sem CNH",
-    image: RED_IMAGES[0],
-    images: RED_IMAGES,
-    price: 112.9,
-    originalPrice: 1129.9,
-    discount: 90,
-    description: DESCRIPTION,
-    variacoes: [
       { titulo: "Red", imagem: RED_IMAGES[0], tipo: "cor" },
-    ],
-    sold: 1876,
-  },
-  {
-    id: "triciclo-eletrico-t3-caqui",
-    name: "T3 Triciclo Elétrico Para Mobilidade Urbana — Cáqui, Bateria 60V 20Ah, Freio Hidráulico, Sem CNH",
-    image: CAQUI_IMAGES[0],
-    images: CAQUI_IMAGES,
-    price: 112.9,
-    originalPrice: 1129.9,
-    discount: 90,
-    description: DESCRIPTION,
-    variacoes: [
       { titulo: "Cáqui", imagem: CAQUI_IMAGES[0], tipo: "cor" },
     ],
-    sold: 1542,
+    sold: 5561,
   },
 ];
 
