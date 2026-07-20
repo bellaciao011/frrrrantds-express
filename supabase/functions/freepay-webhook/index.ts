@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { mapFreepayStatus } from "../_shared/freepay.ts";
 import { sendPushcutOrderNotification } from "../_shared/pushcut.ts";
 import { trackPurchaseServerSide } from "../_shared/tiktok.ts";
-import { reportOrderToUtmify, extractTrackingFromOrder, type UtmifyStatus } from "../_shared/utmify.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -95,38 +95,6 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Utmify: notifica mudança de status (paid, refused, refunded, chargedback)
-    const utmifyStatusMap: Record<string, UtmifyStatus> = {
-      paid: "paid",
-      refused: "refused",
-      refunded: "refunded",
-      chargedback: "chargedback",
-    };
-    const utmifyStatus = utmifyStatusMap[status];
-    if (utmifyStatus && order.status !== status) {
-      try {
-        await reportOrderToUtmify({
-          orderId: order.external_id,
-          paymentMethod: (order.payment_method as any) ?? "pix",
-          status: utmifyStatus,
-          createdAt: order.created_at ?? new Date().toISOString(),
-          approvedAt: utmifyStatus === "paid" ? (paidAt ?? new Date().toISOString()) : null,
-          refundedAt: utmifyStatus === "refunded" ? new Date().toISOString() : null,
-          amountCents: amountCents ?? order.amount ?? 0,
-          customer: {
-            name: order.buyer_name,
-            email: order.buyer_email,
-            phone: order.buyer_phone,
-            document: order.buyer_document,
-            ip: order.buyer_ip,
-          },
-          items: (order.items as any[]) ?? [],
-          tracking: extractTrackingFromOrder(order as any),
-        });
-      } catch (e) {
-        console.error("[freepay-webhook] utmify error", e);
-      }
-    }
 
     return new Response(JSON.stringify({ ok: true, status }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
