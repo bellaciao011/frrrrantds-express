@@ -81,6 +81,27 @@ const PRODUCT_FEATURES: { img: string; title: string; text: string }[] = [
   },
 ];
 
+const TECH_SPECS: { label: string; value: string }[] = [
+  { label: "Modelo", value: "T3" },
+  { label: "Potência do motor", value: "800 W" },
+  { label: "Velocidade máxima", value: "30 km/h" },
+  { label: "Autonomia máxima", value: "50 km" },
+  { label: "Capacidade de carga", value: "150 kg" },
+  { label: "Tipo de bateria", value: "Bateria de lítio" },
+  { label: "Tensão / Corrente", value: "60V/20AH" },
+  { label: "Capacidade de subida", value: "20°" },
+  { label: "Tamanho do pneu", value: "Pneus de borracha 3.00-8" },
+  { label: "Dimensões do veículo", value: "168*73*105cm" },
+  { label: "Peso do veículo", value: "98.0 kg" },
+  { label: "Tipo de freio", value: "Freios a tambor dianteiros e traseiros" },
+  { label: "Suspensão", value: "Amortecimento hidráulico" },
+  { label: "Tempo de carregamento", value: "≈7-8 horas" },
+  { label: "Suporte NFC", value: "Não" },
+  { label: "Necessita habilitação", value: "Não" },
+  { label: "Garantia", value: "6 meses" },
+  { label: "Cores disponíveis", value: "Cáqui, Azul-marinho, Red" },
+];
+
 
 const REVIEWS_TOTAL = 521;
 const REVIEWS_AVG = 4.8;
