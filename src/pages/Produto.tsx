@@ -407,6 +407,19 @@ export default function ProductPage() {
           </div>
         </div>
 
+        {/* Especificações técnicas */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <h2 className="mb-3 text-lg font-bold">Especificações Técnicas</h2>
+          <div className="divide-y rounded-xl border border-border">
+            {TECH_SPECS.map((spec) => (
+              <div key={spec.label} className="flex items-center justify-between px-3 py-2.5 text-sm">
+                <span className="text-muted-foreground">{spec.label}</span>
+                <span className="font-medium text-right">{spec.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Avaliações dos clientes */}
         <div className="mt-2 bg-background px-4 py-4">
           <h2 className="text-lg font-bold">Avaliações dos clientes</h2>
