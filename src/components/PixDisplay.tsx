@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle2, Copy, Loader2, QrCode } from "lucide-react";
+import { CheckCircle2, Clock, Copy, Loader2, BadgeCheck } from "lucide-react";
 import QRCode from "qrcode";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -8,7 +8,6 @@ import { formatBRL } from "@/data/products";
 import { trackPurchaseClient } from "@/lib/tiktokPixel";
 import { getUrlWithUtm } from "@/utils/utm";
 import { copyText } from "@/lib/clipboard";
-
 
 interface OrderRow {
   external_id: string;
@@ -22,6 +21,7 @@ interface OrderRow {
   ttclid?: string | null;
   store_slug?: string | null;
   items?: Array<{ name?: string; id?: string; price?: number; quantity?: number }> | null;
+  created_at?: string | null;
 }
 
 export default function PixDisplay({ externalId }: { externalId: string }) {
@@ -29,7 +29,7 @@ export default function PixDisplay({ externalId }: { externalId: string }) {
   const [order, setOrder] = useState<OrderRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [qrFromCode, setQrFromCode] = useState<string | null>(null);
-  const [secondsLeft, setSecondsLeft] = useState(15 * 60);
+  const [secondsLeft, setSecondsLeft] = useState(24 * 3600 - 1);
 
   useEffect(() => {
     let alive = true;
@@ -37,7 +37,7 @@ export default function PixDisplay({ externalId }: { externalId: string }) {
       const { data, error } = await supabase
         .from("orders")
         .select(
-          "external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid,store_slug,items",
+          "external_id,status,amount,pix_code,pix_qrcode,buyer_name,buyer_email,buyer_phone,ttclid,store_slug,items,created_at",
         )
         .eq("external_id", externalId)
         .maybeSingle();
@@ -184,7 +184,6 @@ export default function PixDisplay({ externalId }: { externalId: string }) {
     else toast.error("Selecione e copie manualmente o código.");
   };
 
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-10">
@@ -214,53 +213,128 @@ export default function PixDisplay({ externalId }: { externalId: string }) {
     );
   }
 
-  const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+  const hh = String(Math.floor(secondsLeft / 3600)).padStart(2, "0");
+  const mm = String(Math.floor((secondsLeft % 3600) / 60)).padStart(2, "0");
   const ss = String(secondsLeft % 60).padStart(2, "0");
 
+  const createdAt = order.created_at ? new Date(order.created_at) : new Date();
+  const dateStr = createdAt.toLocaleString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
+  const shortCode = order.pix_code
+    ? order.pix_code.length > 34
+      ? `${order.pix_code.slice(0, 34)}…`
+      : order.pix_code
+    : "";
+
   return (
-    <div className="space-y-3">
-      <div className="rounded-xl border bg-white p-4 text-center">
-        <p className="text-xs font-medium text-muted-foreground">Aguardando pagamento</p>
-        <p className="mt-1 text-2xl font-bold text-foreground">{formatBRL(order.amount / 100)}</p>
-        <p className="mt-1 text-[11px] text-muted-foreground">
-          Expira em {mm}:{ss}
+    <div className="space-y-5 bg-white">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-[22px] font-bold leading-tight text-foreground">
+            Aguardando o pagamento
+          </h2>
+          <p className="mt-1 text-[22px] font-bold text-foreground">
+            {formatBRL(order.amount / 100)}
+          </p>
+          <div className="mt-2 flex items-center gap-2 text-xs">
+            <span className="text-muted-foreground">Vence em</span>
+            <span className="inline-flex items-center gap-1 rounded-md bg-[#FF3366] px-2 py-0.5 font-semibold text-white">
+              <Clock className="h-3 w-3" />
+              {hh}:{mm}:{ss}
+            </span>
+          </div>
+          <p className="mt-1 text-[11px] text-muted-foreground">{dateStr}</p>
+        </div>
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5A524]">
+          <Clock className="h-5 w-5 text-white" />
+        </div>
+      </div>
+
+      {/* Card do código Pix */}
+      <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+        <div className="flex items-center gap-2">
+          <svg viewBox="0 0 32 32" className="h-6 w-6" aria-hidden>
+            <g fill="#32BCAD">
+              <path d="M9.5 22.5 4 17l5.5-5.5 2.1 2.1L8.2 17l3.4 3.4z" />
+              <path d="M22.5 9.5 28 15l-5.5 5.5-2.1-2.1L23.8 15l-3.4-3.4z" />
+              <path d="m14.9 24.9-2.1-2.1L20.6 15l-7.8-7.8 2.1-2.1L24.8 15z" />
+            </g>
+          </svg>
+          <span className="text-sm font-bold tracking-wide text-foreground">PIX</span>
+        </div>
+        <p
+          onClick={() => {
+            const el = document.getElementById("pix-code-hidden") as HTMLInputElement | null;
+            el?.select();
+          }}
+          className="mt-3 truncate font-mono text-[13px] text-foreground/80"
+        >
+          {shortCode}
         </p>
+        <input
+          id="pix-code-hidden"
+          readOnly
+          value={order.pix_code ?? ""}
+          className="sr-only"
+          aria-hidden
+        />
+        <button
+          onClick={copy}
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF3366] py-3 text-sm font-semibold text-white active:opacity-90"
+        >
+          <Copy className="h-4 w-4" />
+          Copiar
+        </button>
+      </div>
 
-        <div className="mx-auto mt-4 flex aspect-square w-56 items-center justify-center rounded-lg border bg-white p-2">
-          {qrSrc ? (
+      {/* QR opcional */}
+      {qrSrc && (
+        <details className="rounded-xl border bg-white p-3 text-sm">
+          <summary className="cursor-pointer font-medium text-foreground">
+            Preferir pagar com QR Code
+          </summary>
+          <div className="mx-auto mt-3 flex aspect-square w-48 items-center justify-center rounded-lg border bg-white p-2">
             <img src={qrSrc} alt="QR Code Pix" className="h-full w-full object-contain" />
-          ) : (
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          )}
-        </div>
+          </div>
+        </details>
+      )}
 
-        <p className="mt-4 text-xs text-muted-foreground">ou copie o código abaixo:</p>
-        <div className="mt-2 flex items-center gap-2">
-          <input
-            readOnly
-            value={order.pix_code ?? ""}
-            className="flex-1 truncate rounded-lg border bg-muted px-3 py-2 text-xs"
-          />
-          <button
-            onClick={copy}
-            className="flex items-center gap-1 rounded-lg bg-[#FF3366] px-3 py-2 text-xs font-semibold text-white"
-          >
-            <Copy className="h-3.5 w-3.5" /> Copiar
-          </button>
-        </div>
+      <p className="text-[13px] leading-relaxed text-muted-foreground">
+        Para acessar esta página no app, abra{" "}
+        <span className="font-semibold text-foreground">Loja</span> &gt;{" "}
+        <span className="font-semibold text-foreground">Pedidos</span> &gt;{" "}
+        <span className="font-semibold text-foreground">Sem pagamento</span> &gt;{" "}
+        <span className="font-semibold text-foreground">Visualizar o código</span>
+      </p>
+
+      <div>
+        <h3 className="text-[15px] font-bold text-foreground">Como fazer pagamentos com PIX?</h3>
+        <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
+          Copie o código de pagamento acima, selecione Pix no seu app de internet ou de banco e cole
+          o código.
+        </p>
       </div>
 
-      <div className="rounded-xl border bg-white p-4 text-sm">
-        <h3 className="font-semibold">Como pagar</h3>
-        <ol className="mt-2 list-decimal space-y-1 pl-5 text-muted-foreground">
-          <li>Abra o app do seu banco</li>
-          <li>Escolha pagar com Pix → Copia e cola (ou QR Code)</li>
-          <li>Confirme o pagamento</li>
-          <li>Esta tela confirma automaticamente</li>
-        </ol>
+      <div>
+        <h3 className="text-[15px] font-bold text-foreground">Você pagará para:</h3>
+        <div className="mt-2 flex items-center gap-1.5">
+          <span className="text-[14px] text-foreground">Meio Transacional Protegido LTDA</span>
+          <BadgeCheck className="h-4 w-4 fill-[#1D9BF0] text-white" />
+        </div>
+        <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+          Essa é a instituição oficial do TikTok Shop. Só efetue o pagamento se ver esse nome na
+          hora de pagar.
+        </p>
       </div>
 
-      <p className="text-center text-xs text-muted-foreground">Pedido #{order.external_id}</p>
+      <p className="text-center text-[11px] text-muted-foreground">Pedido #{order.external_id}</p>
     </div>
   );
 }
