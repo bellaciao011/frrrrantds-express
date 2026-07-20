@@ -88,42 +88,36 @@ Deno.serve(async (req) => {
       tangible: true,
     }));
 
-    console.log("[create-pix] Calling FreePay", { external_id, amount: body.amount });
+    console.log("[create-pix] Calling ParadisePags", { external_id, amount: body.amount });
+
+    const origin = req.headers.get("origin") || req.headers.get("referer") || "https://mejilestoreshop.lovable.app";
 
     const { ok, status, data } = await createTransaction({
       amount: body.amount,
-      payment_method: "pix",
-      postback_url: `${supabaseUrl}/functions/v1/freepay-webhook?external_id=${encodeURIComponent(external_id)}`,
-      metadata: {
-        external_id,
-        store: body.store_slug ?? null,
-        ttclid: body.ttclid ?? null,
-        ...(body.tracking ?? {}),
-      },
+      description: PRODUCT_NAME.slice(0, 100),
+      reference: external_id,
+      offer_link: origin,
+      postback_url: `${supabaseUrl}/functions/v1/paradisepags-webhook?external_id=${encodeURIComponent(external_id)}`,
       customer: {
         name: body.buyer.name.trim().slice(0, 100),
         email: body.buyer.email.trim().slice(0, 100),
-        document: { number: buyerDoc ?? "00000000000", type: "cpf" },
-        ...(buyerPhone ? { phone: buyerPhone } : {}),
+        document: buyerDoc ?? "00000000000",
+        ...(buyerPhone ? { phone: buyerPhone.replace(/^\+/, "") } : {}),
       },
-      items,
-      pix: { expires_in_days: 1 },
     });
 
-    if (!ok) {
-      console.error("[create-pix] FreePay error", status, data);
-      return new Response(JSON.stringify({ error: "FreePay error", status, details: data }), {
+    if (!ok || data?.status && data.status !== "success") {
+      console.error("[create-pix] ParadisePags error", status, data);
+      return new Response(JSON.stringify({ error: "ParadisePags error", status, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    console.log("[create-pix] FreePay response", JSON.stringify(data).slice(0, 2000));
+    console.log("[create-pix] ParadisePags response", JSON.stringify(data).slice(0, 2000));
 
-    const t = Array.isArray(data?.data) ? data.data[0] : (data?.data ?? data);
-    const transactionId: string | null = t?.id ?? null;
-    const pixArr = Array.isArray(t?.pix) ? t.pix : (t?.pix ? [t.pix] : []);
-    const pixCode: string | null = pixArr[0]?.qr_code ?? pixArr[0]?.qrcode ?? null;
-    const pixUrl: string | null = pixArr[0]?.url ?? null;
+    const transactionId: string | null = data?.transaction_id != null ? String(data.transaction_id) : null;
+    const pixCode: string | null = data?.qr_code ?? null;
+    const pixUrl: string | null = data?.qr_code_base64 ?? null;
 
     const supa = createClient(
       Deno.env.get("SUPABASE_URL")!,
