@@ -21,6 +21,58 @@ import reviewPhoto2 from "@/assets/reviews/r2.png";
 import reviewPhoto3 from "@/assets/reviews/r3.png";
 const reviewPhotos: string[][] = [[reviewPhoto1], [reviewPhoto2], [reviewPhoto3]];
 
+import feat60 from "@/assets/triciclo/triciclo-feat-60.png.asset.json";
+import feat61 from "@/assets/triciclo/triciclo-feat-61.png.asset.json";
+import feat62 from "@/assets/triciclo/triciclo-feat-62.png.asset.json";
+import feat63 from "@/assets/triciclo/triciclo-feat-63.png.asset.json";
+import feat64 from "@/assets/triciclo/triciclo-feat-64.png.asset.json";
+import feat65 from "@/assets/triciclo/triciclo-feat-65.png.asset.json";
+import feat66 from "@/assets/triciclo/triciclo-feat-66.png.asset.json";
+import feat67 from "@/assets/triciclo/triciclo-feat-67.png.asset.json";
+
+const PRODUCT_FEATURES: { img: string; title: string; text: string }[] = [
+  {
+    img: feat60.url,
+    title: "Conforto, Segurança e Praticidade Urbana",
+    text: "O T3 oferece mobilidade urbana estável com três rodas, bateria removível 60V, suspensão dupla e motor potente, garantindo conforto, segurança e praticidade para o dia a dia.",
+  },
+  {
+    img: feat61.url,
+    title: "Estabilidade com 3 Rodas",
+    text: "Estrutura de três rodas que proporciona maior equilíbrio e controle. Ideal para iniciantes, oferecendo mais segurança e confiança ao dirigir.",
+  },
+  {
+    img: feat62.url,
+    title: "Suspensão Suave e Estável",
+    text: "Sistema com três amortecedores e pneus maiores que absorvem impactos com eficiência. Garante uma condução mais suave, estável e confortável, mesmo em ruas irregulares.",
+  },
+  {
+    img: feat63.url,
+    title: "Grande Capacidade Inteligente",
+    text: "Espaço inteligente com múltiplos compartimentos para organizar seus pertences com facilidade. Estrutura resistente com capacidade de até 150kg, ideal para compras, entregas e uso diário sem preocupações.",
+  },
+  {
+    img: feat64.url,
+    title: "Alarme Antifurto Potente",
+    text: "Sistema de segurança com alarme de alto volume que protege contra roubos. Mais tranquilidade ao estacionar em qualquer ambiente.",
+  },
+  {
+    img: feat65.url,
+    title: "Bateria Removível Prática",
+    text: "Bateria de lítio 60V/20Ah totalmente removível, permitindo recarga fácil em casa ou no trabalho. Mais autonomia e liberdade para sua rotina.",
+  },
+  {
+    img: feat66.url,
+    title: "Iluminação Completa LED",
+    text: "Sistema de iluminação com farol alto e baixo, setas e luz traseira. Garante excelente visibilidade e mais segurança em uso noturno.",
+  },
+  {
+    img: feat67.url,
+    title: "Design Estável e Equilibrado",
+    text: "Dimensões ideais para uso urbano, combinando conforto e estabilidade. Proporciona uma condução suave e segura em diferentes situações.",
+  },
+];
+
 
 const REVIEWS_TOTAL = 521;
 const REVIEWS_AVG = 4.8;
@@ -312,6 +364,18 @@ export default function ProductPage() {
           <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/80">
             {product.description || `${product.name} — produto em promoção. Aproveite o preço especial enquanto durar a oferta.`}
           </p>
+
+          <div className="mt-5 space-y-5">
+            {PRODUCT_FEATURES.map((f) => (
+              <div key={f.title} className="overflow-hidden rounded-xl border bg-background">
+                <img src={f.img} alt={f.title} className="w-full" loading="lazy" />
+                <div className="px-3 py-3">
+                  <h3 className="text-base font-bold">{f.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-foreground/80">{f.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Avaliações dos clientes */}
