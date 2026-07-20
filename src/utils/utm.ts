@@ -103,27 +103,3 @@ export function getUrlWithUtm(url: string): string {
   const qs = merged.toString();
   return qs ? `${path}?${qs}` : path;
 }
-
-/** Retorna apenas os tracking params relevantes para a Utmify. */
-export function getUtmifyTracking(): {
-  src: string | null;
-  sck: string | null;
-  utm_source: string | null;
-  utm_campaign: string | null;
-  utm_medium: string | null;
-  utm_content: string | null;
-  utm_term: string | null;
-} {
-  captureTrackingParams();
-  const stored = getStoredParams();
-  const pick = (k: string) => (stored.get(k) ? stored.get(k) : null);
-  return {
-    src: pick("src"),
-    sck: pick("sck"),
-    utm_source: pick("utm_source"),
-    utm_campaign: pick("utm_campaign"),
-    utm_medium: pick("utm_medium"),
-    utm_content: pick("utm_content"),
-    utm_term: pick("utm_term"),
-  };
-}
