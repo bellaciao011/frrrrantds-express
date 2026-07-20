@@ -7,6 +7,11 @@ import red2 from "@/assets/triciclo/triciclo-red-51.png.asset.json";
 import red3 from "@/assets/triciclo/triciclo-red-52.png.asset.json";
 import red4 from "@/assets/triciclo/triciclo-red-53.png.asset.json";
 import red5 from "@/assets/triciclo/triciclo-red-54.png.asset.json";
+import caqui1 from "@/assets/triciclo/triciclo-caqui-55.png.asset.json";
+import caqui2 from "@/assets/triciclo/triciclo-caqui-56.png.asset.json";
+import caqui3 from "@/assets/triciclo/triciclo-caqui-57.png.asset.json";
+import caqui4 from "@/assets/triciclo/triciclo-caqui-58.png.asset.json";
+import caqui5 from "@/assets/triciclo/triciclo-caqui-59.png.asset.json";
 
 export interface ProductVariation {
   titulo: string;
@@ -29,6 +34,7 @@ export interface Product {
 
 const IMAGES = [img1.url, img2.url, img3.url];
 const RED_IMAGES = [red1.url, red2.url, red3.url, red4.url, red5.url];
+const CAQUI_IMAGES = [caqui1.url, caqui2.url, caqui3.url, caqui4.url, caqui5.url];
 
 const DESCRIPTION =
   "Triciclo elétrico adulto T3 com excelente estabilidade e conforto. Ideal para mobilidade urbana, conta com freio hidráulico, amortecedor reforçado, antena potente e amplo espaço para transportes generosos.\n\nMobilidade urbana segura e estável: três rodas com pneus sem câmara garantem mais equilíbrio e confiança para o dia a dia, ideal para iniciantes e idosos.\n\nBateria removível e recarga fácil: bateria de lítio 60V 20Ah pode ser retirada para recarregar em casa ou no trabalho, sem complicações.\n\nConforto em ruas irregulares graças ao amortecedor reforçado.\n\nLEGISLAÇÃO SOBRE O PRODUTO:\n• Produto autopropelido, sem necessidade de CNH;\n• Sem exigência de homologação ou emplacamento;\n• Recomendação: Resolução 996/23 do CONTRAN;\n• Respeite as normas de trânsito (use capacete, limite de velocidade e legislação vigente).";
@@ -61,6 +67,20 @@ export const products: Product[] = [
       { titulo: "Red", imagem: RED_IMAGES[0], tipo: "cor" },
     ],
     sold: 1876,
+  },
+  {
+    id: "triciclo-eletrico-t3-caqui",
+    name: "T3 Triciclo Elétrico Para Mobilidade Urbana — Cáqui, Bateria 60V 20Ah, Freio Hidráulico, Sem CNH",
+    image: CAQUI_IMAGES[0],
+    images: CAQUI_IMAGES,
+    price: 49.9,
+    originalPrice: 499.0,
+    discount: 90,
+    description: DESCRIPTION,
+    variacoes: [
+      { titulo: "Cáqui", imagem: CAQUI_IMAGES[0], tipo: "cor" },
+    ],
+    sold: 1542,
   },
 ];
 
