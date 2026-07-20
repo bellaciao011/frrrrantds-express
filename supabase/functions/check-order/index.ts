@@ -55,7 +55,6 @@ Deno.serve(async (req) => {
     const { ok, status: httpStatus, data } = await getTransaction(existingOrder.transaction_id);
 
     if (!ok) {
-      // Rate limited pela FreePay: retorna status atual do banco sem erro pro cliente
       if (httpStatus === 429) {
         return new Response(JSON.stringify({
           external_id: externalId,
@@ -65,13 +64,13 @@ Deno.serve(async (req) => {
           status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      return new Response(JSON.stringify({ error: "FreePay error", status: httpStatus, details: data }), {
+      return new Response(JSON.stringify({ error: "ParadisePags error", status: httpStatus, details: data }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const t = Array.isArray(data?.data) ? data.data[0] : (data?.data ?? data);
-    const status = mapFreepayStatus(t?.status ?? t?.payment_status);
+    const t = data?.transaction ?? data?.data ?? data;
+    const status = mapParadiseStatus(t?.status ?? t?.raw_status);
 
 
     const wasAlreadyPaid = existingOrder?.status === "paid" || !!existingOrder?.paid_at;
