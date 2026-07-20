@@ -16,10 +16,18 @@ import vid2 from "@/assets/videos/creator2.mp4.asset.json";
 import vid3 from "@/assets/videos/creator3.mp4.asset.json";
 import vid4 from "@/assets/videos/creator4.mp4.asset.json";
 const creatorVideos: string[] = [vid1.url, vid2.url, vid3.url, vid4.url];
-import reviewPhoto1 from "@/assets/reviews/r1.png";
-import reviewPhoto2 from "@/assets/reviews/r2.png";
-import reviewPhoto3 from "@/assets/reviews/r3.png";
-const reviewPhotos: string[][] = [[reviewPhoto1], [reviewPhoto2], [reviewPhoto3]];
+import rev68 from "@/assets/triciclo/review-68.png.asset.json";
+import rev69 from "@/assets/triciclo/review-69.png.asset.json";
+import rev70 from "@/assets/triciclo/review-70.png.asset.json";
+import rev71 from "@/assets/triciclo/review-71.png.asset.json";
+import rev72 from "@/assets/triciclo/review-72.png.asset.json";
+import rev73 from "@/assets/triciclo/review-73.png.asset.json";
+import rev74 from "@/assets/triciclo/review-74.png.asset.json";
+const reviewPhotos: string[][] = [
+  [rev68.url, rev74.url],
+  [rev71.url, rev69.url],
+  [rev72.url, rev73.url, rev70.url],
+];
 
 import feat60 from "@/assets/triciclo/triciclo-feat-60.png.asset.json";
 import feat61 from "@/assets/triciclo/triciclo-feat-61.png.asset.json";
