@@ -82,6 +82,21 @@ export const products: Product[] = [
     ],
     sold: 3820,
   },
+  {
+    id: "scooter-eletrico-c3-pro",
+    name: "C3 Pro Scooter Elétrica com App e GPS — Antifurto, Motor 800W, Bateria 48V 24Ah, Autonomia 75km",
+    image: c3pa.url,
+    images: [c3pa.url, c3pb.url, c3pc.url, c3pd.url, c3pe.url],
+    price: 112.9,
+    originalPrice: 1099.9,
+    discount: 90,
+    description:
+      "Scooter elétrica inteligente com controle via app, sistema antifurto e GPS em tempo real. Potente para subidas, leve e fácil de usar, oferece longa autonomia e conforto no dia a dia.\n\nSistema Antifurto Inteligente: controle pelo app com bloqueio remoto, alarme e rastreamento GPS em tempo real para máxima segurança.\n\nControle Total via App: gerencie travamento, status da bateria e localização do veículo diretamente no seu smartphone.\n\nAlta Performance em Subidas (20°): motor de 800W com excelente torque, capaz de enfrentar subidas de até 20° com estabilidade e eficiência.\n\nLeve e Compacta (1450mm): design pequeno e ágil, perfeito para trânsito urbano e fácil de estacionar em espaços reduzidos.\n\nBateria de Lítio + Longa Autonomia (75km): equipada com bateria de lítio 48V 24Ah, oferece até 75 km de autonomia, perfeita para uso diário sem preocupações.\n\nSegurança e Confiabilidade: freios a tambor dianteiro e traseiro dupla garantem condução estável e segura em diferentes terrenos.\n\nESPECIFICAÇÕES TÉCNICAS:\n• Modelo: C3 Pro\n• Potência do motor: 800 W\n• Velocidade máxima: 32 km/h\n• Autonomia máxima: 75 km\n• Bateria: lítio 48V/24AH\n• Capacidade de subida: 20°\n• Dimensões: 1450mm\n• Freios: a tambor dianteiro e traseiro duplo\n• App com GPS, alarme e bloqueio remoto\n• Garantia: 6 meses\n\nLEGISLAÇÃO SOBRE O PRODUTO:\n• Produto autopropelido, sem necessidade de CNH;\n• Sem exigência de homologação ou emplacamento;\n• Recomendação: Resolução 996/23 do CONTRAN;\n• Respeite as normas de trânsito (use capacete, limite de velocidade e legislação vigente).",
+    variacoes: [
+      { titulo: "Preto", imagem: c3pa.url, tipo: "cor" },
+    ],
+    sold: 2410,
+  },
 ];
 
 export function formatBRL(value: number): string {
