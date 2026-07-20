@@ -21,7 +21,7 @@ import { useCart } from "@/lib/cart";
 import { formatBRL, products } from "@/data/products";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackAddToCart, trackInitiateCheckout } from "@/lib/tiktokPixel";
-import logoAchadinhos from "@/assets/logo-achadinhos.png.asset.json";
+import logoAchadinhos from "@/assets/logo-achadinhos.png";
 
 function useRandomProducts(count: number, excludeIds: string[]) {
   return useMemo(() => {

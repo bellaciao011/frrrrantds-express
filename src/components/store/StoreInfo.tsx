@@ -1,4 +1,4 @@
-import logoAchadinhos from "@/assets/logo-achadinhos.png.asset.json";
+import logoAchadinhos from "@/assets/logo-achadinhos.png";
 
 export function StoreInfo() {
   return (

@@ -8,35 +8,35 @@ import { useEffect, useMemo, useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { useCart } from "@/lib/cart";
 import { BuyDrawer } from "@/components/store/BuyDrawer";
-import logoAchadinhos from "@/assets/logo-achadinhos.png.asset.json";
+import logoAchadinhos from "@/assets/logo-achadinhos.png";
 import { getUrlWithUtm } from "@/utils/utm";
 import { trackViewContent, trackAddToCart } from "@/lib/tiktokPixel";
-import vid1 from "@/assets/videos/scooter1.mp4.asset.json";
-import vid2 from "@/assets/videos/scooter2.mp4.asset.json";
-import vid3 from "@/assets/videos/scooter3.mp4.asset.json";
-import vid4 from "@/assets/videos/scooter4.mp4.asset.json";
+import vid1 from "@/assets/videos/scooter1.mp4";
+import vid2 from "@/assets/videos/scooter2.mp4";
+import vid3 from "@/assets/videos/scooter3.mp4";
+import vid4 from "@/assets/videos/scooter4.mp4";
 const creatorVideos: string[] = [vid1.url, vid2.url, vid3.url, vid4.url];
-import rev68 from "@/assets/triciclo/review-68.png.asset.json";
-import rev69 from "@/assets/triciclo/review-69.png.asset.json";
-import rev70 from "@/assets/triciclo/review-70.png.asset.json";
-import rev71 from "@/assets/triciclo/review-71.png.asset.json";
-import rev72 from "@/assets/triciclo/review-72.png.asset.json";
-import rev73 from "@/assets/triciclo/review-73.png.asset.json";
-import rev74 from "@/assets/triciclo/review-74.png.asset.json";
+import rev68 from "@/assets/triciclo/review-68.png";
+import rev69 from "@/assets/triciclo/review-69.png";
+import rev70 from "@/assets/triciclo/review-70.png";
+import rev71 from "@/assets/triciclo/review-71.png";
+import rev72 from "@/assets/triciclo/review-72.png";
+import rev73 from "@/assets/triciclo/review-73.png";
+import rev74 from "@/assets/triciclo/review-74.png";
 const reviewPhotos: string[][] = [
   [rev68.url, rev74.url],
   [rev71.url, rev69.url],
   [rev72.url, rev73.url, rev70.url],
 ];
 
-import feat60 from "@/assets/triciclo/triciclo-feat-60.png.asset.json";
-import feat61 from "@/assets/triciclo/triciclo-feat-61.png.asset.json";
-import feat62 from "@/assets/triciclo/triciclo-feat-62.png.asset.json";
-import feat63 from "@/assets/triciclo/triciclo-feat-63.png.asset.json";
-import feat64 from "@/assets/triciclo/triciclo-feat-64.png.asset.json";
-import feat65 from "@/assets/triciclo/triciclo-feat-65.png.asset.json";
-import feat66 from "@/assets/triciclo/triciclo-feat-66.png.asset.json";
-import feat67 from "@/assets/triciclo/triciclo-feat-67.png.asset.json";
+import feat60 from "@/assets/triciclo/triciclo-feat-60.png";
+import feat61 from "@/assets/triciclo/triciclo-feat-61.png";
+import feat62 from "@/assets/triciclo/triciclo-feat-62.png";
+import feat63 from "@/assets/triciclo/triciclo-feat-63.png";
+import feat64 from "@/assets/triciclo/triciclo-feat-64.png";
+import feat65 from "@/assets/triciclo/triciclo-feat-65.png";
+import feat66 from "@/assets/triciclo/triciclo-feat-66.png";
+import feat67 from "@/assets/triciclo/triciclo-feat-67.png";
 
 const PRODUCT_FEATURES: { img: string; title: string; text: string }[] = [
   {
