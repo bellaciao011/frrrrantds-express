@@ -124,6 +124,21 @@ export const products: Product[] = [
     ],
     sold: 1875,
   },
+  {
+    id: "bicicleta-ergometrica-zs290",
+    name: "Bicicleta Ergométrica Spinning Cavalletta ZS-290 — Roda de Inércia 13kg, Suporta 150kg, 30 Níveis",
+    image: zs1.url,
+    images: [zs1.url, zs2.url, zs3.url, zs4.url, zs5.url, zs6.url, zs7.url],
+    price: 89.9,
+    originalPrice: 899.9,
+    discount: 90,
+    description:
+      "Bicicleta Ergométrica Spinning Cavalletta ZS-290 com roda de inércia 13kg, estrutura arqueada, alta estabilidade, suporta até 150kg e ajuste fácil.\n\nSpinning Profissional em Casa: ideal para quem busca bicicleta spinning para academia em casa, ajudando na queima de calorias, melhora do condicionamento físico e fortalecimento das pernas. Suporta usuários de até 150 kg.\n\nRoda de Inércia de 13 kg: proporciona pedalada suave, estável e silenciosa, ideal para treinos leves, moderados ou HIIT de alta intensidade.\n\nEstrutura Estável e Reforçada: base com estrutura arqueada garante maior estabilidade e segurança durante o treino, mesmo em pedaladas em pé ou exercícios intensos.\n\nAjuste Personalizado de Selim e Guidão: selim com ajuste vertical e horizontal e guidão com múltiplos níveis de altura, adaptando-se a diferentes usuários e estilos de treino.\n\nMonitor Digital com Sensor Cardíaco: acompanhe tempo, velocidade, distância, calorias e frequência cardíaca em tempo real para controlar melhor seus treinos.\n\nPedais Antiderrapantes e Resistência Ajustável: pedais com tiras de segurança e resistência ajustável por knob permitem treinos seguros e adaptados a todos os níveis.\n\n30 NÍVEIS • 1 DESAFIO:\n• 1-10 — Queima suave\n• 11-20 — HIIT & Resistência\n• 21-30 — Treinamento Muscular\n• Sentido horário (+) / anti-horário (−)\n• Botão PUSH TO STOP — disjuntor de segurança urgente\n\nESPECIFICAÇÕES TÉCNICAS:\n• Modelo: ZS-290\n• Roda de inércia: 13 kg\n• Capacidade de carga: 150 kg (estrutura reforçada até 190 kg)\n• Estrutura: tubo engrossado, suporte em U atualizado\n• Monitor digital com sensor cardíaco\n• Resistência: ajustável por knob (30 níveis)\n• Ajustes: selim vertical e horizontal, guidão multinível\n• Pedais antiderrapantes com tiras de segurança\n• Garantia: 6 meses",
+    variacoes: [
+      { titulo: "Preto/Amarelo", imagem: zs1.url, tipo: "cor" },
+    ],
+    sold: 2340,
+  },
 ];
 
 export function formatBRL(value: number): string {
