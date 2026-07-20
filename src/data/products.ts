@@ -16,6 +16,11 @@ import c3a from "@/assets/scooter-c3/c3-79.png.asset.json";
 import c3b from "@/assets/scooter-c3/c3-80.png.asset.json";
 import c3c from "@/assets/scooter-c3/c3-81.png.asset.json";
 import c3d from "@/assets/scooter-c3/c3-82.png.asset.json";
+import c3pa from "@/assets/scooter-c3pro/c3pro-83.png.asset.json";
+import c3pb from "@/assets/scooter-c3pro/c3pro-84.png.asset.json";
+import c3pc from "@/assets/scooter-c3pro/c3pro-85.png.asset.json";
+import c3pd from "@/assets/scooter-c3pro/c3pro-86.png.asset.json";
+import c3pe from "@/assets/scooter-c3pro/c3pro-87.png.asset.json";
 
 export interface ProductVariation {
   titulo: string;
