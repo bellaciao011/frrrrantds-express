@@ -28,9 +28,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    const apiKey = Deno.env.get("FREEPAY_PUBLIC_KEY");
+    const apiKey = Deno.env.get("PARADISEPAGS_SECRET_KEY");
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: "FreePay not configured" }), {
+      return new Response(JSON.stringify({ error: "ParadisePags not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
