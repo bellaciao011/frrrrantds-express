@@ -81,6 +81,27 @@ const PRODUCT_FEATURES: { img: string; title: string; text: string }[] = [
   },
 ];
 
+const TECH_SPECS: { label: string; value: string }[] = [
+  { label: "Modelo", value: "T3" },
+  { label: "Potência do motor", value: "800 W" },
+  { label: "Velocidade máxima", value: "30 km/h" },
+  { label: "Autonomia máxima", value: "50 km" },
+  { label: "Capacidade de carga", value: "150 kg" },
+  { label: "Tipo de bateria", value: "Bateria de lítio" },
+  { label: "Tensão / Corrente", value: "60V/20AH" },
+  { label: "Capacidade de subida", value: "20°" },
+  { label: "Tamanho do pneu", value: "Pneus de borracha 3.00-8" },
+  { label: "Dimensões do veículo", value: "168*73*105cm" },
+  { label: "Peso do veículo", value: "98.0 kg" },
+  { label: "Tipo de freio", value: "Freios a tambor dianteiros e traseiros" },
+  { label: "Suspensão", value: "Amortecimento hidráulico" },
+  { label: "Tempo de carregamento", value: "≈7-8 horas" },
+  { label: "Suporte NFC", value: "Não" },
+  { label: "Necessita habilitação", value: "Não" },
+  { label: "Garantia", value: "6 meses" },
+  { label: "Cores disponíveis", value: "Cáqui, Azul-marinho, Red" },
+];
+
 
 const REVIEWS_TOTAL = 521;
 const REVIEWS_AVG = 4.8;
@@ -381,6 +402,19 @@ export default function ProductPage() {
                   <h3 className="text-base font-bold">{f.title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-foreground/80">{f.text}</p>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Especificações técnicas */}
+        <div className="mt-2 bg-background px-4 py-4">
+          <h2 className="mb-3 text-lg font-bold">Especificações Técnicas</h2>
+          <div className="divide-y rounded-xl border border-border">
+            {TECH_SPECS.map((spec) => (
+              <div key={spec.label} className="flex items-center justify-between px-3 py-2.5 text-sm">
+                <span className="text-muted-foreground">{spec.label}</span>
+                <span className="font-medium text-right">{spec.value}</span>
               </div>
             ))}
           </div>
