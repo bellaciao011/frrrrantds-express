@@ -45,8 +45,8 @@ export const products: Product[] = [
     name: "T3 Triciclo Elétrico Para Mobilidade Urbana — Bateria 60V 20Ah, Freio Hidráulico, Sem CNH",
     image: IMAGES[0],
     images: [...IMAGES, ...RED_IMAGES, ...CAQUI_IMAGES],
-    price: 112.9,
-    originalPrice: 1129.9,
+    price: 92.9,
+    originalPrice: 897.9,
     discount: 90,
     description: DESCRIPTION,
     variacoes: [
